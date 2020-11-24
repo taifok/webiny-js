@@ -48,6 +48,7 @@ export default ({ createBase, context, PbCategory, PbSettings }) => {
                 })
             ),
             version: number(),
+            pattern: boolean(),
             parent: context.commodo.fields.id(),
             published: flow(
                 onSet(value => {
@@ -160,6 +161,13 @@ export default ({ createBase, context, PbCategory, PbSettings }) => {
                         }
                     };
                 }
+            },
+            async beforeSave() {
+                if (this.locked) {
+                    return;
+                }
+
+                this.pattern = this.url.includes("{");
             },
             async afterDelete() {
                 // If the deleted page is the root page - delete its revisions

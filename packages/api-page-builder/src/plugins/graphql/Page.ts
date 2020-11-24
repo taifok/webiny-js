@@ -28,6 +28,11 @@ export default {
         extend type SecurityUser @key(fields: "id") {
             id: ID @external
         }
+        
+        type PbDataSource {
+            name: String
+            
+        }
 
         type PbPage {
             id: ID
@@ -50,8 +55,9 @@ export default {
             locked: Boolean
             parent: ID
             revisions: [PbPage]
+            dataSources: PbDataSource[]
         }
-
+        
         type PbPageSettings {
             _empty: String
         }

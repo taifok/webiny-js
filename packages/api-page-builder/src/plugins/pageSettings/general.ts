@@ -49,5 +49,19 @@ export default [
                 }
             }
         }
+    },
+    {
+        name: "pb-page-settings-datasources",
+        type: "pb-page-settings-model",
+        apply({ fields: settingsFields, context }) {
+            settingsFields.dataSource = fields({
+                value: {},
+                instanceOf: withFields({
+                    tags: string({ list: true }),
+                    layout: string(),
+                    image: context.commodo.fields.id()
+                })()
+            });
+        }
     }
 ];

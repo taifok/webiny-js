@@ -89,8 +89,32 @@ export default async (root: any, args: { [key: string]: any }, context: { [key: 
             context,
             args: { ...args, limit: 1 }
         });
+
         if (page) {
             return new Response(page);
+        }
+        
+        // 4. As a last resort, find all pages that have a pattern instead of an exact slug
+        const pages = await listPublishedPages({
+            pageModel: PbPage,
+            context,
+            args: { pattern: true  }
+        });
+
+        // Try matching the requested URL against dynamic page patterns
+        for (let i = 0; i < pages.length; i++) {
+            let pattern = pages[i].url;
+            const placeholders: string[] = Array.from(pattern.matchAll(/\{([a-zA-Z]+)\}/g));
+            for (let j = 0; j < placeholders.length; j++) {
+                const [find, replace] = placeholders[j];
+                pattern = pattern.replace(find, `(?<${replace}>(.+))`);
+            }
+            // Try matching
+            const match = args.url.match(new RegExp(pattern));
+            if (match) {
+                // Load data sources
+                return new Response(page);
+            }
         }
 
         return createNotFoundResponse({

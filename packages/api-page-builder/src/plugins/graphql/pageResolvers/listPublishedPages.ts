@@ -18,6 +18,7 @@ export const listPublishedPages = async params => {
         tags = null,
         tagsRule = null,
         preview = false,
+        pattern = false,
         after,
         before
     } = args;
@@ -50,6 +51,10 @@ export const listPublishedPages = async params => {
                 }
             }
         }
+    }
+
+    if (pattern) {
+        baseFilters.push({ pattern });
     }
 
     if (search) {
