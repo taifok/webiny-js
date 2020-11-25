@@ -65,9 +65,15 @@ export type PbPageLayoutComponentPlugin = Plugin & {
     component: React.ComponentType<any>;
 };
 
+export type PbPageDataSource = {
+    name: string;
+    data: Record<string, any>;
+};
+
 export type PbPageData = {
     title?: string;
     content: any;
+    dataSources: PbPageDataSource[];
     seo?: {
         title: string;
         description: string;

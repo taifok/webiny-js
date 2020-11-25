@@ -1,1 +1,28 @@
 @import "~@webiny/app-template-site/styles.scss";
+h3 {
+  display: block;
+  font-size: 1.17em;
+  margin: 0.5em 0;
+  font-weight: bold;
+}
+
+h4 {
+  font-size: 0.8em;
+  display: block;
+  margin: 0.6em 0;
+  font-weight: bold;
+}
+
+.article-tag {
+  font-size: 0.5em;
+  background-color: #0090c5;
+  color: #fff;
+  padding: 5px;
+  margin: 5px;
+}
+
+.article-content {
+  font-size: 0.6em;
+  padding: 20px;
+  line-height: 1.5;
+}

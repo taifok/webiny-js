@@ -2,10 +2,12 @@ import * as React from "react";
 import GeneralSettings from "./components/GeneralSettings";
 import SeoSettings from "./components/SeoSettings";
 import SocialSettings from "./components/SocialSettings";
+import DataSourcesSettings from "./components/DataSourcesSettings";
 import { PbEditorPageSettingsPlugin } from "@webiny/app-page-builder/types";
 import { ReactComponent as SettingsIcon } from "./icons/round-settings-24px.svg";
 import { ReactComponent as SocialIcon } from "./icons/round-thumb_up-24px.svg";
 import { ReactComponent as SeoIcon } from "./icons/round-search-24px.svg";
+import { ReactComponent as HeadlessCmsIcon } from "@webiny/app-headless-cms/admin/icons/devices_other-black-24px.svg";
 
 const plugins: PbEditorPageSettingsPlugin[] = [
     {
@@ -70,6 +72,19 @@ const plugins: PbEditorPageSettingsPlugin[] = [
     `,
         render(props) {
             return <SocialSettings {...props} />;
+        }
+    },
+    {
+        name: "pb-editor-page-settings-datasources",
+        type: "pb-editor-page-settings",
+        title: "GraphQL data sources",
+        description: "Load external data when this page is being rendered.",
+        icon: <HeadlessCmsIcon />,
+        fields: `
+            dataSources
+        `,
+        render(props) {
+            return <DataSourcesSettings {...props} />;
         }
     }
 ];

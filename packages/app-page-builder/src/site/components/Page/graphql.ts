@@ -19,6 +19,7 @@ export const GET_PUBLISHED_PAGE = () => {
                         publishedOn
                         snippet
                         content
+                        dataSources
                         createdBy {
                             firstName
                             lastName

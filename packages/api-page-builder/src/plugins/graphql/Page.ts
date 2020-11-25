@@ -29,11 +29,6 @@ export default {
             id: ID @external
         }
         
-        type PbDataSource {
-            name: String
-            
-        }
-
         type PbPage {
             id: ID
             createdBy: SecurityUser
@@ -55,7 +50,7 @@ export default {
             locked: Boolean
             parent: ID
             revisions: [PbPage]
-            dataSources: PbDataSource[]
+            dataSources: [JSON]
         }
         
         type PbPageSettings {
@@ -262,6 +257,16 @@ export default {
             },
             updatedBy(page) {
                 return { __typename: "SecurityUser", id: page.updatedBy };
+            },
+            title(page) {
+                if (page.title.startsWith("{") && Array.isArray(page.dataSources)) {
+                    const [ds, ...path] = page.title.substring(1, page.title.length - 1).split(".");
+                    const dataSource = page.dataSources.find(d => d.name === ds);
+                    if (dataSource) {
+                        return path.reduce((obj, key) => obj[key], dataSource.data);
+                    }
+                }
+                return page.title;
             }
         },
         PbElement: {

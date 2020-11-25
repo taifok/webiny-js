@@ -118,7 +118,8 @@
       "@webiny/service-headless-cms-handler/*": ["./packages/service-headless-cms-handler/src/*"],
       "@webiny/validation": ["./packages/validation/src"],
       "@webiny/validation/*": ["./packages/validation/src/*"],
-      "@webiny/ui/*": ["./packages/ui/src/*"]
+      "@webiny/ui/*": ["./packages/ui/src/*"],
+      "dynamic-pages/*": ["./packages/dynamic-pages/src/*"]
     },
     "typeRoots": ["./typings", "./node_modules/@types", "@types/testing-library__cypress"]
   },

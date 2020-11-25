@@ -11,6 +11,7 @@ import {
     string,
     boolean,
     number,
+    object,
     date,
     ref,
     fields,
@@ -49,6 +50,7 @@ export default ({ createBase, context, PbCategory, PbSettings }) => {
             ),
             version: number(),
             pattern: boolean(),
+            dataSources: object({ list: true, value: [] }),
             parent: context.commodo.fields.id(),
             published: flow(
                 onSet(value => {

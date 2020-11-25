@@ -2,7 +2,7 @@ import * as React from "react";
 import { FormComponentProps } from "./../types";
 import { css } from "emotion";
 
-import AceEditor from "react-ace";
+import AceEditor, { AceEditorProps } from "react-ace";
 import "brace/theme/github";
 import "brace/theme/twilight";
 import { FormElementMessage } from "@webiny/ui/FormElementMessage";
@@ -20,7 +20,7 @@ const webinyCheckboxHelperText = css(
     }
 );
 
-type Props = FormComponentProps & {
+type Props = FormComponentProps & AceEditorProps & {
     mode: string;
 
     theme: string;

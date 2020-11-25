@@ -348,6 +348,7 @@ module.exports = () => ({
                     code: "./pageBuilder/build",
                     handler: "handler.handler",
                     memory: 512,
+                    runtime: "nodejs12.x",
                     env: {
                         ...apolloServiceEnv,
                         INSTALLATION_S3_BUCKET: process.env.S3_BUCKET,
