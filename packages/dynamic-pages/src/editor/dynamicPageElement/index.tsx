@@ -67,8 +67,8 @@ export default () => {
             name: "pb-render-page-element-dynamic-content",
             type: "pb-render-page-element",
             elementType: "dynamic-content",
-            render() {
-                return <DynamicElement />;
+            render({ element }) {
+                return <DynamicElement element={element}/>;
             }
         } as PbRenderElementPlugin
     ];
