@@ -9,8 +9,6 @@ type DataSourceSettings = {
     config: Record<string, any>;
 };
 
-const TOKEN = "9dd47b1969d0c85550ed0fec07fe51150944c79de0148def";
-
 export const loadDataSources = async (
     settings: DataSourceSettings[],
     variables: Record<string, any>
@@ -19,20 +17,25 @@ export const loadDataSources = async (
 
     for (let i = 0; i < settings.length; i++) {
         const { name, config } = settings[i];
+        try {
+            const withValues = JSON.parse(
+                Object.keys(variables).reduce((string, key) => {
+                    return string.replace(`{${key}}`, variables[key]);
+                }, config.variables)
+            );
 
-        const withValues = JSON.parse(
-            Object.keys(variables).reduce((string, key) => {
-                return string.replace(`{${key}}`, variables[key]);
-            }, config.variables)
-        );
+            const withHeaders = JSON.parse(config.headers);
 
-        const { data } = await fetch(config.url, {
-            method: "POST",
-            headers: { Authorization: TOKEN, "Content-Type": "application/json" },
-            body: JSON.stringify({ query: config.query, variables: withValues })
-        }).then(res => res.json());
+            const { data } = await fetch(config.url, {
+                method: "POST",
+                headers: { "Content-Type": "application/json", ...withHeaders },
+                body: JSON.stringify({ query: config.query, variables: withValues })
+            }).then(res => res.json());
 
-        dataSources.push({ name, data });
+            dataSources.push({ name, data });
+        } catch (err) {
+            console.log(`Error while loading "${name}" datasource`, err);
+        }
     }
 
     return dataSources;

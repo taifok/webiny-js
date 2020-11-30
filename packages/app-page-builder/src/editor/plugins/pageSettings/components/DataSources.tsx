@@ -69,7 +69,7 @@ const DataSources = ({ prefix, value, onChange, Bind, ...other }: Props) => {
                                     />
                                 </Bind>
                             </Cell>
-                            <Cell span={12}>
+                            <Cell span={6}>
                                 <Bind
                                     name={`${prefix}.${index}.config.variables`}
                                 >
@@ -77,7 +77,19 @@ const DataSources = ({ prefix, value, onChange, Bind, ...other }: Props) => {
                                         height={"100px"}
                                         mode="json"
                                         theme="github"
-                                        description={"Type your query variables here"}
+                                        description={"Query variables"}
+                                    />
+                                </Bind>
+                            </Cell>
+                            <Cell span={6}>
+                                <Bind
+                                    name={`${prefix}.${index}.config.headers`}
+                                >
+                                    <CodeEditor
+                                        height={"100px"}
+                                        mode="json"
+                                        theme="github"
+                                        description={"Request headers"}
                                     />
                                 </Bind>
                             </Cell>
