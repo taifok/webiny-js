@@ -13,10 +13,9 @@ export default [
         render({ element }) {
             const components = plugins.byType("pb-page-element-dynamic-content-component");
             const plugin = components.find(cmp => cmp.componentName === element.data.component);
-            let preview = false,
-                dataSources;
+            let preview = false;
 
-            dataSources = useDataSources();
+            let dataSources = useDataSources();
             if (!dataSources) {
                 preview = true;
                 dataSources = [];
