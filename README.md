@@ -45,11 +45,13 @@ To setup dynamic content, create a CMS content model and some content entries.
 Create a CMS Access Token (see [/docs/dynamic-pages](./docs/dynamic-pages) folder for screenshots).
 Then create a new page within the Page Builder. In page settings, configure GraphQL data sources using the CMS endpoints and the access token (as shown on screenshots). The key here is to configure the page URL to contain a variable (or several variables) that will be matched, which you can then pass to your data sources to load data.
 
-To render the content from Data Sources on the page, you need to add a `dynamic-content` element and configure it to use a specific data source and a component. An example package containing plugins for the editor and site rendering is located in [/packages/dynamic-pages/src](./packages/dynamic-pages/src).
+To render the content from Data Sources on the page, you need to add a `dynamic-content` element and configure it to use a specific data source and a component. An example package containing plugins for the editor and site rendering is located in [/packages/app-dynamic-pages/src](./packages/app-dynamic-pages/src).
+
+API plugin to load the page based on the URL pattern is located in [/packages/api-dynamic-pages/src](./packages/api-dynamic-pages/src)
 
 Once your dynamic elements are in place, publish the page and visit the page in your "site" app, most likely at localhost:3000 if you're using the default setup.
 
 To play with `dynamic-pages` code, run the watch process which will rebuild the package on each change:
 ```
-lerna run watch --scope=dynamic-pages --stream
+lerna run watch --scope=@webiny/{api,app}-dynamic-pages --stream --parallel
 ```
