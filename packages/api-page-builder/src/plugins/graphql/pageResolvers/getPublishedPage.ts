@@ -1,7 +1,6 @@
 import get from "lodash.get";
 import { Response, NotFoundResponse, ErrorResponse } from "@webiny/graphql";
 import { listPublishedPages } from "./listPublishedPages";
-import { loadDataSources } from "./loadDataSources";
 
 const createNotFoundResponse = async ({ returnFallbackPage, context, page, message }) => {
     const { PbPage } = context.models;
@@ -95,34 +94,16 @@ export default async (root: any, args: { [key: string]: any }, context: { [key: 
             return new Response(page);
         }
 
-        // 4. As a last resort, find all pages that have a pattern instead of an exact slug
-        const pages = await listPublishedPages({
-            pageModel: PbPage,
-            context,
-            args: { pattern: true, limit: 100 }
-        });
-
-        // Try matching the requested URL against dynamic page patterns
-
-        for (let i = 0; i < pages.length; i++) {
-            const page = pages[i];
-            let pattern = page.url;
-            const placeholders: string[] = Array.from(pattern.matchAll(/\{([a-zA-Z]+)\}/g));
-            for (let j = 0; j < placeholders.length; j++) {
-                const [find, replace] = placeholders[j];
-                pattern = pattern.replace(find, `(?<${replace}>(.+))`);
-            }
-            // Try matching
-            const match = args.url.match(new RegExp(pattern));
-            if (match) {
-                // Load data sources
-                page.dataSources = await loadDataSources(page.settings.dataSources, match.groups);
-                // We need to set the `id` to be unique to the matched parameters, not the `page` we loaded from DB
-                page.id = JSON.stringify(match.groups);
+        // Process plugins
+        const notFoundPlugins = context.plugins.byType("pb-page-not-found");
+        for (let i = 0; i < notFoundPlugins.length; i++) {
+            const page = await notFoundPlugins[i].resolve(root, args, context);
+            if (page) {
                 return new Response(page);
             }
         }
 
+        // We were unable to load the page, return not-found response.
         return createNotFoundResponse({
             returnFallbackPage: args.returnNotFoundPage,
             context,

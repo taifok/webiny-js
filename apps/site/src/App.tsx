@@ -1,6 +1,6 @@
 import createSite, { SiteAppOptions } from "@webiny/app-template-site";
 import "./App.scss";
-import renderPlugins from "dynamic-pages/render";
+import renderPlugins from "@webiny/app-dynamic-pages/render";
 
 export default (params: SiteAppOptions = {}) => {
     const plugins = params.plugins || [];

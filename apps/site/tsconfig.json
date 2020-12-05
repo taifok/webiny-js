@@ -1,9 +1,9 @@
 {
   "extends": "../../tsconfig",
   "include": ["src"],
-  "exclude": ["../../packages/app-template-site", "../../packages/dynamic-pages"],
+  "exclude": ["../../packages/app-template-site", "../../packages/app-dynamic-pages"],
   "references": [
     { "path": "../../packages/app-template-site/tsconfig.build.json" },
-    { "path": "../../packages/dynamic-pages/tsconfig.build.json" }
+    { "path": "../../packages/app-dynamic-pages/tsconfig.build.json" }
   ]
 }

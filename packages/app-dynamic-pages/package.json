@@ -1,5 +1,5 @@
 {
-  "name": "dynamic-pages",
+  "name": "@webiny/app-dynamic-pages",
   "version": "4.14.0",
   "main": "index.js",
   "repository": {

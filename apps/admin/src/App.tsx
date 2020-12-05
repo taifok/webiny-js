@@ -1,7 +1,7 @@
 import adminTemplate from "@webiny/app-template-admin-full";
 import "./App.scss";
-import editorPlugins from "dynamic-pages/editor";
-import renderPlugins from "dynamic-pages/render";
+import editorPlugins from "@webiny/app-dynamic-pages/editor";
+import renderPlugins from "@webiny/app-dynamic-pages/render";
 
 export default adminTemplate({
     cognito: {

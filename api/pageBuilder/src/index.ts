@@ -9,6 +9,7 @@ import pageBuilderResolvers from "@webiny/api-plugin-page-builder-resolvers-mong
 import pageBuilderPlugins from "@webiny/api-page-builder/plugins";
 import useSsrCacheTagsPlugins from "@webiny/api-page-builder/plugins/useSsrCacheTags";
 import settingsManagerPlugins from "@webiny/api-settings-manager/client";
+import dynamicPagesPlugins from "@webiny/api-dynamic-pages/plugins";
 
 export const handler = createHandler(
     apolloServerPlugins({
@@ -32,5 +33,6 @@ export const handler = createHandler(
     pageBuilderResolvers(),
     googleTagManagerPlugins(),
     mailchimpPlugins(),
-    cookiePolicyPlugins()
+    cookiePolicyPlugins(),
+    dynamicPagesPlugins()
 );
