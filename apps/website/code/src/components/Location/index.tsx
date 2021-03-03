@@ -31,21 +31,65 @@ const GET_LOCATION = gql`
     }
 `;
 
+const LIST_LOCATIONS = gql`
+    query ListLocations {
+        listLocations {
+            data {
+                id
+                name
+                slug
+                description
+            }
+            error {
+                message
+                code
+                data
+            }
+        }
+    }
+`;
+
+const IS_PRERENDER = window["IS_PRERENDER"];
+
 const Location = () => {
-    const path = trimPath(location.pathname);
+    const path = trimPath(window.location.pathname);
 
     // Here we get the page data for current URL, including its content.
-    const { data } = useQuery(GET_LOCATION, {
+    const getLocationQuery = useQuery(GET_LOCATION, {
         variables: {
             slug: path
         }
     });
 
+    const listLocationsQuery = useQuery(LIST_LOCATIONS, {
+        variables: {
+            slug: path
+        },
+        skip: IS_PRERENDER || !getLocationQuery?.data?.getLocation?.data
+    });
+
+    const location = getLocationQuery?.data?.getLocation?.data;
+    const locationsList = listLocationsQuery?.data?.listLocations?.data || [];
+
+    if (!location) {
+        return <span>Location not found.</span>;
+    }
+
     return (
         <div>
-            <h1>{data?.getLocation?.data.name}</h1>
+            <h1>{location.name}</h1>
             <div>
-                <p>{data?.getLocation?.data.description}</p>
+                <p>{location.description}</p>
+            </div>
+            <br />
+            <div>
+                <hr />
+                <h3>Locations</h3>
+                <div>
+                    {locationsList.map(item => {
+                        return <div key={item.slug}>{item.name}</div>;
+                    })}
+                </div>
             </div>
         </div>
     );
