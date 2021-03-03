@@ -37,7 +37,7 @@ export default async (url: string, { log }): Promise<File[]> => {
     const browserPage = await browser.newPage();
 
     // Currently, this variable is not used but lets keep it here as an example of setting page window variables.
-    windowSet(browserPage, "__PS_RENDER__", true);
+    windowSet(browserPage, "IS_PRERENDER", true);
 
     // Don't load these resources during prerender.
     const skipResources = ["image", "stylesheet"];
