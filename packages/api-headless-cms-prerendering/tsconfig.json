@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig",
+  "references": [
+    {
+      "path": "../api-headless-cms"
+    }
+  ],
+  "compilerOptions": {
+    "paths": {
+      "@webiny/api-headless-cms/*": ["../api-headless-cms/src/*"]
+    },
+    "baseUrl": "."
+  }
+}
