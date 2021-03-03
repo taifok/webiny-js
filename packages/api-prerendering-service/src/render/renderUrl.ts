@@ -57,6 +57,8 @@ export default async (url: string, { log }): Promise<File[]> => {
     browserPage.on("response", async response => {
         const request = response.request();
         const url = request.url();
+
+        // TODO: plugin #1
         if (url.includes("/graphql") && request.method() === "POST") {
             const responses = await response.json();
             const postData = JSON.parse(request.postData());
@@ -72,6 +74,23 @@ export default async (url: string, { log }): Promise<File[]> => {
                         data: responses[i].data
                     });
                 }
+            }
+            return;
+        }
+
+        // TODO: plugin #2
+        if (url.includes("/cms") && request.method() === "POST") {
+            const responses = await response.json();
+            const postData = JSON.parse(request.postData());
+            const operations = Array.isArray(postData) ? postData : [postData];
+
+            for (let i = 0; i < operations.length; i++) {
+                const { query, variables } = operations[i];
+                gqlCache.push({
+                    query,
+                    variables,
+                    data: responses[i].data
+                });
             }
             return;
         }
