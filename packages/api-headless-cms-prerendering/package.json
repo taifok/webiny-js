@@ -13,7 +13,7 @@
   "dependencies": {
     "@babel/runtime": "^7.5.5",
     "@webiny/api-headless-cms": "^5.0.0-beta.4",
-    "@webiny/api-prerendering-service": "^5.0.0-beta.4",
+    "@webiny/api-page-builder": "^5.0.0-beta.4",
     "@webiny/handler": "^5.0.0-beta.4",
     "@webiny/handler-aws": "^5.0.0-beta.4"
   },

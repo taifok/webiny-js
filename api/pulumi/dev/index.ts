@@ -8,7 +8,6 @@ import ElasticSearch from "./elasticSearch";
 import FileManager from "./fileManager";
 import PageBuilder from "./pageBuilder";
 import PrerenderingService from "./prerenderingService";
-import EventBridge from "./eventBridge";
 
 export default () => {
     const dynamoDb = new DynamoDB();
@@ -32,8 +31,6 @@ export default () => {
         },
         bucket: fileManager.bucket
     });
-
-    const eventBridge = new EventBridge();
 
     const api = new Graphql({
         env: {
@@ -60,7 +57,10 @@ export default () => {
             DEBUG: String(process.env.DEBUG),
             ELASTIC_SEARCH_ENDPOINT: elasticSearch.domain.endpoint,
             S3_BUCKET: fileManager.bucket.id,
-            EVENT_BRIDGE: eventBridge.eventBridge.arn
+            PRERENDERING_RENDER_HANDLER: prerenderingService.functions.render.arn,
+            PRERENDERING_FLUSH_HANDLER: prerenderingService.functions.flush.arn,
+            PRERENDERING_QUEUE_ADD_HANDLER: prerenderingService.functions.queue.add.arn,
+            PRERENDERING_QUEUE_PROCESS_HANDLER: prerenderingService.functions.queue.process.arn,
         }
     });
 

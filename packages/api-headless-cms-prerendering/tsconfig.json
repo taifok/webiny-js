@@ -2,7 +2,7 @@
   "extends": "../../tsconfig",
   "references": [
     {
-      "path": "../api-headless-cms"
+      "path": "../api-page-builder"
     }
   ],
   "compilerOptions": {
