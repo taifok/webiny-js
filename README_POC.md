@@ -105,7 +105,7 @@ Then you can maybe use `https://www.npmjs.com/package/file-type` to inspect it.
  
 # 3. Validation on fields using specified validation via the CM editor.
 
-In the form, we are also executing the `GET_LOCATION_CONTENT_MODEL` query, which will give us the content model data. From there, we can pull out the `fields` property, and for each field, we can check which `validation` rules it has, and apply those to our fields accordignly.
+In the form mentioned above (apps/website/code/src/components/CreateLocation/index.tsx), we are also executing the `GET_LOCATION_CONTENT_MODEL` query, which will give us the content model data. From there, we can pull out the `fields` property, and for each field, we can check which `validation` rules it has, and apply those to our fields accordignly.
 
 You can try this out and see if it makes sense. If not, the recommended way would be to use the `@webiny/validation` library. I believe it's a solid approach as well, and if the validation won't change that much, I'd go with it, and reduce the complexity a bit.
 
