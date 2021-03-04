@@ -4,6 +4,8 @@ This branch contains a couple of PoCs.
 2. Creating content and file upload using File Manager (from public website)
 3. Validation on fields using specified validation via the CM editor.
 
+Note that this PoC is done in the `webiny-js` repo and not in an actual `create-webiny-project` project. But this is essentially the same thing, since our repo mimics the `create-webiny-project` project, so all files should be in the same place. 
+
 # Prerendering pages based on published CMS content.
 
 To achieve this - we've added the following.
