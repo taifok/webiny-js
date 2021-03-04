@@ -90,8 +90,20 @@ The second reason we used File Manager for this is its backend image transformat
 
 When you upload an image, you will be able to figure out its CDN URL easily (as demonstrated in `apps/website/code/src/components/CreateLocation/FileUploadButton.tsx:86`. Once you have the path to the file, you can simply add `?width=123` to get the request image in a different dimension. There are a couple of different dimensions users can retrieve, so it's not like the user can really put an arbitrary value here, and request hundreds of different sizes.  
 
+## FAQ
+
+### Can I adjust the allowed file sizes?
+
+Yes, at the moment, it's a hardcoded, in the `packages/api-file-manager-public-upload/src/graphql/getPresignedPostPayload.ts`.
+
+### How about security?
+
+Apart from specifying the min/max file upload size, the thing you can do, is create a new Lambda function which will get triggered on file upload.
+Then you can maybe use `https://www.npmjs.com/package/file-type` to inspect it.
+ 
 # Validation on fields using specified validation via the CM editor.
 
 In the form, we are also executing the `GET_LOCATION_CONTENT_MODEL` query, which will give us the content model data. From there, we can pull out the `fields` property, and for each field, we can check which `validation` rules it has, and apply those to our fields accordignly.
 
 You can try this out and see if it makes sense. If not, the recommended way would be to use the `@webiny/validation` library. I believe it's a solid approach as well, and if the validation won't change that much, I'd go with it, and reduce the complexity a bit.
+
