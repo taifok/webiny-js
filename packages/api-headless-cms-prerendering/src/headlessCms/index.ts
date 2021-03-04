@@ -4,10 +4,12 @@ export default () => {
     const plugin: CmsContentEntryHookPlugin = {
         type: "cms-content-entry-hook",
         async afterPublish(args) {
-            // @ts-ignore
-            await args.context.pageBuilder.prerenderingClient.render({
-                paths: [{ path: args.entry.values.slug }]
-            });
+            if (args.entry.modelId === "location") {
+                // @ts-ignore
+                await args.context.pageBuilder.prerenderingClient.render({
+                    paths: [{ path: args.entry.values.slug }] // /my-location-a
+                });
+            }
         }
     };
 

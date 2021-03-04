@@ -1,6 +1,7 @@
 import React from "react";
-import { useQuery } from "@apollo/react-hooks";
-import trim from "lodash.trim";
+import { useQuery } from "../apollo/cms/read";
+
+import trim from "lodash/trim";
 import gql from "graphql-tag";
 
 // Make sure the final path looks like `/xyz`. We don't want to run into situations where the prerendering engine is
@@ -77,6 +78,11 @@ const Location = () => {
 
     return (
         <div>
+            <div>
+                <a href={"/locations/create"}>Create Location</a>
+            </div>
+            <br/>
+
             <h1>{location.name}</h1>
             <div>
                 <p>{location.description}</p>

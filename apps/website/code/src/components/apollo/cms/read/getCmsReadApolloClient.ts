@@ -5,9 +5,16 @@ import { InMemoryCache } from "apollo-cache-inmemory";
 import { createOmitTypenameLink } from "@webiny/app/graphql";
 import { plugins } from "@webiny/plugins";
 
-const API_TOKEN = "a295a07e8071ab468956567859b000f3836e9fa05bd8d311";
+// Loaded in apps/website/code/webiny.config.js.
+const CMS_API_TOKEN = process.env.CMS_API_TOKEN;
 
-export const createApolloClient = () => {
+let client;
+
+export default () => {
+    if (client) {
+        return client;
+    }
+
     const isProduction = process.env.NODE_ENV === "production";
 
     const cache = new InMemoryCache({
@@ -28,7 +35,7 @@ export const createApolloClient = () => {
         // Use the setContext method to set the HTTP headers.
         operation.setContext({
             headers: {
-                authorization: `Bearer ${API_TOKEN}`
+                authorization: `Bearer ${CMS_API_TOKEN}`
             }
         });
 
@@ -50,5 +57,6 @@ export const createApolloClient = () => {
         return cache.data.data;
     };
 
-    return new ApolloClient({ link, cache });
+    client = new ApolloClient({ link, cache });
+    return client;
 };

@@ -12,6 +12,10 @@ const NO_API_MESSAGE = env => {
     return `It seems that the API project application isn't deployed!\nBefore continuing, please deploy it by running the following command: yarn webiny deploy api --env=${env}`;
 };
 
+// Instead of hard-coding it here, this can be loaded, for example, using the `dotenv` package.
+// @see https://www.npmjs.com/package/dotenv
+const CMS_API_TOKEN = "a295a07e8071ab468956567859b000f3836e9fa05bd8d311";
+
 module.exports = {
     commands: {
         async start(options, context) {
@@ -21,6 +25,9 @@ module.exports = {
             invariant(output, NO_API_MESSAGE(options.env));
 
             Object.assign(process.env, output);
+
+            // Add CMS_API_TOKEN to process.env.
+            process.env.CMS_API_TOKEN = CMS_API_TOKEN;
 
             // Start local development
             await startApp(options, context);
@@ -32,6 +39,9 @@ module.exports = {
             invariant(output, NO_API_MESSAGE(options.env));
 
             Object.assign(process.env, output);
+
+            // Add CMS_API_TOKEN to process.env.
+            process.env.CMS_API_TOKEN = CMS_API_TOKEN;
 
             // Bundle app for deployment
             await buildApp(options, context);

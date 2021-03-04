@@ -1,5 +1,4 @@
 import React from "react";
-import { ApolloProvider } from "@apollo/react-components";
 import { BrowserRouter, Switch, Route } from "@webiny/react-router";
 
 // We don't rely on Page Builder, that's why we commented it out here.
@@ -8,15 +7,13 @@ import { BrowserRouter, Switch, Route } from "@webiny/react-router";
 
 // This is our Location component.
 import Location from "./components/Location";
-
-import { createApolloClient } from "./components/apolloClient";
+import CreateLocation from "./components/CreateLocation";
 
 export const App = () => (
-    <ApolloProvider client={createApolloClient()}>
-        <BrowserRouter basename={process.env.PUBLIC_URL}>
-            <Switch>
-                <Route path={"*"} component={Location} />
-            </Switch>
-        </BrowserRouter>
-    </ApolloProvider>
+    <BrowserRouter basename={process.env.PUBLIC_URL}>
+        <Switch>
+            <Route path={"/locations/create"} component={CreateLocation} />
+            <Route path={"*"} component={Location} />
+        </Switch>
+    </BrowserRouter>
 );

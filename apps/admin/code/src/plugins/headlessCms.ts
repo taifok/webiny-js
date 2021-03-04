@@ -53,8 +53,13 @@ import editorUpperCaseFieldValidator from "@webiny/app-headless-cms/admin/plugin
 import welcomeScreenWidget from "@webiny/app-headless-cms/admin/plugins/welcomeScreenWidget";
 
 import richTextEditor from "./headlessCMS/richTextEditor";
+import userEditorFieldType from "./headlessCMS/userReference/UserEditorFieldTypePlugin";
+import userEditorFieldRenderer from "./headlessCMS/userReference/UserEditorFieldRendererPlugin";
 
 export default [
+    userEditorFieldType(),
+    userEditorFieldRenderer,
+    // Default plugins below.
     headlessCmsPlugins(),
     richTextEditor,
     textField,

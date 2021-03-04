@@ -1,0 +1,15 @@
+{
+  "extends": "../../tsconfig",
+  "references": [
+    {
+      "path": "../api-page-builder"
+    }
+  ],
+  "compilerOptions": {
+    "paths": {
+      "@webiny/handler-graphql/*": ["../handler-graphql/src/*"],
+      "@webiny/api-file-manager/*": ["../api-file-manager/src/*"]
+    },
+    "baseUrl": "."
+  }
+}
