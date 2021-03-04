@@ -1,0 +1,369 @@
+{
+  "PK": {
+    "S": "T#root#L#en-US#CMS#CM"
+  },
+  "SK": {
+    "S": "location"
+  },
+  "modelId": {
+    "S": "location"
+  },
+  "savedOn": {
+    "S": "2021-03-03T15:34:31.093Z"
+  },
+  "layout": {
+    "L": [
+      {
+        "L": [
+          {
+            "S": "_S7uS-pAj"
+          }
+        ]
+      },
+      {
+        "L": [
+          {
+            "S": "zDNVqoQQ3"
+          }
+        ]
+      },
+      {
+        "L": [
+          {
+            "S": "YmkRPLP52"
+          }
+        ]
+      },
+      {
+        "L": [
+          {
+            "S": "UcXNbpHcQ"
+          }
+        ]
+      }
+    ]
+  },
+  "group": {
+    "M": {
+      "name": {
+        "S": "Ungrouped"
+      },
+      "id": {
+        "S": "603d11a279571c0008e8a208"
+      }
+    }
+  },
+  "lockedFields": {
+    "L": [
+      {
+        "M": {
+          "multipleValues": {
+            "BOOL": false
+          },
+          "type": {
+            "S": "text"
+          },
+          "fieldId": {
+            "S": "name"
+          }
+        }
+      },
+      {
+        "M": {
+          "multipleValues": {
+            "BOOL": false
+          },
+          "type": {
+            "S": "text"
+          },
+          "fieldId": {
+            "S": "slug"
+          }
+        }
+      },
+      {
+        "M": {
+          "multipleValues": {
+            "BOOL": false
+          },
+          "type": {
+            "S": "long-text"
+          },
+          "fieldId": {
+            "S": "description"
+          }
+        }
+      }
+    ]
+  },
+  "createdBy": {
+    "M": {
+      "type": {
+        "S": "admin"
+      },
+      "displayName": {
+        "S": "Ad Min"
+      },
+      "id": {
+        "S": "admin@webiny.com"
+      }
+    }
+  },
+  "name": {
+    "S": "Location"
+  },
+  "TYPE": {
+    "S": "cms.model"
+  },
+  "titleFieldId": {
+    "S": "name"
+  },
+  "fields": {
+    "L": [
+      {
+        "M": {
+          "multipleValues": {
+            "BOOL": false
+          },
+          "listValidation": {
+            "L": []
+          },
+          "settings": {
+            "M": {}
+          },
+          "renderer": {
+            "M": {
+              "name": {
+                "S": "text-input"
+              }
+            }
+          },
+          "helpText": {
+            "NULL": true
+          },
+          "placeholderText": {
+            "NULL": true
+          },
+          "predefinedValues": {
+            "M": {
+              "enabled": {
+                "BOOL": false
+              },
+              "values": {
+                "L": []
+              }
+            }
+          },
+          "id": {
+            "S": "_S7uS-pAj"
+          },
+          "label": {
+            "S": "Name"
+          },
+          "type": {
+            "S": "text"
+          },
+          "validation": {
+            "L": []
+          },
+          "fieldId": {
+            "S": "name"
+          }
+        }
+      },
+      {
+        "M": {
+          "multipleValues": {
+            "BOOL": false
+          },
+          "listValidation": {
+            "L": []
+          },
+          "settings": {
+            "M": {}
+          },
+          "renderer": {
+            "M": {
+              "name": {
+                "S": "text-input"
+              }
+            }
+          },
+          "helpText": {
+            "NULL": true
+          },
+          "placeholderText": {
+            "NULL": true
+          },
+          "predefinedValues": {
+            "M": {
+              "enabled": {
+                "BOOL": false
+              },
+              "values": {
+                "L": []
+              }
+            }
+          },
+          "id": {
+            "S": "zDNVqoQQ3"
+          },
+          "label": {
+            "S": "Slug"
+          },
+          "type": {
+            "S": "text"
+          },
+          "validation": {
+            "L": []
+          },
+          "fieldId": {
+            "S": "slug"
+          }
+        }
+      },
+      {
+        "M": {
+          "multipleValues": {
+            "BOOL": false
+          },
+          "listValidation": {
+            "L": []
+          },
+          "settings": {
+            "M": {}
+          },
+          "renderer": {
+            "M": {
+              "name": {
+                "S": "long-text-text-area"
+              }
+            }
+          },
+          "helpText": {
+            "NULL": true
+          },
+          "placeholderText": {
+            "NULL": true
+          },
+          "predefinedValues": {
+            "M": {
+              "enabled": {
+                "BOOL": false
+              },
+              "values": {
+                "L": []
+              }
+            }
+          },
+          "id": {
+            "S": "YmkRPLP52"
+          },
+          "label": {
+            "S": "Description"
+          },
+          "type": {
+            "S": "long-text"
+          },
+          "validation": {
+            "L": []
+          },
+          "fieldId": {
+            "S": "description"
+          }
+        }
+      },
+      {
+        "M": {
+          "multipleValues": {
+            "BOOL": false
+          },
+          "listValidation": {
+            "L": []
+          },
+          "settings": {
+            "M": {}
+          },
+          "renderer": {
+            "M": {
+              "name": {
+                "S": "text-input"
+              }
+            }
+          },
+          "helpText": {
+            "NULL": true
+          },
+          "placeholderText": {
+            "NULL": true
+          },
+          "predefinedValues": {
+            "M": {
+              "enabled": {
+                "BOOL": false
+              },
+              "values": {
+                "L": []
+              }
+            }
+          },
+          "id": {
+            "S": "UcXNbpHcQ"
+          },
+          "label": {
+            "S": "Validated field"
+          },
+          "type": {
+            "S": "text"
+          },
+          "validation": {
+            "L": [
+              {
+                "M": {
+                  "name": {
+                    "S": "minLength"
+                  },
+                  "message": {
+                    "S": "Value is too short."
+                  },
+                  "settings": {
+                    "M": {
+                      "value": {
+                        "S": "3"
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "M": {
+                  "name": {
+                    "S": "required"
+                  },
+                  "message": {
+                    "S": "Value is required."
+                  },
+                  "settings": {
+                    "M": {}
+                  }
+                }
+              }
+            ]
+          },
+          "fieldId": {
+            "S": "validatedField"
+          }
+        }
+      }
+    ]
+  },
+  "createdOn": {
+    "S": "2021-03-02T14:03:34.178Z"
+  },
+  "description": {
+    "NULL": true
+  },
+  "webinyVersion": {
+    "S": "5.0.0-beta.4"
+  }
+}
