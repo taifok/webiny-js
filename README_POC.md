@@ -6,7 +6,7 @@ This branch contains a couple of PoCs.
 
 Note that this PoC is done in the `webiny-js` repo and not in an actual `create-webiny-project` project. But this is essentially the same thing, since our repo mimics the `create-webiny-project` project, so all files should be in the same place. 
 
-# Prerendering pages based on published CMS content.
+# 1. Prerendering pages based on published CMS content
 
 To achieve this - we've added the following.
 
@@ -72,7 +72,7 @@ With the `windows.IS_PRERENDER` flag, we can know whether the page is visited by
 
 This can be seen here: `apps/website/code/src/components/Location/index.tsx:69`.
 
-# Creating content and file upload using File Manager (from public website)
+# 2. Creating content and file upload using File Manager (from public website)
 
 To demonstrate content creation and file upload from public website, we've created `apps/website/code/src/components/CreateLocation/index.tsx`, in which we are rendering a simple form, which you can submit, in order to create a new "Location" content entry. Note that the "Location" entry is not published once its created.
 
@@ -103,7 +103,7 @@ Yes, at the moment, it's a hardcoded, in the `packages/api-file-manager-public-u
 Apart from specifying the min/max file upload size, the thing you can do, is create a new Lambda function which will get triggered on file upload.
 Then you can maybe use `https://www.npmjs.com/package/file-type` to inspect it.
  
-# Validation on fields using specified validation via the CM editor.
+# 3. Validation on fields using specified validation via the CM editor.
 
 In the form, we are also executing the `GET_LOCATION_CONTENT_MODEL` query, which will give us the content model data. From there, we can pull out the `fields` property, and for each field, we can check which `validation` rules it has, and apply those to our fields accordignly.
 
