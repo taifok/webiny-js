@@ -3,8 +3,11 @@ import gql from "graphql-tag";
 import { Form } from "@webiny/form";
 import { validation } from "@webiny/validation";
 import { useMutation } from "../apollo/cms/manage";
+import { useQuery } from "../apollo/cms/read";
 import FileUploadButton from "./FileUploadButton";
 
+// The API key you're using must have proper permissions in order to execute these.
+// You should create an API key with least-privilege approach.
 const CREATE_LOCATION = gql`
     mutation CreateLocation($data: LocationInput!) {
         createLocation(data: $data) {
@@ -23,10 +26,39 @@ const CREATE_LOCATION = gql`
     }
 `;
 
+const GET_LOCATION_CONTENT_MODEL = gql`
+    query GetContentModel($modelId: ID!) {
+        getContentModel(modelId: $modelId) {
+            data {
+                fields {
+                    id
+                    fieldId
+                    type
+                    label
+                    validation {
+                        settings
+                        name
+                        message
+                    }
+                }
+            }
+        }
+    }
+`;
+
 const DEFAULT_FORM_DATA = { name: "", slug: "" };
 
 const CreateLocation = () => {
     const [update] = useMutation(CREATE_LOCATION);
+    const getContentModelQuery = useQuery(GET_LOCATION_CONTENT_MODEL, {
+        variables: { modelId: "location" }
+    });
+
+    const contentModelFields = getContentModelQuery?.data?.getContentModel?.data?.fields || [];
+    console.log(
+        "'validatedField' field: ",
+        contentModelFields.find(item => item.fieldId === "validatedField")
+    );
 
     return (
         <div>

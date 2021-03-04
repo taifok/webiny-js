@@ -85,7 +85,6 @@ const FileUploadButton = () => {
                     );
                     console.log("File was successfully uploaded!");
                     console.log(
-                        data.fileManager.getPublicPresignedPostPayload.data,
                         "File path:",
                         process.env.REACT_APP_API_URL +
                             "/files/" +

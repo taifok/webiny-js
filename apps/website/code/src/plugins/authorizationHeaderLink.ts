@@ -6,7 +6,6 @@ export default {
     type: "apollo-link",
     createLink() {
         return setContext(async (_, { headers }) => {
-            console.log('ad')
             return {
                 headers: {
                     ...headers,
