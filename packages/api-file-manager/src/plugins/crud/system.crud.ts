@@ -1,12 +1,11 @@
 import { NotAuthorizedError } from "@webiny/api-security";
 import { getApplicablePlugin } from "@webiny/api-upgrade";
-import Error from "@webiny/error";
-import { FileManagerContext, Settings, SystemCRUD } from "~/types";
-import defaults from "./utils/defaults";
 import { UpgradePlugin } from "@webiny/api-upgrade/types";
+import { FileManagerContext, FileManagerInstallationPlugin, SystemCRUD } from "~/types";
+import defaults from "./utils/defaults";
 
 export default (context: FileManagerContext): SystemCRUD => {
-    const { security } = context;
+    const { security, plugins } = context;
 
     const keys = () => ({ PK: `T#${security.getTenant().id}#SYSTEM`, SK: "FM" });
 
@@ -56,60 +55,10 @@ export default (context: FileManagerContext): SystemCRUD => {
             }
         },
         async install({ srcPrefix }) {
-            const { fileManager, elasticSearch } = context;
-            const version = await fileManager.system.getVersion();
-
-            if (version) {
-                throw new Error("File Manager is already installed.", "FILES_INSTALL_ABORTED");
-            }
-
-            const data: Partial<Settings> = {};
-
-            if (srcPrefix) {
-                data.srcPrefix = srcPrefix;
-            }
-
-            await fileManager.settings.createSettings(data);
-
-            // Create ES index if it doesn't already exist.
-            const esIndex = defaults.es(context);
-            const { body: exists } = await elasticSearch.indices.exists(esIndex);
-            if (!exists) {
-                await elasticSearch.indices.create({
-                    ...esIndex,
-                    body: {
-                        // need this part for sorting to work on text fields
-                        settings: {
-                            analysis: {
-                                analyzer: {
-                                    lowercase_analyzer: {
-                                        type: "custom",
-                                        filter: ["lowercase", "trim"],
-                                        tokenizer: "keyword"
-                                    }
-                                }
-                            }
-                        },
-                        mappings: {
-                            properties: {
-                                property: {
-                                    type: "text",
-                                    fields: {
-                                        keyword: {
-                                            type: "keyword",
-                                            ignore_above: 256
-                                        }
-                                    },
-                                    analyzer: "lowercase_analyzer"
-                                }
-                            }
-                        }
-                    }
-                });
-            }
-
-            await fileManager.system.setVersion(context.WEBINY_VERSION);
-
+            const installation = plugins.byName<FileManagerInstallationPlugin>("installation-fm");
+            
+            await installation.install({ srcPrefix }, context);
+            
             return true;
         },
         async upgrade(version) {
@@ -118,7 +67,7 @@ export default (context: FileManagerContext): SystemCRUD => {
                 throw new NotAuthorizedError();
             }
 
-            const upgradePlugins = context.plugins
+            const upgradePlugins = plugins
                 .byType<UpgradePlugin>("api-upgrade")
                 .filter(pl => pl.app === "file-manager");
 

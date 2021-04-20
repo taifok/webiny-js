@@ -1,9 +1,10 @@
 import { Context } from "@webiny/handler/types";
 import { ElasticSearchClientContext } from "@webiny/api-plugin-elastic-search-client/types";
 import { I18NContentContext } from "@webiny/api-i18n-content/types";
-import { FileStorage } from "./plugins/FileStorage";
 import { TenancyContext } from "@webiny/api-security-tenancy/types";
 import { SecurityPermission } from "@webiny/api-security/types";
+import { Plugin } from "@webiny/plugins/types";
+import { FileStorage } from "./plugins/FileStorage";
 
 export type FileManagerContext = Context<
     TenancyContext,
@@ -100,3 +101,14 @@ export type SettingsCRUD = {
     updateSettings(data: Partial<Settings>): Promise<Settings>;
     deleteSettings(): Promise<boolean>;
 };
+
+export interface FileManagerInstallationPlugin<T = FileManagerContext> extends Plugin {
+    name: "installation-fm";
+    type: "installation";
+    install(args: { srcPrefix: string }, context: T): Promise<void>;
+}
+
+export interface FileManagerInstallationHooksPlugin<T = FileManagerContext> extends Plugin {
+    type: "installation-fm-hooks";
+    afterInstall(context: T): Promise<void>;
+}

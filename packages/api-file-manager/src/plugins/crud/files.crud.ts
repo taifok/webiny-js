@@ -34,7 +34,7 @@ const getFileDocForES = (
  * If permission is limited to "own" files only, check that current identity owns the file.
  */
 const checkOwnership = (file: File, permission: FilePermission, context: FileManagerContext) => {
-    if (permission?.own === true) {
+    if (permission && permission.own === true) {
         const identity = context.security.getIdentity();
         if (file.createdBy.id !== identity.id) {
             throw new NotAuthorizedError();
