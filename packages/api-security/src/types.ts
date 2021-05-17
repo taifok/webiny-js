@@ -1,16 +1,16 @@
 import { Plugin } from "@webiny/plugins/types";
-import { ContextInterface } from "@webiny/handler/types";
+import { Context } from "@webiny/handler/types";
 
-export type SecurityIdentity = {
+export interface SecurityIdentity {
     id: string;
     displayName: string;
     type: string;
     [key: string]: any;
 };
 
-export type SecurityAuthenticationPlugin = Plugin & {
+export interface SecurityAuthenticationPlugin extends Plugin {
     type: "security-authentication";
-    authenticate(context: ContextInterface): Promise<null> | Promise<SecurityIdentity>;
+    authenticate(context: Context): Promise<null | SecurityIdentity>;
 };
 
 export interface SecurityPermission {
@@ -32,7 +32,7 @@ export interface SecurityContextBase {
     hasFullAccess(): Promise<boolean>;
 }
 
-export interface SecurityContext extends ContextInterface {
+export interface SecurityContext extends Context {
     security: SecurityContextBase;
 }
 

@@ -57,11 +57,24 @@ const getS3Object = async (event, s3, context) => {
     };
 };
 
+const DEFAULT_HEADERS = {
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Headers": "*",
+    "Access-Control-Allow-Methods": "GET"
+};
+
 export default (): HandlerPlugin => ({
     type: "handler",
     name: "handler-download-file",
     async handle(context) {
         const event = context.invocationArgs;
+        
+        if (context.http.request.method === "OPTIONS") {
+            return context.http.response({
+                statusCode: 204,
+                headers: DEFAULT_HEADERS
+            });
+        }
 
         const handler = createHandler(async event => {
             const { region } = getEnvironment();

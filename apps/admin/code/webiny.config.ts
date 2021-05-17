@@ -1,6 +1,7 @@
 import invariant from "invariant";
 import { startApp, buildApp } from "@webiny/project-utils";
 import { getStackOutput } from "@webiny/cli-plugin-deploy-pulumi/utils";
+import WorkboxPlugin from "workbox-webpack-plugin";
 
 const MAP = {
     REACT_APP_USER_POOL_REGION: "${region}",
@@ -26,7 +27,27 @@ export default {
             Object.assign(process.env, output);
 
             // Start local development
-            await startApp(options, context);
+            await startApp(
+                {
+                    ...options,
+                    webpack(config) {
+                        config.plugins.push(
+                            new WorkboxPlugin.InjectManifest({
+                                swSrc: "./src/service-worker.ts",
+                                swDest: "service-worker.js",
+                                dontCacheBustURLsMatching: /\.[0-9a-f]{8}\./,
+                                exclude: [/\.map$/, /asset-manifest\.json$/, /LICENSE/],
+                                // Bump up the default maximum size (2mb) that's precached,
+                                // to make lazy-loading failure scenarios less likely.
+                                // See https://github.com/cra-template/pwa/issues/13#issuecomment-722667270
+                                maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
+                            }),
+                        );
+                        return config;
+                    }
+                },
+                context
+            );
         },
         async build(options, context) {
             invariant(options.env, NO_ENV_MESSAGE);
