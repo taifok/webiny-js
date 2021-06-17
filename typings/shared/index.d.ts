@@ -13,6 +13,9 @@ declare module "*.jpg" {
     export default jpg;
 }
 
+declare module "*.module.css";
+declare module "*.module.scss";
+
 declare module "*.svg" {
     import { FunctionComponent, SVGProps } from "react";
 
