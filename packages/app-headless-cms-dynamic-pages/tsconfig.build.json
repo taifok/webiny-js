@@ -1,0 +1,22 @@
+{
+  "extends": "../../tsconfig.build.json",
+  "include": ["./src"],
+  "exclude": [
+    "node_modules",
+    "./dist",
+    "../app",
+    "../app-dynamic-pages",
+    "../app-page-builder",
+    "../form",
+    "../plugins",
+    "../ui"
+  ],
+  "compilerOptions": {
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "declarationDir": "./dist",
+    "paths": {},
+    "baseUrl": "."
+  },
+  "references": []
+}

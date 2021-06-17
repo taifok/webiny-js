@@ -1,24 +1,26 @@
-import React from "react";
+import React, { Fragment } from "react";
 import AddBlock from "./AddBlock";
 import AddContent from "./AddContent";
 import SearchBlocks from "./SearchBlocks";
-import { PbEditorBarPlugin, PbEditorContentPlugin } from "../../../types";
+import { PbEditorBarPlugin } from "~/types";
+import { EditorContentPlugin } from "~/editor/plugins/EditorContentPlugin";
 
 export default [
-    {
-        name: "add-block",
-        type: "pb-editor-content",
-        render() {
-            return <AddBlock />;
+    new EditorContentPlugin({
+        render({ children }) {
+            return (
+                <Fragment>
+                    {children}
+                    <AddBlock />
+                </Fragment>
+            );
         }
-    } as PbEditorContentPlugin,
-    {
-        name: "add-content",
-        type: "pb-editor-content",
+    }),
+    new EditorContentPlugin({
         render() {
             return <AddContent />;
         }
-    } as PbEditorContentPlugin,
+    }),
     {
         name: "pb-editor-search-blocks-bar",
         type: "pb-editor-bar",

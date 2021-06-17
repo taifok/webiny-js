@@ -12,6 +12,7 @@ import pageBuilderPlugins from "./pageBuilder";
 import formBuilderPlugins from "./formBuilder";
 import headlessCmsPlugins from "./headlessCms";
 import theme from "theme";
+import figma from "./figma";
 
 plugins.register([
     /**
@@ -61,7 +62,8 @@ plugins.register([
     /**
      * App theme controls page builder and form builder layouts, styles, etc.
      */
-    theme()
+    theme(),
+    figma
 ]);
 
 /**

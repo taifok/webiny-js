@@ -20,7 +20,17 @@
         "../../../packages/app-plugin-admin-welcome-screen"
       ],
       "@webiny/app-tenancy/*": ["../../../packages/app-tenancy/src/*"],
-      "@webiny/app-tenancy": ["../../../packages/app-tenancy/src"]
+      "@webiny/app-tenancy": ["../../../packages/app-tenancy/src"],
+      "@webiny/app-dynamic-pages/*": ["../../../packages/app-dynamic-pages/src/*"],
+      "@webiny/app-dynamic-pages": ["../../../packages/app-dynamic-pages/src"],
+      "@webiny/app-page-builder/*": ["../../../packages/app-page-builder/src/*"],
+      "@webiny/app-page-builder": ["../../../packages/app-page-builder/src"],
+      "@webiny/app-headless-cms-dynamic-pages/*": [
+        "../../../packages/app-headless-cms-dynamic-pages/src/*"
+      ],
+      "@webiny/app-headless-cms-dynamic-pages": [
+        "../../../packages/app-headless-cms-dynamic-pages/src"
+      ]
     },
     "baseUrl": "."
   }

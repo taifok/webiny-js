@@ -1,0 +1,40 @@
+{
+  "extends": "../../tsconfig",
+  "references": [
+    {
+      "path": "../app"
+    },
+    {
+      "path": "../app-dynamic-pages"
+    },
+    {
+      "path": "../app-page-builder"
+    },
+    {
+      "path": "../form"
+    },
+    {
+      "path": "../plugins"
+    },
+    {
+      "path": "../ui"
+    }
+  ],
+  "compilerOptions": {
+    "paths": {
+      "@webiny/app/*": ["../app/src/*"],
+      "@webiny/app": ["../app/src"],
+      "@webiny/app-dynamic-pages/*": ["../app-dynamic-pages/src/*"],
+      "@webiny/app-dynamic-pages": ["../app-dynamic-pages/src"],
+      "@webiny/app-page-builder/*": ["../app-page-builder/src/*"],
+      "@webiny/app-page-builder": ["../app-page-builder/src"],
+      "@webiny/form/*": ["../form/src/*"],
+      "@webiny/form": ["../form/src"],
+      "@webiny/plugins/*": ["../plugins/src/*"],
+      "@webiny/plugins": ["../plugins/src"],
+      "@webiny/ui/*": ["../ui/src/*"],
+      "@webiny/ui": ["../ui/src"]
+    },
+    "baseUrl": "."
+  }
+}

@@ -35,7 +35,6 @@ const Pages = () => {
             if (error) {
                 showSnackbar(error.message);
             } else {
-                console.log("[Pages]");
                 history.push(`/page-builder/editor/${encodeURIComponent(data.id)}`);
             }
         } catch (e) {

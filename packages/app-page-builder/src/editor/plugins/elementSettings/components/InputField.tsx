@@ -61,16 +61,19 @@ type InputBoxProps = {
     defaultValue?: string | number;
     [key: string]: any;
 };
-const InputField = ({
-    className,
-    value,
-    onChange,
-    label,
-    description,
-    validation = { isValid: true },
-    defaultValue = "",
-    ...props
-}: InputBoxProps) => {
+const InputField = (
+    {
+        className,
+        value,
+        onChange,
+        label,
+        description,
+        validation = { isValid: true },
+        defaultValue = "",
+        ...props
+    }: InputBoxProps,
+    inputRef
+) => {
     return (
         <React.Fragment>
             {label && (
@@ -84,6 +87,7 @@ const InputField = ({
                 onChange={({ target: { value } }) => {
                     onChange(value);
                 }}
+                ref={inputRef}
                 {...omit(props, "validate")}
             />
             {validation.isValid === false && (
@@ -96,4 +100,4 @@ const InputField = ({
     );
 };
 
-export default React.memo(InputField);
+export default React.memo(React.forwardRef(InputField));

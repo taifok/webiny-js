@@ -7,6 +7,8 @@ import pageBuilderConfig from "@webiny/app-page-builder/editor/plugins/pageBuild
 /* Welcome screen widget for Page Builder */
 import welcomeScreenWidget from "@webiny/app-page-builder/admin/plugins/welcomeScreenWidget";
 
+import dynamicPages from "@webiny/app-dynamic-pages/admin";
+
 export default [
     pageBuilderConfig({
         maxEventActionsNesting: 10
@@ -27,5 +29,9 @@ export default [
         async loadRenderPlugins() {
             return (await import("./pageBuilder/renderPlugins")).default;
         }
-    }
+    },
+    /**
+     * Dynamic pages framework
+     */
+    dynamicPages()
 ];

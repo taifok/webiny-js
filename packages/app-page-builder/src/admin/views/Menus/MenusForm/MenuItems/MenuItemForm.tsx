@@ -1,9 +1,11 @@
-import { omit, omitBy, isNull } from "lodash";
+import omit from "lodash/omit";
+import omitBy from "lodash/omitBy";
+import isNull from "lodash/isNull";
 import uniqid from "uniqid";
 import { useHandlers } from "@webiny/app/hooks/useHandlers";
 import { plugins } from "@webiny/plugins";
 import findObject from "./findObject";
-import { PbMenuItemPlugin } from "../../../../../types";
+import { PbMenuItemPlugin } from "~/types";
 
 const MenuItemForm = props => {
     const { onCancel, onSubmit } = useHandlers(props, {

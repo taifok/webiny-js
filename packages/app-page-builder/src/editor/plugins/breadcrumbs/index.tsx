@@ -1,11 +1,14 @@
-import * as React from "react";
+import React, { Fragment } from "react";
 import Breadcrumbs from "./Breadcrumbs";
-import { PbEditorContentPlugin } from "../../../types";
+import { EditorContentPlugin } from "~/editor/plugins/EditorContentPlugin";
 
-export default {
-    name: "pb-editor-breadcrumbs",
-    type: "pb-editor-content",
-    render() {
-        return <Breadcrumbs />;
+export default new EditorContentPlugin({
+    render({ children }) {
+        return (
+            <Fragment>
+                {children}
+                <Breadcrumbs />
+            </Fragment>
+        );
     }
-} as PbEditorContentPlugin;
+});

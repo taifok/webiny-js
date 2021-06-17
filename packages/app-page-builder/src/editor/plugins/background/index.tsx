@@ -1,11 +1,14 @@
-import React from "react";
+import React, { Fragment } from "react";
+import { EditorContentPlugin } from "~/editor/plugins/EditorContentPlugin";
 import Background from "./Background";
-import { PbEditorContentPlugin } from "../../../types";
 
-export default {
-    name: "pb-editor-content-background",
-    type: "pb-editor-content",
-    render() {
-        return <Background />;
+export default new EditorContentPlugin({
+    render({ children }) {
+        return (
+            <Fragment>
+                {children}
+                <Background />
+            </Fragment>
+        );
     }
-} as PbEditorContentPlugin;
+});

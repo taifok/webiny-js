@@ -287,7 +287,7 @@ export type PbPageDetailsHeaderRightOptionsMenuItemPlugin = Plugin & {
 
 export type PbPageDetailsRevisionContentPreviewPlugin = Plugin & {
     type: "pb-page-details-revision-content-preview";
-    render(params: { page: Record<string, any>; getPageQuery: any }): ReactElement;
+    render(params: { page: PbPageData & Record<string, any>; getPageQuery: any }): ReactElement;
 };
 
 export type PbMenuItemPlugin = Plugin & {
@@ -433,11 +433,6 @@ export type PbEditorBarPluginShouldRenderProps = {
 export type PbEditorBarPlugin = Plugin & {
     type: "pb-editor-bar";
     shouldRender(props: PbEditorBarPluginShouldRenderProps): boolean;
-    render(): ReactElement;
-};
-
-export type PbEditorContentPlugin = Plugin & {
-    type: "pb-editor-content";
     render(): ReactElement;
 };
 

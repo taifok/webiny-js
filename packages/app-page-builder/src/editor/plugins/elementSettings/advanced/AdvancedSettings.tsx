@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import { cloneDeep } from "lodash";
 import { merge } from "dot-prop-immutable";
 import { useEventActionHandler } from "../../../hooks/useEventActionHandler";
@@ -7,7 +7,7 @@ import { plugins } from "@webiny/plugins";
 import { renderPlugins } from "@webiny/app/plugins";
 import { withActiveElement } from "../../../components";
 import { Form } from "@webiny/form";
-import { PbEditorPageElementAdvancedSettingsPlugin, PbEditorElement } from "../../../../types";
+import { PbEditorPageElementAdvancedSettingsPlugin, PbEditorElement } from "~/types";
 
 const emptyElement = { data: {}, type: null };
 
@@ -28,7 +28,7 @@ const AdvancedSettings: React.FunctionComponent<AdvancedSettingsPropsType> = ({ 
             .filter(pl => pl.elementType === element.type || pl.elementType === "all");
     }, [element.type]);
 
-    const onSubmit = (formData: FormData) => {
+    const onSubmit = useCallback((formData: FormData) => {
         formData = advancedSettingsPlugin.reduce((formData, pl) => {
             if (pl.onSave) {
                 return pl.onSave(formData);
@@ -42,9 +42,13 @@ const AdvancedSettings: React.FunctionComponent<AdvancedSettingsPropsType> = ({ 
                 history: true
             })
         );
-    };
+    }, [element]);
 
-    if (!advancedSettingsPlugin.length) {
+    const elementPlugin = plugins
+        .byType("pb-editor-page-element")
+        .find(pl => pl.elementType === element.type);
+
+    if (!advancedSettingsPlugin.length && !elementPlugin) {
         return null;
     }
 
@@ -52,6 +56,11 @@ const AdvancedSettings: React.FunctionComponent<AdvancedSettingsPropsType> = ({ 
         <Form key={element && element.id} data={data} onSubmit={onSubmit}>
             {({ submit, Bind, data, form }) => (
                 <>
+                    {/* Experimental settings rendering */}
+                    {elementPlugin && elementPlugin.renderElementSettings
+                        ? elementPlugin.renderElementSettings({ element, Bind, data, form, submit })
+                        : null}
+                    {/* Backwards compatible settings rendering */}
                     {renderPlugins<PbEditorPageElementAdvancedSettingsPlugin>(
                         "pb-editor-page-element-advanced-settings",
                         { Bind, data, form, submit },

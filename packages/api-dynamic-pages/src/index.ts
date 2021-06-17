@@ -38,10 +38,19 @@ export default () => [
         typeDefs: /* GraphQL */ `
             extend type PbPage {
                 dynamic: Boolean
+                dataSources: [JSON]
             }
 
             extend type PbPageListItem {
                 dynamic: Boolean
+            }
+
+            extend type PbPageSettings {
+                dataSources: [JSON]
+            }
+
+            extend input PbPageSettingsInput {
+                dataSources: [JSON]
             }
         `,
         resolvers: {

@@ -1,5 +1,5 @@
 import { plugins } from "@webiny/plugins";
-import { PbThemePlugin } from "../../../../types";
+import { PbThemePlugin } from "~/types";
 
 const getTypographyFromTheme = (type: string) => {
     const [{ theme }] = plugins.byType<PbThemePlugin>("pb-theme");

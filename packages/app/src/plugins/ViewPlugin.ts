@@ -7,7 +7,7 @@ interface Config<Props> {
 }
 
 export class ViewPlugin<Props = any> extends Plugin {
-    public static readonly type = "view";
+    public static type = "view";
     private _config: Partial<Config<Props>>;
 
     constructor(config?: Config<Props>) {

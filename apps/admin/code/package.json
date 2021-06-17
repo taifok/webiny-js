@@ -24,6 +24,8 @@
     "@webiny/app-security-admin-users": "^5.8.0",
     "@webiny/app-security-admin-users-cognito": "^5.8.0",
     "@webiny/app-tenancy": "^5.8.0",
+    "@webiny/app-dynamic-pages": "^5.8.0",
+    "@webiny/app-headless-cms-dynamic-pages": "^5.8.0",
     "@webiny/cli": "^5.8.0",
     "@webiny/cli-plugin-deploy-pulumi": "^5.8.0",
     "@webiny/plugins": "^5.8.0",

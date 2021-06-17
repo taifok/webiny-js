@@ -2,17 +2,17 @@ import React, { useCallback } from "react";
 import slugify from "slugify";
 import { plugins } from "@webiny/plugins";
 import { Grid, Cell } from "@webiny/ui/Grid";
-import { TagsMultiAutocomplete } from "../../../../admin/components/TagsMultiAutocomplete";
+import { TagsMultiAutocomplete } from "~/admin/components/TagsMultiAutocomplete";
 import { Input } from "@webiny/ui/Input";
 import { Select } from "@webiny/ui/Select";
 import SingleImageUpload from "@webiny/app-admin/components/SingleImageUpload";
 import { get } from "lodash";
 import appendOgImageDimensions from "./appendOgImageDimensions";
 import { validation } from "@webiny/validation";
-import { PbPageLayoutPlugin } from "../../../../types";
+import { PbPageLayoutPlugin } from "~/types";
 
 const toSlug = (value, cb) => {
-    cb(slugify(value, { replacement: "-", lower: true, remove: /[*#\?<>_\{\}\[\]+~.()'"!:;@]/g })); // eslint-disable-line
+    cb(slugify(value, { replacement: "-", lower: true, remove: /[*#\?<>_\[\]+~.()'"!:;@]/g })); // eslint-disable-line
 };
 
 const GeneralSettings = ({ form, data, Bind, setValue }) => {

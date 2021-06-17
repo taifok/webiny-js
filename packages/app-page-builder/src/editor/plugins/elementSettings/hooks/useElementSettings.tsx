@@ -49,7 +49,6 @@ const useElementSettings = () => {
     const elementType = element ? element.type : undefined;
 
     const deactivateElement = useCallback(() => {
-        3;
         setActiveElementAtomValue(null);
     }, []);
 
