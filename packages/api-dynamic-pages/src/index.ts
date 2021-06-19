@@ -2,9 +2,11 @@ import { PagePlugin } from "@webiny/api-page-builder/plugins/PagePlugin";
 import { IndexPageDataPlugin } from "@webiny/api-page-builder/plugins/IndexPageDataPlugin";
 import { SearchPublishedPagesPlugin } from "@webiny/api-page-builder/plugins/SearchPublishedPagesPlugin";
 import { GraphQLSchemaPlugin } from "@webiny/handler-graphql/plugins/GraphQLSchemaPlugin";
+import { PbContext } from "@webiny/api-page-builder/graphql/types";
+import { DynamicPage } from "./types";
 import { loadDynamicPage } from "./loadDynamicPage";
-import { DynamicPage } from "~/types";
-import { interpolateValue } from "~/interpolateValue";
+import { interpolateValue } from "./interpolateValue";
+import { loadDataSources } from "./loadDataSources";
 
 export default () => [
     new PagePlugin<DynamicPage>({
@@ -34,7 +36,7 @@ export default () => [
         }
     }),
     // - Add dataSources settings, and dataSources GQL page field
-    new GraphQLSchemaPlugin({
+    new GraphQLSchemaPlugin<PbContext>({
         typeDefs: /* GraphQL */ `
             extend type PbPage {
                 dynamic: Boolean
@@ -71,6 +73,14 @@ export default () => [
                     }
 
                     return page.title;
+                },
+                dataSources(page, args, context) {
+                    if (page.dataSources) {
+                        return page.dataSources;
+                    }
+
+                    // Load preview data
+                    return loadDataSources(page.settings.dataSources, {}, context);
                 }
             }
         }
