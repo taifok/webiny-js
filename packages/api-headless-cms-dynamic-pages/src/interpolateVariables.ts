@@ -17,7 +17,9 @@ export function interpolateVariables(variables, values) {
         if (value.includes("${")) {
             const matches = Array.from(variable.value.matchAll(/\${([a-zA-Z.]+)}/g));
             for (const match of matches) {
-                value = value.replace(match[0], get(values, match[1]));
+                // Try getting value from passed values and use `previewValue` as a fallback.
+                // `previewValue` is configured in the Page Builder editor data source settings.
+                value = value.replace(match[0], get(values, match[1], variable.previewValue));
             }
             all[variable.name] = value;
         } else {
