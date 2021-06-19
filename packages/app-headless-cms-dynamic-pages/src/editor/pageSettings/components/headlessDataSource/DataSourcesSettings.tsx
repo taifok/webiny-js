@@ -56,6 +56,7 @@ const DataSourcesAccordion = ({ Bind, getBind, bind }) => {
         <Cell span={12}>
             <Accordion elevation={0}>
                 <AccordionItem
+                    open={true}
                     key={getEntry.id}
                     title={getEntry.name}
                     icon={null}
