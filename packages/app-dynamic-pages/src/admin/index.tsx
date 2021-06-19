@@ -4,6 +4,7 @@ import { AddQuerySelectionPlugin } from "@webiny/app/plugins/AddQuerySelectionPl
 const dynamicFieldsSelection = gql`
     {
         dynamic
+        dataSources
         settings {
             dataSources
         }
@@ -14,6 +15,11 @@ export default () => [
     new AddQuerySelectionPlugin({
         operationName: "PbGetPage",
         selectionPath: "pageBuilder.getPage.data",
+        addSelection: dynamicFieldsSelection
+    }),
+    new AddQuerySelectionPlugin({
+        operationName: "PbUpdatePage",
+        selectionPath: "pageBuilder.updatePage.data",
         addSelection: dynamicFieldsSelection
     }),
     new AddQuerySelectionPlugin({
