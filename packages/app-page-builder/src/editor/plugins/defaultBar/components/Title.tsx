@@ -39,7 +39,7 @@ const Title: React.FunctionComponent = () => {
     const [editTitle, setEdit] = useState<boolean>(false);
     const [stateTitle, setTitle] = useState<string>(null);
     let title = stateTitle === null ? pageTitle : stateTitle;
-
+    
     const updatePage = data => {
         handler.trigger(
             new UpdatePageRevisionActionEvent({

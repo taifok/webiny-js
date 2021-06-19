@@ -23,6 +23,7 @@ export const typeStyle = css({
             borderRadius: 2,
             display: "flex",
             padding: "4px 10px",
+            whiteSpace: "nowrap",
             "> svg": {
                 height: 13,
                 width: 13,

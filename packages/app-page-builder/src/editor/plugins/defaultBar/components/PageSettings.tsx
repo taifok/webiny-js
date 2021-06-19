@@ -21,9 +21,9 @@ import {
     SimpleFormContent,
     SimpleFormHeader
 } from "@webiny/app-admin/components/SimpleForm";
-import { useRecoilValue } from "recoil";
+import { useRecoilState } from "recoil";
 import { Title, listItem, ListItemTitle, listStyle, TitleContent } from "./PageSettingsStyled";
-import { PbEditorPageSettingsPlugin } from "../../../../types";
+import { PbEditorPageSettingsPlugin } from "~/types";
 
 type PageSettingsPropsType = {
     [key: string]: any;
@@ -57,7 +57,7 @@ const PageSettingsContent: React.FunctionComponent<PageSettingsContentPropsType>
     activePlugin
 }) => {
     const eventActionHandler = useEventActionHandler();
-    const pageAtomValue = useRecoilValue(pageAtom);
+    const [pageAtomValue, setPageAtomValue] = useRecoilState(pageAtom);
 
     const { showSnackbar } = useSnackbar();
     const { removeKeyHandler, addKeyHandler } = useKeyHandler();
@@ -75,12 +75,13 @@ const PageSettingsContent: React.FunctionComponent<PageSettingsContentPropsType>
             new UpdatePageRevisionActionEvent({
                 debounce: false,
                 page: pageValue,
-                onFinish: () => {
+                onFinish: ({ data }) => {
                     showSnackbar("Settings saved");
-                    deactivatePlugin();
+                    setPageAtomValue({ ...pageAtomValue, ...data });
                 }
             })
         );
+        deactivatePlugin();
     }, []);
 
     useEffect(() => {

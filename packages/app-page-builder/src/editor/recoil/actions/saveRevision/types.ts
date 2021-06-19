@@ -1,6 +1,11 @@
+interface OnFinishParams {
+    // New page data returned by the update mutation
+    data: any;
+}
+
 export type SaveRevisionActionArgsType = {
     debounce?: boolean;
-    onFinish?: () => void;
+    onFinish?: (params: OnFinishParams) => void;
 };
 
 export type ToggleSaveRevisionStateActionArgsType = {

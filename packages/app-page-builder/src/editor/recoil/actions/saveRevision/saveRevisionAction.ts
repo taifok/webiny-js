@@ -17,11 +17,14 @@ const isDataEqualToLastSavedData = (data: PageRevisionType) => {
     return lodashIsEqual(data, lastSavedRevisionData);
 };
 
-const triggerOnFinish = (args?: SaveRevisionActionArgsType): void => {
-    if (!args || !args.onFinish || typeof args.onFinish !== "function") {
+const triggerOnFinish = (
+    onFinish?: SaveRevisionActionArgsType["onFinish"],
+    payload = null
+): void => {
+    if (!onFinish || typeof onFinish !== "function") {
         return;
     }
-    args.onFinish();
+    onFinish(payload);
 };
 
 let debouncedSave = null;
@@ -45,14 +48,14 @@ export const saveRevisionAction: EventActionCallable<SaveRevisionActionArgsType>
     };
 
     if (isDataEqualToLastSavedData(data)) {
-        triggerOnFinish(args);
+        triggerOnFinish(args.onFinish);
         return {};
     }
 
     lastSavedRevisionData = data;
 
     const updatePage = gql`
-        mutation updatePage($id: ID!, $data: PbUpdatePageInput!) {
+        mutation PbUpdatePage($id: ID!, $data: PbUpdatePageInput!) {
             pageBuilder {
                 updatePage(id: $id, data: $data) {
                     data {
@@ -79,7 +82,7 @@ export const saveRevisionAction: EventActionCallable<SaveRevisionActionArgsType>
     const runSave = async () => {
         meta.eventActionHandler.trigger(new ToggleSaveRevisionStateActionEvent({ saving: true }));
 
-        await meta.client.mutate({
+        const response = await meta.client.mutate({
             mutation: updatePage,
             variables: {
                 id: state.page.id,
@@ -88,7 +91,7 @@ export const saveRevisionAction: EventActionCallable<SaveRevisionActionArgsType>
         });
 
         meta.eventActionHandler.trigger(new ToggleSaveRevisionStateActionEvent({ saving: false }));
-        triggerOnFinish(args);
+        triggerOnFinish(args.onFinish, { data: response.data.pageBuilder.updatePage.data });
     };
 
     if (args && args.debounce === false) {
