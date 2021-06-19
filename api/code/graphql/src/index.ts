@@ -17,6 +17,7 @@ import securityPlugins from "./security";
 import headlessCmsPlugins from "@webiny/api-headless-cms/plugins";
 import headlessCmsDynamoDbElasticStorageOperation from "@webiny/api-headless-cms-ddb-es";
 import dynamicPages from "@webiny/api-dynamic-pages";
+import headlessCmsDynamicPages from "@webiny/api-headless-cms-dynamic-pages";
 
 const debug = process.env.DEBUG === "true";
 
@@ -55,7 +56,8 @@ export const handler = createHandler({
         formBuilderPlugins(),
         headlessCmsPlugins(),
         headlessCmsDynamoDbElasticStorageOperation(),
-        dynamicPages()
+        dynamicPages(),
+        headlessCmsDynamicPages()
     ],
     http: { debug }
 });
