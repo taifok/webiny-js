@@ -6,8 +6,7 @@ export { previewUrl };
 
 const defaults = {
     cardImage: "https://static.overlay-tech.com/assets/f3b2c2d7-fda0-41ee-bac8-84f7e3a7d0b0.png",
-    description:
-        "Lectus eget amet at a, sit. Suspendisse nec, elementum sollicitudin turpis quisque sem in.",
+    description: "Lectus eget amet at a, sit. Suspendisse nec, elementum sollicitudin turpis quisque sem in.",
     title: "Write a title here"
 };
 
