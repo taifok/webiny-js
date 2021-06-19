@@ -10,7 +10,7 @@ export const InterpolateProps = ({ element, children }) => {
         return children;
     }
     
-    const props = { ...get(element.data, "props", {}) };
+    const props = { ...get(element.data, "properties", {}) };
 
     const dataSource = get(element, `data.dataSource`);
     const pageDataSource = pageAtomValue.dataSources.find(ds => ds.id === dataSource.id);
