@@ -1,6 +1,25 @@
 import React from "react";
 import { ElementPlugin } from "@webiny/app-page-builder/editor/plugins/ElementPlugin";
 import { Card, previewUrl } from "./card/Card";
+import { ElementStyleSettingsPlugin } from "@webiny/app-page-builder/editor/plugins/ElementStyleSettingsPlugin";
+import HorizontalAlignSettings from "./HorizontalAlignSettings";
+
+interface Config {
+    elements?: [];
+    alignments: string[];
+}
+
+class HorizontalAlignStyleSettingsPlugin extends ElementStyleSettingsPlugin<Config> {
+    public static id = "pb-editor-page-element-style-settings-horizontal-align";
+
+    constructor(config: Config) {
+        super(config);
+    }
+
+    render(): React.ReactElement {
+        return <HorizontalAlignSettings options={{ alignments: this._config.alignments }} />;
+    }
+}
 
 export default new ElementPlugin({
     elementType: "static-figma-card-1",
@@ -20,5 +39,10 @@ export default new ElementPlugin({
         preview() {
             return <img alt="Card 1" src={previewUrl} />;
         }
-    }
+    },
+    settings: [
+        "...",
+        new HorizontalAlignStyleSettingsPlugin({ alignments: ["left", "center"] }),
+        new HorizontalAlignStyleSettingsPlugin({ alignments: ["center", "right"] }),
+    ]
 });
