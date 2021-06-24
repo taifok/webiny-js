@@ -5,11 +5,17 @@ import { pageAtom } from "@webiny/app-page-builder/editor/recoil/modules";
 import { DynamicPageAtom } from "~/types";
 
 export const InterpolateProps = ({ element, children }) => {
-    const pageAtomValue = useRecoilValue<DynamicPageAtom>(pageAtom);
-    if(!pageAtomValue.dataSources) {
+    let pageAtomValue;
+    try {
+        pageAtomValue = useRecoilValue<DynamicPageAtom>(pageAtom);
+    } catch {
+        return null;
+    }
+
+    if (!pageAtomValue.dataSources) {
         return children;
     }
-    
+
     const props = { ...get(element.data, "properties", {}) };
 
     const dataSource = get(element, `data.dataSource`);

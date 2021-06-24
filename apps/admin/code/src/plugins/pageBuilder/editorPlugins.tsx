@@ -73,6 +73,7 @@ import { gridPresets } from "@webiny/app-page-builder/editor/plugins/gridPresets
 import actionPlugins from "@webiny/app-page-builder/editor/recoil/actions/plugins";
 
 import dynamicGroup from "@webiny/app-dynamic-pages/editor/elementGroups/dynamic";
+import dynamicPageSettings from "@webiny/app-dynamic-pages/editor/pageSettings";
 import headlessDynamicPages from "@webiny/app-headless-cms-dynamic-pages/editor";
 
 export default [
@@ -152,5 +153,6 @@ export default [
     headlessDynamicPages(),
     // Dynamic elements/groups
     dynamicGroup,
+    dynamicPageSettings(),
     //dynamicParagraph()
 ];

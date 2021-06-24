@@ -29,7 +29,12 @@ const getItemsFromQuery = selections => {
 
 export const DataSourceOptions = ({ element, children }: Props) => {
     const { data } = element;
-    const pageAtomValue = useRecoilValue<DynamicPageAtom>(pageAtom);
+    let pageAtomValue;
+    try {
+        pageAtomValue = useRecoilValue<DynamicPageAtom>(pageAtom);
+    } catch {
+        return null;
+    }
     const pageDataSource = pageAtomValue.settings.dataSources.find(
         ds => ds.id === data.dataSource.id
     );

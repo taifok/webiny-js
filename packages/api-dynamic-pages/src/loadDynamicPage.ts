@@ -10,6 +10,7 @@ export const loadDynamicPage = async (args, context: PbContext) => {
     });
 
     // Try matching the requested URL against dynamic page patterns
+    // /articles/{slug}
     try {
         for (let i = 0; i < pages.length; i++) {
             const page = pages[i];
@@ -20,6 +21,7 @@ export const loadDynamicPage = async (args, context: PbContext) => {
                 pattern = pattern.replace(find, `(?<${replace}>(.+))`);
             }
             // Try matching
+            // /articles/welcome
             const match = args.path.match(new RegExp(pattern));
             if (match) {
                 const fullPage = await context.pageBuilder.pages.getPublishedById<DynamicPage>({

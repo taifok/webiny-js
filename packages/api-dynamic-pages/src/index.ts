@@ -80,7 +80,7 @@ export default () => [
                     }
 
                     // Load preview data
-                    return loadDataSources(page.settings.dataSources, {}, context);
+                    return loadDataSources(page.settings.dataSources || [], {}, context);
                 }
             }
         }

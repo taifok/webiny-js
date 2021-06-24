@@ -5,6 +5,7 @@ import {
     SimpleButton
 } from "@webiny/app-page-builder/editor/plugins/elementSettings/components/StyledComponents";
 import { Plugin } from "@webiny/plugins";
+import Accordion from "@webiny/app-page-builder/editor/plugins/elementSettings/components/Accordion";
 import { Typography } from "@webiny/ui/Typography";
 import { ElementProperties } from "~/editor/plugins/ElementPlugin/ElementProperties";
 import {
@@ -16,6 +17,7 @@ import {
 import { FormRenderPropParams } from "@webiny/form";
 import { ElementRoot } from "~/render/components/ElementRoot";
 import { DragObjectWithTypeWithTarget } from "~/editor/components/Droppable";
+import {ElementStyleSettingsPlugin} from "~/editor/plugins/ElementStyleSettingsPlugin";
 
 export interface ToolbarConfig {
     title: string;
@@ -41,7 +43,12 @@ export interface RenderProps {
 
 export interface RenderElementSettings extends FormRenderPropParams {
     element: PbEditorElement;
-    children?: React.ReactNode;
+    children?: React.ReactElement;
+}
+
+export interface RenderElementProperties extends FormRenderPropParams {
+    element: PbEditorElement;
+    children: React.ReactElement;
 }
 
 export interface RenderRootElement {
@@ -72,7 +79,7 @@ export interface Config {
     component: React.ComponentType<any>;
     toolbar: ToolbarConfig;
     properties?: Property[];
-    settings?: string[];
+    settings?: (string | ElementStyleSettingsPlugin)[];
     target?: string[];
 }
 
@@ -82,6 +89,7 @@ interface IElementPlugin extends Partial<Config> {
     onChildDeleted?: (params: OnChildDeletedParams) => PbEditorElement | undefined;
     onReceived?: (params: OnReceivedParams) => EventActionHandlerActionCallableResponse;
     renderElementSettings?(params: RenderElementSettings): React.ReactElement<any>;
+    renderElemenProperties?(params: RenderElementSettings): React.ReactElement<any>;
     renderElementPreview?(params: {
         element: PbEditorElement;
         width: number;
@@ -92,8 +100,17 @@ interface IElementPlugin extends Partial<Config> {
 
 const configDefaults = {
     target: ["cell", "block"],
-    settings: ["pb-editor-page-element-settings-clone", "pb-editor-page-element-settings-delete"]
+    settings: [
+        // new CloneElementActionPlugin(),
+        // new DeleteElementActionPlugin(),
+        // new SaveElementActionPlugin(),
+        "pb-editor-page-element-settings-clone",
+        "pb-editor-page-element-settings-delete",
+        "pb-editor-page-element-settings-save"
+    ]
 };
+
+// ElementPlugin.defaultSettings = [...ElementPlugin.defaultSettings, new Visibility()]
 
 export class ElementPlugin extends Plugin implements IElementPlugin {
     public static type = "pb-editor-page-element";
@@ -124,9 +141,12 @@ export class ElementPlugin extends Plugin implements IElementPlugin {
         const defaultsIndex = settings.findIndex(el => el === "...");
         if (defaultsIndex > -1) {
             return [
-                ...settings.slice(0, defaultsIndex),
-                ...configDefaults.settings,
-                ...settings.slice(defaultsIndex + 1)
+                // Use Set to make sure we only have unique plugin names
+                ...new Set([
+                    ...settings.slice(0, defaultsIndex),
+                    ...configDefaults.settings,
+                    ...settings.slice(defaultsIndex + 1)
+                ])
             ];
         }
 
@@ -156,26 +176,37 @@ export class ElementPlugin extends Plugin implements IElementPlugin {
         return this.renderRootElement({ element, children });
     }
 
-    renderElementSettings(params: RenderElementSettings): React.ReactElement<any> {
+    renderElementSettings({ children, ...params }: RenderElementSettings): React.ReactElement<any> {
         const properties = this.properties;
-        const baseChildren = properties ? (
-            <ElementProperties {...params} properties={this.properties} />
-        ) : null;
+        const baseChildren = properties
+            ? this.renderElementProperties({
+                  ...params,
+                  children: <ElementProperties {...params} properties={this.properties} />
+              })
+            : null;
 
-        if (!baseChildren && !params.children) {
+        if (!baseChildren && !children) {
             return null;
         }
 
         return (
             <Fragment>
                 {baseChildren}
-                {params.children}
+                {children}
                 <ButtonContainer style={{ display: "flex" }}>
                     <SimpleButton onClick={params.submit} style={{ margin: "0 auto" }}>
                         <Typography use={"caption"}>Save Settings</Typography>
                     </SimpleButton>
                 </ButtonContainer>
             </Fragment>
+        );
+    }
+
+    renderElementProperties({ children }: RenderElementProperties) {
+        return (
+            <Accordion title={"Properties"} defaultValue={true}>
+                {children}
+            </Accordion>
         );
     }
 

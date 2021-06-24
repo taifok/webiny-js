@@ -12,10 +12,10 @@ declare global {
  */
 export class TenantHeaderLinkPlugin extends ApolloLinkPlugin {
     private tenant: string;
+    public name = "tenant-header-link";
 
     constructor(tenant?: string) {
         super();
-        this.name = "tenant-header-link";
 
         if (!tenant) {
             const query = new URLSearchParams(location.search);

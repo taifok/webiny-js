@@ -1,6 +1,6 @@
 import "@emotion/core";
 import React, { Fragment } from "react";
-import Accordion from "@webiny/app-page-builder/editor/plugins/elementSettings/components/Accordion";
+
 import SingleImageUpload from "@webiny/app-admin/components/SingleImageUpload";
 import { Input } from "@webiny/ui/Input";
 import InputField from "../elementSettings/components/InputField";
@@ -72,9 +72,5 @@ export const ElementProperties = ({ properties, ...rest }: Props) => {
         return null;
     }
 
-    return (
-        <Accordion title={"Properties"} defaultValue={true}>
-            <Fragment>{properties.map(property => renderProp({ property, ...rest }))}</Fragment>
-        </Accordion>
-    );
+    return <Fragment>{properties.map(property => renderProp({ property, ...rest }))}</Fragment>;
 };

@@ -5,6 +5,7 @@ import { PbEditorPageElementPlugin } from "../../../../types";
 import { useKeyHandler } from "../../../hooks/useKeyHandler";
 import { userElementStyleSettingsPlugins } from "../../../helpers";
 import { activeElementAtom, elementByIdSelector } from "../../../recoil/modules";
+import { ElementStyleSettingsPlugin } from "~/editor/plugins/ElementStyleSettingsPlugin";
 
 const getElementActions = plugin => {
     if (!plugin || !plugin.settings) {
@@ -23,6 +24,10 @@ const getElementActions = plugin => {
 
         if (Array.isArray(pl)) {
             return { plugin: plugins.byName(pl[0]), options: pl[1] };
+        }
+
+        if (pl instanceof ElementStyleSettingsPlugin) {
+            return { plugin: pl, options: {} };
         }
 
         return null;

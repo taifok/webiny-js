@@ -10,6 +10,7 @@ import { get } from "lodash";
 import appendOgImageDimensions from "./appendOgImageDimensions";
 import { validation } from "@webiny/validation";
 import { PbPageLayoutPlugin } from "~/types";
+import { View } from "@webiny/app/components/View";
 
 const toSlug = (value, cb) => {
     cb(slugify(value, { replacement: "-", lower: true, remove: /[*#\?<>_\[\]+~.()'"!:;@]/g })); // eslint-disable-line
@@ -61,10 +62,13 @@ const GeneralSettings = ({ form, data, Bind, setValue }) => {
                         />
                     </Bind>
                 </Cell>
+
                 <Cell span={12}>
-                    <Bind name={"settings.general.snippet"}>
-                        <Input rows={4} label="Snippet" description="Page snippet" />
-                    </Bind>
+                    <View name={"pb.editor.settings.general.snippet"} props={{ form, data, Bind, setValue }}>
+                        <Bind name={"settings.general.snippet"}>
+                            <Input rows={4} label="Snippet" description="Page snippet" />
+                        </Bind>
+                    </View>
                 </Cell>
                 <Cell span={12}>
                     <Bind name={"settings.general.layout"} defaultValue={layouts[0].name}>
