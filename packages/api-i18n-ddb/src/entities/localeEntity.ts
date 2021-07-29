@@ -1,11 +1,13 @@
 import { Entity, Table } from "dynamodb-toolbox";
-import { I18NContext } from "@webiny/api-i18n/types";
-import { getExtraAttributes } from "@webiny/db-dynamodb/utils/attributes";
 
-export default (params: { context: I18NContext; table: Table }): Entity<any> => {
-    const { context, table } = params;
+interface Params {
+    table: Table;
+    extraAttributes: Array<any>;
+}
+
+export default ({ table, extraAttributes }: Params): Entity<any> => {
     const entityName = "I18NLocale";
-    const attributes = getExtraAttributes(context, entityName);
+
     return new Entity({
         name: entityName,
         table,
@@ -34,7 +36,13 @@ export default (params: { context: I18NContext; table: Table }): Entity<any> => 
             tenant: {
                 type: "string"
             },
-            ...attributes
+            ...extraAttributes.reduce((attributes, plugin) => {
+                // TODO: finish this
+                return {
+                    ...attributes,
+                    ...plugin.getDefinition()
+                };
+            }, {})
         }
     });
 };

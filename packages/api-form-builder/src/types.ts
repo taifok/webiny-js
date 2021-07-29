@@ -205,17 +205,19 @@ export interface FbFormSettingsPermission extends SecurityPermission {
     name: "fb.settings";
 }
 
-export type FormBuilderContext = Context<
+export type FormBuilderContext = {
+    formBuilder: {
+        forms: FormsCRUD;
+        settings: SettingsCRUD;
+        system: SystemCRUD;
+    };
+};
+
+export type ApiFormBuilderContext = Context<
     TenancyContext,
     I18NContext,
     I18NContentContext,
     FileManagerContext,
     ElasticsearchContext,
-    {
-        formBuilder: {
-            forms: FormsCRUD;
-            settings: SettingsCRUD;
-            system: SystemCRUD;
-        };
-    }
+    FormBuilderContext
 >;

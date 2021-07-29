@@ -5,7 +5,7 @@ import {
     ListResponse
 } from "@webiny/handler-graphql/responses";
 import { GraphQLSchemaPlugin } from "@webiny/handler-graphql/types";
-import { I18NContext, LocalesCRUDCreate, LocalesCRUDUpdate } from "~/types";
+import { ApiI18NContext, LocalesCreate, LocalesUpdate } from "~/types";
 import searchLocaleCodes from "./resolvers/searchLocaleCodes";
 import getI18NInformation from "./resolvers/getI18NInformation";
 import NotAuthorizedResponse from "@webiny/api-security/NotAuthorizedResponse";
@@ -25,7 +25,7 @@ const resolve = async fn => {
     }
 };
 
-const plugin: GraphQLSchemaPlugin<I18NContext> = {
+const plugin: GraphQLSchemaPlugin<ApiI18NContext> = {
     type: "graphql-schema",
     name: "graphql-schema-i18n-locales",
     schema: {
@@ -142,12 +142,12 @@ const plugin: GraphQLSchemaPlugin<I18NContext> = {
                 getI18NInformation
             },
             I18NMutation: {
-                createI18NLocale: async (_, args: { data: LocalesCRUDCreate }, context) => {
+                createI18NLocale: async (_, args: { data: LocalesCreate }, context) => {
                     return resolve(() => context.i18n.locales.create(args.data));
                 },
                 updateI18NLocale: async (
                     _,
-                    args: { code: string; data: LocalesCRUDUpdate },
+                    args: { code: string; data: LocalesUpdate },
                     context
                 ) => {
                     return resolve(() => context.i18n.locales.update(args.code, args.data));

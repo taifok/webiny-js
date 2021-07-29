@@ -1,5 +1,4 @@
 import {
-    I18NContext,
     I18NLocale,
     I18NLocalesStorageOperations,
     I18NLocalesStorageOperationsCreateParams,
@@ -9,52 +8,33 @@ import {
     I18NLocalesStorageOperationsUpdateDefaultParams,
     I18NLocalesStorageOperationsUpdateParams
 } from "@webiny/api-i18n/types";
-import { Entity, Table } from "dynamodb-toolbox";
-import WebinyError from "@webiny/error";
-import defineTable from "~/definitions/table";
-import defineLocaleEntity from "~/definitions/localeEntity";
+import Error from "@webiny/error";
+import defineLocaleEntity from "~/entities/localeEntity";
 import { queryAll, QueryAllParams } from "@webiny/db-dynamodb/utils/query";
 import { filterItems } from "@webiny/db-dynamodb/utils/filter";
 import { sortItems } from "@webiny/db-dynamodb/utils/sort";
 import { createListResponse } from "@webiny/db-dynamodb/utils/listResponse";
 import { cleanupItem, cleanupItems } from "@webiny/db-dynamodb/utils/cleanup";
+import { I18N } from "@webiny/api-i18n/I18N";
+import { DocumentClient } from "aws-sdk/clients/dynamodb";
+import { StorageOperations } from "./StorageOperations";
 
 interface ConstructorParams {
-    context: I18NContext;
+    i18n: I18N;
+    documentClient: DocumentClient;
+    table: string;
 }
 
 const DEFAULT_SORT_KEY = "default";
 
-export class LocalesStorageOperations implements I18NLocalesStorageOperations {
-    private readonly _context: I18NContext;
-    private _partitionKey: string;
-    private readonly _table: Table;
-    private readonly _entity: Entity<any>;
+export class LocalesStorageOperations extends StorageOperations
+    implements I18NLocalesStorageOperations {
 
-    private get partitionKey(): string {
-        if (!this._partitionKey) {
-            const tenant = this._context.tenancy.getCurrentTenant();
-            if (!tenant) {
-                throw new WebinyError("Tenant missing.", "TENANT_NOT_FOUND");
-            }
-            this._partitionKey = `T#${tenant.id}#I18N#L`;
-        }
-        return this._partitionKey;
-    }
-
-    private get defaultPartitionKey(): string {
-        return `${this.partitionKey}#D`;
-    }
-
-    public constructor({ context }: ConstructorParams) {
-        this._context = context;
-        this._table = defineTable({
-            context
-        });
-
+    public constructor({ i18n, documentClient, table }: ConstructorParams) {
+        super({ i18n, documentClient, table });
         this._entity = defineLocaleEntity({
-            context,
-            table: this._table
+            table: this._table,
+            extraAttributes: this._extraAttributes
         });
     }
 
@@ -69,7 +49,7 @@ export class LocalesStorageOperations implements I18NLocalesStorageOperations {
             }
             return cleanupItem(this._entity, locale.Item);
         } catch (ex) {
-            throw new WebinyError(
+            throw new Error(
                 ex.message || "Could not fetch the I18N locale.",
                 ex.code || "GET_DEFAULT_LOCALE_ERROR"
             );
@@ -87,7 +67,7 @@ export class LocalesStorageOperations implements I18NLocalesStorageOperations {
             }
             return cleanupItem(this._entity, locale.Item);
         } catch (ex) {
-            throw new WebinyError(
+            throw new Error(
                 ex.message || "Could not fetch the I18N locale.",
                 ex.code || "GET_LOCALE_ERROR"
             );
@@ -107,7 +87,7 @@ export class LocalesStorageOperations implements I18NLocalesStorageOperations {
             });
             return locale;
         } catch (ex) {
-            throw new WebinyError(
+            throw new Error(
                 ex.message || "Cannot create I18N locale.",
                 ex.code || "CREATE_LOCALE_ERROR",
                 {
@@ -130,7 +110,7 @@ export class LocalesStorageOperations implements I18NLocalesStorageOperations {
             });
             return locale;
         } catch (ex) {
-            throw new WebinyError(
+            throw new Error(
                 ex.message || "Cannot update I18N locale.",
                 ex.code || "UPDATE_LOCALE_ERROR",
                 {
@@ -176,7 +156,7 @@ export class LocalesStorageOperations implements I18NLocalesStorageOperations {
             await this._table.batchWrite(batch.map(item => this._entity.putBatch(item)));
             return locale;
         } catch (ex) {
-            throw new WebinyError(
+            throw new Error(
                 ex.message || "Cannot update I18N locale.",
                 ex.code || "UPDATE_LOCALE_ERROR",
                 {
@@ -196,7 +176,7 @@ export class LocalesStorageOperations implements I18NLocalesStorageOperations {
         try {
             await this._entity.delete(keys);
         } catch (ex) {
-            throw new WebinyError(
+            throw new Error(
                 ex.message || "Cannot delete I18N locale.",
                 ex.code || "DELETE_LOCALE_ERROR",
                 {
@@ -223,7 +203,7 @@ export class LocalesStorageOperations implements I18NLocalesStorageOperations {
         try {
             results = await queryAll<I18NLocale>(queryAllParams);
         } catch (ex) {
-            throw new WebinyError(
+            throw new Error(
                 ex.message || "Cannot list I18N locales.",
                 ex.code || "LIST_LOCALES_ERROR",
                 params
@@ -236,7 +216,7 @@ export class LocalesStorageOperations implements I18NLocalesStorageOperations {
         const filteredFiles = filterItems({
             items: results,
             where,
-            context: this._context
+            plugins: this._i18n.getPlugins()
         });
 
         const totalCount = filteredFiles.length;
@@ -245,11 +225,10 @@ export class LocalesStorageOperations implements I18NLocalesStorageOperations {
          * It takes the sort input and sorts by it via the lodash sortBy method.
          */
         const sortedFiles = sortItems({
-            context: this._context,
             items: filteredFiles,
             sort,
-            // TODO: add possibility to add more fields via plugins
-            fields: ["code", "createdBy", "createdOn"]
+            fields: ["code", "createdBy", "createdOn"],
+            plugins: this._i18n.getPlugins()
         });
         /**
          * Use the common db-dynamodb method to create the required response.
@@ -264,7 +243,7 @@ export class LocalesStorageOperations implements I18NLocalesStorageOperations {
 
     private getSortKey(locale: I18NLocale): string {
         if (!locale.code) {
-            throw new WebinyError("Missing locale code.", "CODE_ERROR", {
+            throw new Error("Missing locale code.", "CODE_ERROR", {
                 locale
             });
         }

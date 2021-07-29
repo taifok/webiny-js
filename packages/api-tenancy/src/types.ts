@@ -9,6 +9,7 @@ export interface Tenant {
     parent: string | null;
 }
 
+
 export interface TenancyContext extends Context, HttpContext, DbContext {
     tenancy: Tenancy;
 }

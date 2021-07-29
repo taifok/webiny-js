@@ -1,25 +1,22 @@
 import graphql from "./graphql";
 import locales from "./graphql/locales";
 import installation from "./graphql/installation";
-import i18nContext from "./context";
-import localeContexts from "./localeContexts";
+import { ContextPlugin } from "@webiny/handler/plugins/ContextPlugin";
+import { I18N } from "~/I18N";
+import { ApiI18NContext } from "~/types";
 
 export default () => [
-    localeContexts,
-    i18nContext(),
     graphql,
     locales,
     installation,
-    {
-        name: "context-i18n-get-locales",
-        type: "context-i18n-get-locales",
-        async resolve({ context }) {
-            const { i18n } = context;
-            const [items] = await i18n.locales.list();
-            return items.map(locale => ({
-                code: locale.code,
-                default: locale.default
-            }));
-        }
-    }
+    new ContextPlugin<ApiI18NContext>(async context => {
+        const { http, tenancy, security, plugins, WEBINY_VERSION } = context;
+        context.i18n = await new I18N({
+            http,
+            tenant: tenancy.getCurrentTenant(),
+            security,
+            plugins,
+            webinyVersion: WEBINY_VERSION
+        }).init();
+    })
 ];

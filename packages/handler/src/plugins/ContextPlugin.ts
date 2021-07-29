@@ -1,10 +1,11 @@
 import { Plugin } from "@webiny/plugins";
+import { ContextInterface } from "../types";
 
 interface Callable<TContext> {
     (context: TContext): void | Promise<void>;
 }
 
-export class ContextPlugin<TContext> extends Plugin {
+export class ContextPlugin<TContext extends ContextInterface = ContextInterface> extends Plugin {
     public static readonly type = "context";
     private readonly _callable: Callable<TContext>;
 

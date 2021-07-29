@@ -1,8 +1,8 @@
 import { ErrorResponse, Response } from "@webiny/handler-graphql";
-import { I18NContext } from "~/types";
+import { ApiI18NContext } from "~/types";
 import { GraphQLSchemaPlugin } from "@webiny/handler-graphql/types";
 
-const plugin: GraphQLSchemaPlugin<I18NContext> = {
+const plugin: GraphQLSchemaPlugin<ApiI18NContext> = {
     type: "graphql-schema",
     name: "graphql-schema-i18n-installation",
     schema: {

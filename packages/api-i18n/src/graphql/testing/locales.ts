@@ -1,3 +1,5 @@
+import { I18NPlugin } from "~/plugins/I18NPlugin";
+
 export const locales = {
     en: {
         code: "en-US",
@@ -13,10 +15,6 @@ export const locales = {
     }
 };
 
-export const mockLocalesPlugins = () => ({
-    name: "context-i18n-get-locales",
-    type: "context-i18n-get-locales",
-    async resolve() {
-        return Object.values(locales);
-    }
+export const mockLocalesPlugins = new I18NPlugin(i18n => {
+    i18n.setLocalesResolver(() => Object.values(locales));
 });

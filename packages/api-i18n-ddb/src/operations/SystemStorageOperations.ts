@@ -1,41 +1,26 @@
-import { I18NContext, I18NSystem, I18NSystemStorageOperations } from "@webiny/api-i18n/types";
-import { Entity } from "dynamodb-toolbox";
-import WebinyError from "@webiny/error";
-import defineSystemEntity from "~/definitions/systemEntity";
-import defineTable from "~/definitions/table";
+import { I18NSystem, I18NSystemStorageOperations } from "@webiny/api-i18n/types";
+import Error from "@webiny/error";
+import defineSystemEntity from "~/entities/systemEntity";
 import { cleanupItem } from "@webiny/db-dynamodb/utils/cleanup";
+import { I18N } from "@webiny/api-i18n/I18N";
+import { DocumentClient } from "aws-sdk/clients/dynamodb";
+import { StorageOperations } from "~/operations/StorageOperations";
 
 interface ConstructorParams {
-    context: I18NContext;
+    i18n: I18N;
+    documentClient: DocumentClient;
+    table: string;
 }
 
 const SORT_KEY = "I18N";
 
-export class SystemStorageOperations implements I18NSystemStorageOperations {
-    private readonly _context: I18NContext;
-    private _partitionKey: string;
-    private readonly _entity: Entity<any>;
-
-    private get partitionKey(): string {
-        if (!this._partitionKey) {
-            const tenant = this._context.tenancy.getCurrentTenant();
-            if (!tenant) {
-                throw new WebinyError("Tenant missing.", "TENANT_NOT_FOUND");
-            }
-            this._partitionKey = `T#${tenant.id}#SYSTEM`;
-        }
-        return this._partitionKey;
-    }
-
-    public constructor({ context }: ConstructorParams) {
-        this._context = context;
-        const table = defineTable({
-            context
-        });
-
+export class SystemStorageOperations extends StorageOperations
+    implements I18NSystemStorageOperations {
+    public constructor({ i18n, documentClient, table }: ConstructorParams) {
+        super({ i18n, documentClient, table });
         this._entity = defineSystemEntity({
-            context,
-            table
+            table: this._table,
+            extraAttributes: this._extraAttributes
         });
     }
 
@@ -49,7 +34,7 @@ export class SystemStorageOperations implements I18NSystemStorageOperations {
 
             return cleanupItem(this._entity, result?.Item);
         } catch (ex) {
-            throw new WebinyError(
+            throw new Error(
                 "Could not load system data from the database.",
                 "GET_SYSTEM_ERROR",
                 keys
@@ -69,7 +54,7 @@ export class SystemStorageOperations implements I18NSystemStorageOperations {
             });
             return system;
         } catch (ex) {
-            throw new WebinyError(
+            throw new Error(
                 "Could not create system data in the database.",
                 "CREATE_SYSTEM_ERROR",
                 keys
@@ -89,7 +74,7 @@ export class SystemStorageOperations implements I18NSystemStorageOperations {
             });
             return system;
         } catch (ex) {
-            throw new WebinyError(
+            throw new Error(
                 "Could not update system data in the database.",
                 "UPDATE_VERSION_ERROR",
                 keys

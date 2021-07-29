@@ -1,21 +1,20 @@
 import dotProp from "dot-prop";
 import WebinyError from "@webiny/error";
-import { Plugin } from "@webiny/plugins";
+import { Plugin, PluginsContainer } from "@webiny/plugins";
 import { ValueFilterPlugin } from "~/plugins/definitions/ValueFilterPlugin";
 import { ValueTransformPlugin } from "~/plugins/definitions/ValueTransformPlugin";
 import { FieldPathPlugin } from "~/plugins/definitions/FieldPathPlugin";
-import { ContextInterface } from "@webiny/handler/types";
 
 export interface Params<T extends any = any> {
     items: T[];
     where: Record<string, any>;
-    context: ContextInterface;
+    plugins: PluginsContainer;
 }
 
 interface MappedPluginParams {
-    context: ContextInterface;
     type: string;
     property: string;
+    plugins: PluginsContainer;
 }
 
 interface Filter {
@@ -27,7 +26,7 @@ interface Filter {
 }
 
 const getMappedPlugins = <T extends Plugin>(params: MappedPluginParams): Record<string, T> => {
-    return params.context.plugins.byType<T>(params.type).reduce((plugins, plugin) => {
+    return params.plugins.byType<T>(params.type).reduce((plugins, plugin) => {
         const op = plugin[params.property];
         plugins[op] = plugin;
         return plugins;
@@ -54,16 +53,14 @@ const extractWhereArgs = (key: string) => {
 };
 
 const createFilters = (params: Omit<Params, "items">): Filter[] => {
-    const { context, where } = params;
+    const { plugins, where } = params;
     const filterPlugins = getMappedPlugins<ValueFilterPlugin>({
-        context,
+        plugins,
         type: ValueFilterPlugin.type,
         property: "operation"
     });
-    const fieldPathPlugins = context.plugins.byType<FieldPathPlugin>(FieldPathPlugin.type);
-    const transformValuePlugins = context.plugins.byType<ValueTransformPlugin>(
-        ValueTransformPlugin.type
-    );
+    const fieldPathPlugins = plugins.byType<FieldPathPlugin>(FieldPathPlugin.type);
+    const transformValuePlugins = plugins.byType<ValueTransformPlugin>(ValueTransformPlugin.type);
 
     return Object.keys(where)
         .map(key => {
@@ -110,10 +107,10 @@ const transform = (value: any, transformValuePlugin?: ValueTransformPlugin): any
 /**
  * Creates a filter callable that we can send to the .filter() method of the array.
  */
-const createFilterCallable = ({ where, context }) => {
+const createFilterCallable = ({ where, plugins }) => {
     const filters = createFilters({
         where,
-        context
+        plugins
     });
 
     return (item: any) => {
@@ -133,10 +130,11 @@ const createFilterCallable = ({ where, context }) => {
 };
 
 export const filterItems = <T extends any = any>(params: Params<T>): T[] => {
-    const { items, where, context } = params;
+    const { items, where, plugins } = params;
     const filter = createFilterCallable({
         where,
-        context
+        // TODO: Probably a separate setter instead of the whole plugins object.
+        plugins
     });
     return items.filter(filter);
 };
