@@ -1,9 +1,8 @@
 import React from "react";
-import { plugins } from "@webiny/plugins";
 import styled from "@emotion/styled";
 import { Icon } from "@webiny/ui/Icon";
 import Draggable from "../Draggable";
-import { CmsEditorFieldTypePlugin } from "~/types";
+import { useCms } from "~/admin/hooks";
 
 const FieldContainer = styled("div")({
     padding: "10px 15px",
@@ -42,23 +41,23 @@ const FieldHandle = styled("div")({
     color: "var(--mdc-theme-on-surface)"
 });
 
-const Field = ({ onFieldDragStart, fieldType: { type, label, icon, description } }) => {
+const Field = ({ onFieldDragStart, fieldType }) => {
     return (
-        <Draggable beginDrag={{ type: "newField", fieldType: type }}>
+        <Draggable beginDrag={{ type: "newField", fieldType: fieldType.getName() }}>
             {({ drag }) => (
                 <div
                     ref={drag}
                     style={{ marginBottom: 10 }}
-                    data-testid={`cms-editor-fields-field-${type}`}
+                    data-testid={`cms-editor-fields-field-${fieldType.getName()}`}
                     onDragStart={onFieldDragStart}
                 >
                     <FieldContainer>
                         <FieldHandle>
-                            <Icon icon={icon} />
+                            <Icon icon={fieldType.getIcon()} />
                         </FieldHandle>
                         <FileInfo>
-                            <FieldLabel>{label}</FieldLabel>
-                            <FieldDescription>{description}</FieldDescription>
+                            <FieldLabel>{fieldType.getLabel()}</FieldLabel>
+                            <FieldDescription>{fieldType.getDescription()}</FieldDescription>
                         </FileInfo>
                     </FieldContainer>
                 </div>
@@ -68,14 +67,15 @@ const Field = ({ onFieldDragStart, fieldType: { type, label, icon, description }
 };
 
 export const FieldsSidebar = ({ onFieldDragStart }) => {
-    const fieldTypePlugin = plugins.byType<CmsEditorFieldTypePlugin>("cms-editor-field-type");
+    const { app } = useCms();
+    const fields = app.getFieldTypes();
 
     return (
         <React.Fragment>
-            {fieldTypePlugin.map(fieldPlugin => (
+            {fields.map(fieldType => (
                 <Field
-                    key={fieldPlugin.field.type}
-                    fieldType={fieldPlugin.field}
+                    key={fieldType.getName()}
+                    fieldType={fieldType}
                     onFieldDragStart={onFieldDragStart}
                 />
             ))}

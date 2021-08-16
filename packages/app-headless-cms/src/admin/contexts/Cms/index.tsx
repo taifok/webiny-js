@@ -2,8 +2,10 @@ import React from "react";
 import ApolloClient from "apollo-client";
 import { useI18N } from "@webiny/app-i18n/hooks/useI18N";
 import { CircularProgress } from "@webiny/ui/Progress";
+import { HeadlessCMS } from "~/admin/contexts/Cms/HeadlessCMS";
 
 export interface CmsContextValue {
+    app: HeadlessCMS;
     getApolloClient(locale: string): ApolloClient<any>;
     createApolloClient: CmsProviderProps["createApolloClient"];
     apolloClient: ApolloClient<any>;
@@ -23,12 +25,6 @@ export function CmsProvider(props: CmsProviderProps) {
 
     const currentLocale = getCurrentLocale("content");
 
-    // TODO: not sure why this was necessary :thinking:
-    // const hasPermission = identity.getPermission("cms.endpoint.manage");
-    // if (!hasPermission) {
-    //     return <CmsContext.Provider value={{}} {...props} />;
-    // }
-
     if (currentLocale && !apolloClientsCache[currentLocale]) {
         apolloClientsCache[currentLocale] = props.createApolloClient({
             uri: `${process.env.REACT_APP_API_URL}/cms/manage/${currentLocale}`
@@ -36,6 +32,7 @@ export function CmsProvider(props: CmsProviderProps) {
     }
 
     const value = {
+        app: new HeadlessCMS(),
         getApolloClient(locale: string) {
             if (!apolloClientsCache[locale]) {
                 apolloClientsCache[locale] = props.createApolloClient({

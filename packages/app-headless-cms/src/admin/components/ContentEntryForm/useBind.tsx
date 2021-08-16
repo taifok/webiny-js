@@ -1,6 +1,7 @@
 import React, { useRef, useCallback, cloneElement } from "react";
 import { BindComponentRenderProp } from "@webiny/form";
 import { createValidators } from "./functions/createValidators";
+import { useCms } from "~/admin/hooks";
 
 interface FieldBindProps extends BindComponentRenderProp {
     appendValue: (value: any) => void;
@@ -11,6 +12,10 @@ interface FieldBindProps extends BindComponentRenderProp {
 
 export function useBind({ Bind: ParentBind, field }) {
     const memoizedBindComponents = useRef({});
+    const { app } = useCms();
+    const fieldType = app.getFieldType(field.type);
+    const ftValidators = fieldType.getValidators();
+    const ftListValidators = fieldType.getListValidators();
 
     return useCallback(
         (index = -1) => {
@@ -25,8 +30,8 @@ export function useBind({ Bind: ParentBind, field }) {
                 return memoizedBindComponents.current[name];
             }
 
-            const validators = createValidators(field.validation || []);
-            const listValidators = createValidators(field.listValidation || []);
+            const validators = createValidators(ftValidators, field.validation || []);
+            const listValidators = createValidators(ftListValidators, field.listValidation || []);
             const defaultValue = field.multipleValues ? [] : undefined;
             const isMultipleValues = index === -1 && field.multipleValues;
             const inputValidators = isMultipleValues ? listValidators : validators;

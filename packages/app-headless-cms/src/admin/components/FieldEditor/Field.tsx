@@ -69,7 +69,7 @@ const Field = props => {
     const { field, onEdit, parent } = props;
     const { showSnackbar } = useSnackbar();
     const { setData, data } = useContentModelEditor();
-    const { getFieldPlugin } = useFieldEditor();
+    const { getFieldType } = useFieldEditor();
 
     const onDelete = useCallback(() => {
         props.onDelete(field);
@@ -87,22 +87,24 @@ const Field = props => {
         showSnackbar(t`Title field set successfully.`);
     }, [field.fieldId]);
 
-    const fieldPlugin = getFieldPlugin(field.type);
+    const fieldType = getFieldType(field.type);
     const editorFieldOptionPlugins =
         plugins.byType<CmsEditorFieldOptionPlugin>("cms-editor-field-option");
 
-    if (!fieldPlugin) {
+    if (!fieldType) {
         return null;
     }
 
     const lockedFields = data.lockedFields || [];
+    // @ts-ignore
+    // @ts-ignore
     return (
         <Fragment>
             <FieldContainer>
                 <Info>
                     <Typography use={"subtitle1"}>{field.label}</Typography>
                     <Typography use={"caption"}>
-                        {fieldPlugin.field.label}{" "}
+                        {fieldType.getLabel()}{" "}
                         {field.multipleValues && <>({t`multiple values`})</>}
                         {field.fieldId === data.titleFieldId && <>({t`entry title`})</>}
                     </Typography>
@@ -147,7 +149,8 @@ const Field = props => {
                 </Actions>
             </FieldContainer>
             <div className={"field-extra"}>
-                {fieldPlugin.field.render && fieldPlugin.field.render({ field, data, setData })}
+                {/* TODO: fix parameter types */}
+                {fieldType.render({ field, data, setData } as any)}
             </div>
         </Fragment>
     );

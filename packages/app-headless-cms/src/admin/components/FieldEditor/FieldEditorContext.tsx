@@ -15,6 +15,8 @@ import * as utils from "./utils";
 import { FieldEditorProps } from "./FieldEditor";
 import { DragObjectWithType, DragSourceMonitor } from "react-dnd";
 import { useFieldEditor } from "~/admin/components/FieldEditor/useFieldEditor";
+import { FieldType } from "~/admin/contexts/Cms/FieldType";
+import { useCms } from "~/admin/hooks";
 
 interface DropTarget {
     row: number;
@@ -41,7 +43,7 @@ export interface FieldEditorContextValue {
     layout: CmsEditorFieldsLayout;
     onChange?: (data: any) => void;
     getFieldsInLayout: () => CmsEditorField[][];
-    getFieldPlugin: (type: string) => CmsEditorFieldTypePlugin;
+    getFieldType: (type: string) => FieldType;
     getField: (query: Record<string, string>) => CmsEditorField;
     editField: (field: CmsEditorField) => void;
     field: CmsEditorField;
@@ -88,6 +90,8 @@ export const FieldEditorProvider = ({
         field: null,
         dropTarget: null
     });
+
+    const { app } = useCms();
 
     useDeepCompareEffect(() => {
         onChange({ fields: state.fields, layout: state.layout });
@@ -137,8 +141,7 @@ export const FieldEditorProvider = ({
                 return onDropTarget;
             }
 
-            const plugin = getFieldPlugin(fieldType);
-            editField(plugin.field.createField());
+            editField(getFieldType(fieldType).createField());
             setState(state => ({ ...state, dropTarget }));
         },
         []
@@ -172,12 +175,10 @@ export const FieldEditorProvider = ({
     };
 
     /**
-     * Return field plugin.
+     * Return field type.
      */
-    const getFieldPlugin: FieldEditorContextValue["getFieldPlugin"] = type => {
-        return plugins
-            .byType<CmsEditorFieldTypePlugin>("cms-editor-field-type")
-            .find(({ field }) => field.type === type);
+    const getFieldType: FieldEditorContextValue["getFieldType"] = type => {
+        return app.getFieldType(type);
     };
 
     /**
@@ -211,7 +212,7 @@ export const FieldEditorProvider = ({
             throw new Error(`Field "type" missing.`);
         }
 
-        const fieldPlugin = getFieldPlugin(field.type);
+        const fieldPlugin = getFieldType(field.type);
         if (!fieldPlugin) {
             throw new Error(`Invalid field "type".`);
         }
@@ -301,7 +302,7 @@ export const FieldEditorProvider = ({
         parent,
         depth,
         getFieldsInLayout,
-        getFieldPlugin,
+        getFieldType,
         getField,
         editField,
         field: state.field,

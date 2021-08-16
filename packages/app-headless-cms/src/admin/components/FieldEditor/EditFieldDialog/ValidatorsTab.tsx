@@ -12,10 +12,23 @@ import { Grid, Cell } from "@webiny/ui/Grid";
 import { validation } from "@webiny/validation";
 import { Input } from "@webiny/ui/Input";
 import { CmsEditorField } from "~/types";
+import { FieldValidator } from "~/admin/contexts/Cms/FieldValidator";
 
-const onEnabledChange = ({ data, validationValue, onChangeValidation, validator }) => {
+interface OnEnableChange {
+    data: Record<string, any>;
+    validationValue: any;
+    onChangeValidation: Function;
+    validator: FieldValidator;
+}
+
+const onEnabledChange = ({
+    data,
+    validationValue,
+    onChangeValidation,
+    validator
+}: OnEnableChange) => {
     if (data) {
-        const index = validationValue.findIndex(item => item.name === validator.name);
+        const index = validationValue.findIndex(item => item.name === validator.getName());
         onChangeValidation([
             ...validationValue.slice(0, index),
             ...validationValue.slice(index + 1)
@@ -24,9 +37,9 @@ const onEnabledChange = ({ data, validationValue, onChangeValidation, validator 
         onChangeValidation([
             ...validationValue,
             {
-                name: validator.name,
-                settings: validator.defaultSettings,
-                message: validator.defaultMessage
+                name: validator.getName(),
+                settings: validator.getDefaultSettings(),
+                message: validator.getDefaultMessage()
             }
         ]);
     }
@@ -47,7 +60,7 @@ const noMargin = css({
 
 interface ValidatorsTabProps {
     name: string;
-    validators: any[];
+    validators: FieldValidator[];
     form: any;
     field: CmsEditorField;
 }
@@ -63,34 +76,32 @@ const ValidatorsTab: React.FunctionComponent<ValidatorsTabProps> = props => {
     return (
         <Bind name={name} defaultValue={[]}>
             {({ value: validationValue, onChange: onChangeValidation }) => {
-                return validators.map(({ optional, validator }) => {
+                return validators.map(validator => {
                     const validatorIndex = (validationValue || []).findIndex(
-                        item => item.name === validator.name
+                        item => item.name === validator.getName()
                     );
                     const data = (validationValue || [])[validatorIndex];
 
                     return (
                         <SimpleForm
-                            key={validator.name}
+                            key={validator.getName()}
                             noElevation
                             className={noMargin}
-                            data-testid={`cms.editor.field-validator.${validator.name}`}
+                            data-testid={`cms.editor.field-validator.${validator.getName()}`}
                         >
-                            <SimpleFormHeader title={validator.label}>
-                                {optional && (
-                                    <Switch
-                                        label="Enabled"
-                                        value={validatorIndex >= 0}
-                                        onChange={() =>
-                                            onEnabledChange({
-                                                data,
-                                                validationValue,
-                                                onChangeValidation,
-                                                validator
-                                            })
-                                        }
-                                    />
-                                )}
+                            <SimpleFormHeader title={validator.getLabel()}>
+                                <Switch
+                                    label="Enabled"
+                                    value={validatorIndex >= 0}
+                                    onChange={() =>
+                                        onEnabledChange({
+                                            data,
+                                            validationValue,
+                                            onChangeValidation,
+                                            validator
+                                        })
+                                    }
+                                />
                             </SimpleFormHeader>
                             {data && (
                                 <Form
@@ -122,16 +133,15 @@ const ValidatorsTab: React.FunctionComponent<ValidatorsTabProps> = props => {
                                                 </Cell>
                                             </Grid>
 
-                                            {typeof validator.renderSettings === "function" &&
-                                                validator.renderSettings({
-                                                    field,
-                                                    setValue,
-                                                    setMessage: message => {
-                                                        setValue("message", message);
-                                                    },
-                                                    data,
-                                                    Bind
-                                                })}
+                                            {validator.renderSettings({
+                                                field,
+                                                setValue,
+                                                setMessage: message => {
+                                                    setValue("message", message);
+                                                },
+                                                data,
+                                                Bind
+                                            })}
                                         </SimpleFormContent>
                                     )}
                                 </Form>

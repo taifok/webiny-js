@@ -4,19 +4,20 @@ import { Input } from "@webiny/ui/Input";
 import { Switch } from "@webiny/ui/Switch";
 import { Grid, Cell } from "@webiny/ui/Grid";
 import { validation } from "@webiny/validation";
-import { CmsEditorField, CmsEditorFieldTypePlugin } from "~/types";
+import { CmsEditorField } from "~/types";
 import { FormRenderPropParams } from "@webiny/form/Form";
 
 import { useFieldEditor } from "~/admin/components/FieldEditor";
 import { useContentModelEditor } from "~/admin/components/ContentModelEditor/useContentModelEditor";
+import { FieldType } from "~/admin/contexts/Cms/FieldType";
 
 type GeneralTabProps = {
     field: CmsEditorField;
     form: FormRenderPropParams;
-    fieldPlugin: CmsEditorFieldTypePlugin;
+    fieldType: FieldType;
 };
 
-const GeneralTab = ({ field, form, fieldPlugin }: GeneralTabProps) => {
+const GeneralTab = ({ field, form, fieldType }: GeneralTabProps) => {
     const { Bind, setValue } = form;
     const inputRef = useRef(null);
     const { data } = useContentModelEditor();
@@ -64,20 +65,17 @@ const GeneralTab = ({ field, form, fieldPlugin }: GeneralTabProps) => {
         throw new Error("Please enter a unique Field ID.");
     }, undefined);
 
-    let additionalSettings = null;
-    if (typeof fieldPlugin.field.renderSettings === "function") {
-        additionalSettings = fieldPlugin.field.renderSettings({
-            form,
-            afterChangeLabel,
-            uniqueFieldIdValidator,
-            contentModel: data
-        });
-    }
+    const additionalSettings = fieldType.renderSettings({
+        form,
+        afterChangeLabel,
+        uniqueFieldIdValidator,
+        contentModel: data
+    });
 
     const predefinedValuesEnabled = useMemo(
         () =>
-            fieldPlugin.field.allowPredefinedValues &&
-            typeof fieldPlugin.field.renderPredefinedValues === "function",
+            fieldType.getAllowPredefinedValues() &&
+            typeof fieldType.getRenderPredefinedValues() === "function",
         [field.fieldId]
     );
 
@@ -110,8 +108,8 @@ const GeneralTab = ({ field, form, fieldPlugin }: GeneralTabProps) => {
                 <Cell span={6}>
                     <Bind name={"multipleValues"}>
                         <Switch
-                            label={fieldPlugin.field.multipleValuesLabel}
-                            disabled={!fieldPlugin.field.allowMultipleValues}
+                            label={fieldType.getMultipleValuesLabel()}
+                            disabled={!fieldType.getAllowMultipleValues()}
                         />
                     </Bind>
                 </Cell>

@@ -5,12 +5,7 @@ import { Dialog, DialogContent, DialogTitle, DialogActions, DialogButton } from 
 import { Form } from "@webiny/form";
 import { Tabs, Tab } from "@webiny/ui/Tabs";
 import { i18n } from "@webiny/app/i18n";
-import {
-    CmsEditorField,
-    CmsEditorFieldRendererPlugin,
-    CmsEditorFieldTypePlugin,
-    CmsEditorFieldValidatorPlugin
-} from "~/types";
+import { CmsEditorField, CmsEditorFieldRendererPlugin } from "~/types";
 import { plugins } from "@webiny/plugins";
 import GeneralTab from "./EditFieldDialog/GeneralTab";
 import AppearanceTab from "./EditFieldDialog/AppearanceTab";
@@ -36,46 +31,6 @@ type EditFieldDialogProps = {
     onSubmit: (data: any) => void;
 };
 
-const getValidators = (
-    fieldPlugin: CmsEditorFieldTypePlugin,
-    key: string,
-    defaultValidators: string[] = []
-) => {
-    return plugins
-        .byType<CmsEditorFieldValidatorPlugin>("cms-editor-field-validator")
-        .map(plugin => plugin.validator)
-        .map(validator => {
-            const allowedValidators = fieldPlugin.field[key] || defaultValidators;
-            if (allowedValidators.includes(validator.name)) {
-                return { optional: true, validator };
-            } else if (allowedValidators.includes(`!${validator.name}`)) {
-                return { optional: false, validator };
-            }
-
-            return null;
-        })
-        .filter(Boolean)
-        .sort((a, b) => {
-            if (!a.optional && b.optional) {
-                return -1;
-            }
-
-            if (a.optional && !b.optional) {
-                return 1;
-            }
-
-            return 0;
-        });
-};
-
-const getListValidators = (fieldPlugin: CmsEditorFieldTypePlugin) => {
-    return getValidators(fieldPlugin, "listValidators", ["minLength", "maxLength"]);
-};
-
-const getFieldValidators = (fieldPlugin: CmsEditorFieldTypePlugin) => {
-    return getValidators(fieldPlugin, "validators");
-};
-
 const fieldEditorDialog = css({
     width: "100vw",
     height: "100vh",
@@ -95,7 +50,7 @@ const fieldEditorDialog = css({
 const EditFieldDialog = ({ field, onSubmit, ...props }: EditFieldDialogProps) => {
     const [current, setCurrent] = useState(null);
 
-    const { getFieldPlugin } = useFieldEditor();
+    const { getFieldType } = useFieldEditor();
 
     useEffect(() => {
         if (!field) {
@@ -126,10 +81,10 @@ const EditFieldDialog = ({ field, onSubmit, ...props }: EditFieldDialogProps) =>
     let headerTitle = t`Field Settings`;
 
     if (current) {
-        const fieldPlugin = getFieldPlugin(current.type);
-        if (fieldPlugin) {
+        const fieldType = getFieldType(current.type);
+        if (fieldType) {
             headerTitle = t`Field Settings - {fieldTypeLabel}`({
-                fieldTypeLabel: fieldPlugin.field.label
+                fieldTypeLabel: fieldType.getLabel()
             });
         }
 
@@ -137,7 +92,7 @@ const EditFieldDialog = ({ field, onSubmit, ...props }: EditFieldDialogProps) =>
             <Form data={current} onSubmit={onSubmit}>
                 {form => {
                     const predefinedValuesTabEnabled =
-                        fieldPlugin.field.allowPredefinedValues &&
+                        fieldType.getAllowPredefinedValues() &&
                         form.data.predefinedValues &&
                         form.data.predefinedValues.enabled;
 
@@ -149,7 +104,7 @@ const EditFieldDialog = ({ field, onSubmit, ...props }: EditFieldDialogProps) =>
                                         <GeneralTab
                                             form={form}
                                             field={form.data as CmsEditorField}
-                                            fieldPlugin={fieldPlugin}
+                                            fieldType={fieldType}
                                         />
                                     </Tab>
                                     <Tab
@@ -160,7 +115,7 @@ const EditFieldDialog = ({ field, onSubmit, ...props }: EditFieldDialogProps) =>
                                             <PredefinedValues
                                                 form={form}
                                                 field={form.data as CmsEditorField}
-                                                fieldPlugin={fieldPlugin}
+                                                fieldPlugin={fieldType}
                                             />
                                         )}
                                     </Tab>
@@ -186,9 +141,7 @@ const EditFieldDialog = ({ field, onSubmit, ...props }: EditFieldDialogProps) =>
                                                         <ValidatorsTab
                                                             field={field}
                                                             name={"listValidation"}
-                                                            validators={getListValidators(
-                                                                fieldPlugin
-                                                            )}
+                                                            validators={fieldType.getListValidators()}
                                                             form={form}
                                                         />
                                                     </Elevation>
@@ -212,9 +165,7 @@ const EditFieldDialog = ({ field, onSubmit, ...props }: EditFieldDialogProps) =>
                                                             field={current}
                                                             form={form}
                                                             name={"validation"}
-                                                            validators={getFieldValidators(
-                                                                fieldPlugin
-                                                            )}
+                                                            validators={fieldType.getValidators()}
                                                         />
                                                     </Elevation>
                                                 </Cell>
@@ -223,8 +174,7 @@ const EditFieldDialog = ({ field, onSubmit, ...props }: EditFieldDialogProps) =>
                                     )}
 
                                     {!form.data.multipleValues &&
-                                        Array.isArray(fieldPlugin.field.validators) &&
-                                        fieldPlugin.field.validators.length > 0 && (
+                                        fieldType.getValidators().length > 0 && (
                                             <Tab
                                                 label={"Validators"}
                                                 data-testid={"cms.editor.field.tabs.validators"}
@@ -233,7 +183,7 @@ const EditFieldDialog = ({ field, onSubmit, ...props }: EditFieldDialogProps) =>
                                                     field={current}
                                                     form={form}
                                                     name={"validation"}
-                                                    validators={getFieldValidators(fieldPlugin)}
+                                                    validators={fieldType.getValidators()}
                                                 />
                                             </Tab>
                                         )}
@@ -241,7 +191,7 @@ const EditFieldDialog = ({ field, onSubmit, ...props }: EditFieldDialogProps) =>
                                         <AppearanceTab
                                             form={form}
                                             field={form.data as CmsEditorField}
-                                            fieldPlugin={fieldPlugin}
+                                            fieldPlugin={fieldType}
                                         />
                                     </Tab>
                                 </Tabs>
