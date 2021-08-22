@@ -1,5 +1,5 @@
 import React from "react";
-import { PbEditorPageElementStyleSettingsPlugin } from "../../../../types";
+import { PbEditorPageElementStyleSettingsPlugin } from "~/types";
 import BackgroundSettings from "./BackgroundSettings";
 
 export default {

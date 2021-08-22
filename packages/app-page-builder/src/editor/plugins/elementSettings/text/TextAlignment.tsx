@@ -3,7 +3,7 @@ import { css } from "emotion";
 import classNames from "classnames";
 import { Tooltip } from "@webiny/ui/Tooltip";
 import { IconButton } from "@webiny/ui/Button";
-import { PbEditorPageElementSettingsRenderComponentProps } from "../../../../types";
+import { PbEditorPageElementSettingsRenderComponentProps } from "~/types";
 // Components
 import { ContentWrapper } from "../components/StyledComponents";
 // Icons

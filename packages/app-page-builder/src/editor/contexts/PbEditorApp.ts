@@ -7,6 +7,7 @@ import {
     activeElementAtom,
     elementByIdSelector,
     elementWithChildrenByIdSelector,
+    pageAtom,
     pluginsAtom,
     rootElementAtom,
     uiAtom
@@ -43,7 +44,6 @@ export class PbEditorApp extends Pluginable {
             this._rootEventId = event.getId();
         }
 
-        console.log("Dispatch", event);
         event.setApp(this);
         event.setEventState(this._eventState);
 
@@ -59,7 +59,7 @@ export class PbEditorApp extends Pluginable {
             }
         }
 
-        if (!(event instanceof ApplyStateChangesActionEvent)) {
+        if (!(event instanceof ApplyStateChangesActionEvent) && this._eventState) {
             this.dispatchEvent(
                 new ApplyStateChangesActionEvent({ state: this._eventState.getState() })
             );
@@ -79,7 +79,7 @@ export class PbEditorApp extends Pluginable {
         callbacks.add(cb);
         this._events.set(eventType, callbacks);
 
-        return () => {
+        return function removeEventListener() {
             callbacks.delete(cb);
         };
     }
@@ -103,6 +103,10 @@ export class PbEditorApp extends Pluginable {
 
     activateElement(id: string) {
         setState(activeElementAtom, id);
+    }
+
+    deactivateElement() {
+        setState(activeElementAtom, null);
     }
 
     getElementType(id: string) {
@@ -148,6 +152,11 @@ export class PbEditorApp extends Pluginable {
         return getState(rootElementAtom);
     }
 
+    getRootElement() {
+        const id = this.getRootElementId();
+        return this.getElementById(id);
+    }
+
     getElementTree(element = undefined, path = []) {
         if (!element) {
             element = this.getElementById(this.getRootElementId());
@@ -166,6 +175,10 @@ export class PbEditorApp extends Pluginable {
             }),
             path
         };
+    }
+
+    getPage() {
+        return getState(pageAtom);
     }
 
     getPageContent() {

@@ -35,13 +35,6 @@ export default new PbEditorAppPlugin(app => {
 
         const sourceElement = source.id ? await event.getApp().getElementById(source.id) : source;
 
-        console.log("dropElement", {
-            event,
-            source: sourceElement,
-            target: targetElement,
-            position: position
-        });
-
         await onReceived({
             event,
             source: sourceElement,

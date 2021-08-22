@@ -4,7 +4,7 @@ import {
     DisplayMode,
     PbEditorPageElementPlugin,
     PbEditorElementPluginArgs
-} from "../../../../types";
+} from "~/types";
 import List, { className } from "./List";
 import { createInitialTextValue } from "../utils/textUtils";
 import { createInitialPerDeviceSettingValue } from "../../elementSettings/elementSettingsUtils";

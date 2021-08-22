@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useRecoilCallback, useRecoilSnapshot, useRecoilState, useRecoilValue } from "recoil";
-import { PbEditorElement } from "../../../types";
+import { PbEditorElement } from "~/types";
 import {
     activeElementAtom,
     elementByIdSelector,

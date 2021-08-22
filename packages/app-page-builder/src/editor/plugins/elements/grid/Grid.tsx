@@ -2,7 +2,7 @@ import React, { CSSProperties } from "react";
 import kebabCase from "lodash/kebabCase";
 import styled from "@emotion/styled";
 import { css } from "emotion";
-import { PbEditorElement, DisplayMode } from "../../../../types";
+import { PbEditorElement, DisplayMode } from "~/types";
 import Element from "../../../components/Element";
 
 const StyledGrid = styled("div")({

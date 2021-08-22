@@ -2,8 +2,8 @@ import React from "react";
 import kebabCase from "lodash/kebabCase";
 import PagesList from "./PagesList";
 import GridPageList from "./components/GridPageList";
-import { PbRenderElementPluginArgs, PbRenderElementPlugin } from "../../../../types";
-import { PbPageElementPagesListComponentPlugin } from "../../../../types";
+import { PbRenderElementPluginArgs, PbRenderElementPlugin } from "~/types";
+import { PbPageElementPagesListComponentPlugin } from "~/types";
 import { PluginCollection } from "@webiny/plugins/types";
 
 export default (args: PbRenderElementPluginArgs = {}): PluginCollection => {

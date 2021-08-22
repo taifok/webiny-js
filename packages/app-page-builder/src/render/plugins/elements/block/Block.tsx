@@ -3,7 +3,7 @@ import { css } from "emotion";
 import kebabCase from "lodash/kebabCase";
 import Element from "../../../components/Element";
 import { ElementRoot } from "../../../components/ElementRoot";
-import { PbElement } from "../../../../types";
+import { PbElement } from "~/types";
 import ElementAnimation from "../../../components/ElementAnimation";
 import { Interpolation } from "@emotion/core";
 import { PageBuilderContext, PageBuilderContextValue } from "../../../../contexts/PageBuilder";

@@ -3,10 +3,8 @@ import * as Styled from "./StyledComponents";
 import {
     DeactivatePluginActionEvent,
     DragEndActionEvent,
-    DragStartActionEvent,
-    DropElementActionDataType,
-    DropElementActionEvent
-} from "../../../actions";
+    DragStartActionEvent
+} from "~/editor/actions";
 import Draggable from "../../../components/Draggable";
 import { css } from "emotion";
 import { List, ListItem, ListItemMeta } from "@webiny/ui/List";
@@ -41,8 +39,6 @@ const categoriesList = css({
 
 const AddElement: React.FunctionComponent = () => {
     const { app } = usePageEditor();
-    const plugin = app.getActivePluginByName(ADD_ELEMENT);
-    const { params } = plugin || {};
     const { removeKeyHandler, addKeyHandler } = useKeyHandler();
 
     const dragStart = useCallback(() => {
@@ -57,10 +53,6 @@ const AddElement: React.FunctionComponent = () => {
                 name: ADD_ELEMENT
             })
         );
-    }, []);
-    const dropElement = useCallback((data: DropElementActionDataType) => {
-        console.log("dropElement in AddElement component", data);
-        app.dispatchEvent(new DropElementActionEvent(data));
     }, []);
 
     const [group, setGroup] = useState<string>(app.getElementGroups()[0].getId());
@@ -134,26 +126,6 @@ const AddElement: React.FunctionComponent = () => {
         [enableDragOverlay, disableDragOverlay]
     );
 
-    const renderClickable = useCallback(
-        (element, plugin) => {
-            const item = renderOverlay(
-                element,
-                () => {
-                    dropElement({
-                        source: { type: plugin.elementType } as any,
-                        target: { ...params }
-                    });
-                    deactivatePlugin();
-                },
-                "Click to Add",
-                plugin
-            );
-
-            return React.cloneElement(item, { key: plugin.name });
-        },
-        [params, deactivatePlugin, dropElement, renderOverlay]
-    );
-
     useEffect(() => {
         addKeyHandler("escape", e => {
             e.preventDefault();
@@ -187,7 +159,7 @@ const AddElement: React.FunctionComponent = () => {
             <Styled.Elements>
                 {groupElements.length
                     ? groupElements.map(elementType => {
-                          return (params ? renderClickable : renderDraggable)(
+                          return renderDraggable(
                               <div data-role="draggable">
                                   <Styled.ElementBox>
                                       <Styled.ElementTitle>

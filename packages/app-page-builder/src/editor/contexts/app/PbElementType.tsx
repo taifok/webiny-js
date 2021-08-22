@@ -150,6 +150,10 @@ export class PbElementType {
             data.id = getNanoID();
         }
 
+        if (!data.type) {
+            data.type = this.getId();
+        }
+
         if (!data.version) {
             data.version = this._version;
         }

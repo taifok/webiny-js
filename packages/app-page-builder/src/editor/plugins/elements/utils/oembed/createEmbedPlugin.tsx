@@ -6,7 +6,7 @@ import {
     PbEditorPageElementPlugin,
     PbEditorPageElementAdvancedSettingsPlugin,
     DisplayMode
-} from "../../../../../types";
+} from "~/types";
 import { createInitialPerDeviceSettingValue } from "../../../elementSettings/elementSettingsUtils";
 
 type EmbedPluginConfig = {

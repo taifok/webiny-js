@@ -11,6 +11,7 @@ import { Typography } from "@webiny/ui/Typography";
 import { LoadingEditor, LoadingTitle } from "./EditorStyled.js";
 import { GET_PAGE, CREATE_PAGE_FROM } from "./graphql";
 import {PbEditorApp} from "~/editor/contexts/PbEditorApp";
+import {EditorAppProvider} from "~/editor/contexts/EditorAppProvider";
 
 const extractPageGetPage = (data: any): any => {
     return data.pageBuilder?.getPage || {};
@@ -64,15 +65,15 @@ const Editor: React.FunctionComponent = () => {
             };
 
             return (
-                <React.Fragment>
-                    <PbEditor app={app} page={page} revisions={revisions} />
+                <EditorAppProvider app={app}>
+                    <PbEditor page={page} revisions={revisions} />
                     <div style={{ zIndex: 30, position: "absolute" }}>
                         <Snackbar />
                     </div>
                     <div>
                         <DialogContainer />
                     </div>
-                </React.Fragment>
+                </EditorAppProvider>
             );
         },
         [ready]

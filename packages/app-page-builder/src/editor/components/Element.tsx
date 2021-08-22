@@ -11,7 +11,7 @@ import {
 } from "./Element/ElementStyled";
 import { usePageEditor } from "~/editor/hooks/usePageEditor";
 import { useElementById } from "~/editor/hooks/useElementById";
-import { useActiveElementId } from "~/editor/hooks/useActiveElementId";
+import { useActiveElement } from "~/editor/hooks/useActiveElement";
 
 export type ElementPropsType = {
     id: string;
@@ -127,9 +127,9 @@ const ElementComponent: React.FunctionComponent<ElementPropsType> = ({
 
 const withHighlightElement = (Component: React.FunctionComponent) => {
     return function withHighlightElementComponent(props) {
-        const [activeElementId] = useActiveElementId();
+        const [activeElement] = useActiveElement();
 
-        return <Component {...props} isActive={activeElementId === props.id} />;
+        return <Component {...props} isActive={activeElement && activeElement.id === props.id} />;
     };
 };
 

@@ -1,6 +1,6 @@
 import React from "react";
 import classNames from "classnames";
-import { PbElement } from "../../../../types";
+import { PbElement } from "~/types";
 import Text from "../../../components/Text";
 
 export const headingClassName = classNames(

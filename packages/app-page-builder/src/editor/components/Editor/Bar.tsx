@@ -3,7 +3,7 @@ import DefaultEditorBar from "./DefaultEditorBar";
 import { activeElementAtom, pluginsAtom } from "../../state";
 import { plugins } from "@webiny/plugins";
 import { useRecoilValue } from "recoil";
-import { PbEditorBarPlugin } from "../../../types";
+import { PbEditorBarPlugin } from "~/types";
 
 const Bar: React.FC = () => {
     const activeElementId = useRecoilValue(activeElementAtom);

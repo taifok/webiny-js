@@ -1,4 +1,4 @@
-import { PbPageSettingsFieldsPlugin } from "../../../types";
+import { PbPageSettingsFieldsPlugin } from "~/types";
 
 export default (): PbPageSettingsFieldsPlugin[] => [
     {

@@ -1,7 +1,7 @@
 import React from "react";
 import { useRecoilValue } from "recoil";
 import kebabCase from "lodash/kebabCase";
-import { PbElement } from "../../../../types";
+import { PbElement } from "~/types";
 import { elementByIdSelector } from "../../../state";
 import { ElementRoot } from "../../../../render/components/ElementRoot";
 

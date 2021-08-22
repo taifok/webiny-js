@@ -1,6 +1,6 @@
 import React from "react";
 import Element from "../../../components/Element";
-import { PbEditorElement } from "../../../../types";
+import { PbEditorElement } from "~/types";
 
 type DocumentProps = { element: PbEditorElement };
 

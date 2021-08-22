@@ -2,7 +2,6 @@ import React, { useState, useEffect, createContext } from "react";
 import { Typography } from "@webiny/ui/Typography";
 import { Tooltip } from "@webiny/ui/Tooltip";
 import { i18n } from "@webiny/app/i18n";
-import { useEventActionHandler } from "~/editor/hooks/useEventActionHandler";
 import { NavigatorTitle } from "./StyledComponents";
 import { TreeView } from "./TreeView";
 import { ReactComponent as UnfoldMoreIcon } from "./assets/unfold_more_24px.svg";
@@ -15,33 +14,26 @@ const t = i18n.ns("app-page-builder/editor/plugins/toolbar/navigator");
 export const NavigatorContext = createContext(null);
 
 const Navigator = () => {
-    const [elementTree, setElementTree] = useState(null);
+    const { app } = usePageEditor();
+    const [elementTree, setElementTree] = useState(() => {
+        return app.getElementTree();
+    });
+
     const [expandAll, setExpandAll] = useState(false);
     const [activeElementPath, setActiveElementPath] = useState([]);
-    const { app } = usePageEditor();
 
-    const refreshElementTree = async () => {
+    const refreshElementTree = () => {
         try {
-            const elementTree = await app.getElementTree();
-            setElementTree(elementTree);
+            setElementTree(app.getElementTree());
         } catch (e) {}
     };
-    
+
     // Update element tree
     useEffect(() => {
-        app.addEventListener(UpdateElementTreeActionEvent, () => {
+        return app.addEventListener(UpdateElementTreeActionEvent, () => {
             refreshElementTree();
         });
     }, []);
-
-    // Get initial element tree.
-    useEffect(() => {
-        if (elementTree) {
-            return;
-        }
-        // Load element tree.
-        refreshElementTree();
-    });
 
     return (
         <NavigatorContext.Provider

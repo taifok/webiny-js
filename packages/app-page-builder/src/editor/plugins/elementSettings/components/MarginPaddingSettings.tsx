@@ -11,7 +11,7 @@ import { plugins } from "@webiny/plugins";
 import {
     PbEditorPageElementSettingsRenderComponentProps,
     PbEditorResponsiveModePlugin
-} from "../../../../types";
+} from "~/types";
 import {
     activeElementAtom,
     elementWithChildrenByIdSelector,

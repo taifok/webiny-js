@@ -2,7 +2,7 @@ import React from "react";
 import { ReactComponent as HelpIcon } from "../../../assets/icons/help_outline.svg";
 import Onboarding from "./Onboarding";
 import Action from "../Action";
-import { PbEditorToolbarBottomPlugin } from "../../../../types";
+import { PbEditorToolbarBottomPlugin } from "~/types";
 
 export default {
     name: "pb-editor-toolbar-onboarding",

@@ -5,7 +5,7 @@ import { useQuery } from "@apollo/react-hooks";
 import { useSnackbar } from "@webiny/app-admin/hooks/useSnackbar";
 import { Typography } from "@webiny/ui/Typography";
 import { UpdateElementActionEvent } from "../actions";
-import { PbEditorElement } from "../../types";
+import { PbEditorElement } from "~/types";
 import useRenderEmptyEmbed from "../plugins/elements/utils/oembed/useRenderEmptyEmbed";
 import { usePageEditor } from "~/editor/hooks/usePageEditor";
 

@@ -1,18 +1,12 @@
 import React, { useCallback, useEffect } from "react";
 import styled from "@emotion/styled";
 import { css } from "emotion";
-import { useRecoilValue, useRecoilState } from "recoil";
 import { Elevation } from "@webiny/ui/Elevation";
 import { Tabs, Tab } from "@webiny/ui/Tabs";
-import {
-    elementWithChildrenByIdSelector,
-    activeElementAtom,
-    sidebarAtom,
-    highlightSidebarTabMutation,
-    updateSidebarActiveTabIndexMutation
-} from "../../state";
 import StyleSettingsTabContent from "./Sidebar/StyleSettingsTabContent";
 import ElementSettingsTabContent from "./Sidebar/ElementSettingsTabContent";
+import { useActiveElement } from "~/editor/hooks/useActiveElement";
+import { useElementSidebar } from "~/editor/hooks/useElementSidebar";
 
 const rightSideBar = css({
     boxShadow: "1px 0px 5px 0px rgba(128,128,128,1)",
@@ -44,27 +38,22 @@ const PanelHighLight = styled("div")({
 });
 
 const EditorSideBar = () => {
-    const activeElementId = useRecoilValue(activeElementAtom);
-    const element = useRecoilValue(elementWithChildrenByIdSelector(activeElementId));
-    const [sidebarAtomValue, setSidebarAtomValue] = useRecoilState(sidebarAtom);
+    const [element] = useActiveElement();
+    const [sidebar, updateSidebar] = useElementSidebar();
 
     const setActiveTabIndex = useCallback(index => {
-        setSidebarAtomValue(prev => updateSidebarActiveTabIndexMutation(prev, index));
+        updateSidebar(state => ({ ...state, activeTabIndex: index }));
     }, []);
-
-    const unHighlightElementTab = useCallback(() => {
-        setSidebarAtomValue(prev => highlightSidebarTabMutation(prev, false));
-    }, []);
-
+    
     useEffect(() => {
-        if (sidebarAtomValue.highlightTab) {
-            setTimeout(unHighlightElementTab, 1000);
+        if (sidebar.highlightTab) {
+            setTimeout(() => updateSidebar(state => ({ ...state, highlightTab: false })), 1000);
         }
-    }, [sidebarAtomValue.highlightTab]);
+    }, [sidebar.highlightTab]);
 
     return (
         <Elevation z={1} className={rightSideBar}>
-            <Tabs value={sidebarAtomValue.activeTabIndex} updateValue={setActiveTabIndex}>
+            <Tabs value={sidebar.activeTabIndex} updateValue={setActiveTabIndex}>
                 <Tab label={"style"}>
                     <StyleSettingsTabContent element={element} />
                 </Tab>
@@ -72,7 +61,7 @@ const EditorSideBar = () => {
                     <ElementSettingsTabContent element={element} />
                 </Tab>
             </Tabs>
-            {sidebarAtomValue.highlightTab && <PanelHighLight />}
+            {sidebar.highlightTab && <PanelHighLight />}
         </Elevation>
     );
 };

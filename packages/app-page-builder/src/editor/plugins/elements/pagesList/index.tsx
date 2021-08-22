@@ -7,7 +7,7 @@ import {
     PbEditorPageElementAdvancedSettingsPlugin,
     DisplayMode,
     PbEditorElementPluginArgs
-} from "../../../../types";
+} from "~/types";
 import { createInitialPerDeviceSettingValue } from "../../elementSettings/elementSettingsUtils";
 import { ReactComponent as PageListIcon } from "./page-list-icon.svg";
 import PagesList from "./PagesList";

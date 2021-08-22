@@ -1,23 +1,21 @@
 import React from "react";
 import platform from "platform";
-import { useSetRecoilState } from "recoil";
 import { ReactComponent as UndoIcon } from "../../../assets/icons/undo-icon.svg";
 import { ReactComponent as RedoIcon } from "../../../assets/icons/redo-icon.svg";
 import { PbEditorToolbarBottomPlugin } from "~/types";
-import { activeElementAtom } from "../../../state";
 import Action from "../Action";
-import { useEventActionHandler } from "../../../hooks/useEventActionHandler";
+import { usePageEditor } from "~/editor/hooks/usePageEditor";
+import { UndoStateChangeActionEvent } from "~/editor/actions/undo";
+import { RedoStateChangeActionEvent } from "~/editor/actions/redo";
 
 const metaKey = platform.os.family === "OS X" ? "CMD" : "CTRL";
 
 const UndoAction = () => {
-    return null;
-    const { undo } = useEventActionHandler();
-    const setActiveElementAtomValue = useSetRecoilState(activeElementAtom);
+    const { app } = usePageEditor();
 
     const onClick = () => {
-        undo();
-        setActiveElementAtomValue(null);
+        app.dispatchEvent(new UndoStateChangeActionEvent());
+        app.deactivateElement();
     };
     return (
         <Action
@@ -30,13 +28,10 @@ const UndoAction = () => {
 };
 
 const RedoAction = () => {
-    return null;
-    const { redo } = useEventActionHandler();
-    const setActiveElementAtomValue = useSetRecoilState(activeElementAtom);
-
+    const { app } = usePageEditor();
     const onClick = () => {
-        setActiveElementAtomValue(null);
-        redo();
+        app.deactivateElement();
+        app.dispatchEvent(new RedoStateChangeActionEvent());
     };
 
     return (

@@ -1,7 +1,7 @@
 import React from "react";
 import kebabCase from "lodash/kebabCase";
 import OEmbed from "../../../../components/OEmbed";
-import { PbRenderElementPluginArgs, PbRenderElementPlugin } from "../../../../../types";
+import { PbRenderElementPluginArgs, PbRenderElementPlugin } from "~/types";
 
 const oembed = {
     global: "twttr",

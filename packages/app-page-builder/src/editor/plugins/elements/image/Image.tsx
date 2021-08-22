@@ -1,6 +1,6 @@
 import React from "react";
 import ImageContainer from "./ImageContainer";
-import { PbEditorElement } from "../../../../types";
+import { PbEditorElement } from "~/types";
 import { ElementRoot } from "../../../../render/components/ElementRoot";
 
 type ImagePropsType = {

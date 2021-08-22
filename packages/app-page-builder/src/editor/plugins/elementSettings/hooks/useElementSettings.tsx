@@ -1,7 +1,7 @@
 import { useEffect, useCallback } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { plugins } from "@webiny/plugins";
-import { PbEditorPageElementPlugin } from "../../../../types";
+import { PbEditorPageElementPlugin } from "~/types";
 import { useKeyHandler } from "../../../hooks/useKeyHandler";
 import { userElementSettingsPlugins } from "../../../helpers";
 import { activeElementAtom, elementByIdSelector } from "../../../state";

@@ -1,5 +1,5 @@
 import { PbEditorEvent } from "~/editor/contexts/app/PbEditorEvent";
-import { PluginsAtomPluginParamsType } from "../../modules";
+import { PluginsAtomPluginParamsType } from "~/editor/state";
 
 export type TogglePluginActionParamsType = {
     name: string;

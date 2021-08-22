@@ -1,7 +1,7 @@
 import React from "react";
 import { plugins } from "@webiny/plugins";
 import kebabCase from "lodash/kebabCase";
-import { PbRenderResponsiveModePlugin } from "../types";
+import { PbRenderResponsiveModePlugin } from "~/types";
 import { PageBuilderContext, PageBuilderContextValue } from "../contexts/PageBuilder";
 
 const useResponsiveClassName = () => {

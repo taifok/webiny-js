@@ -28,7 +28,7 @@ import { listItem, ListItemTitle, listStyle, TitleContent } from "./SearchBlocks
 import * as Styled from "./StyledComponents";
 import { PbEditorBlockCategoryPlugin } from "~/types";
 import { usePageEditor } from "~/editor/hooks/usePageEditor";
-import {PbBlockType} from "~/editor/contexts/app/PbBlockType";
+import { PbBlockType } from "~/editor/contexts/app/PbBlockType";
 
 const allBlockCategory: PbEditorBlockCategoryPlugin = {
     type: "pb-editor-block-category",
@@ -115,12 +115,7 @@ const SearchBar = () => {
                     }
                 ]
             };
-            app.dispatchEvent(
-                new UpdateElementActionEvent({
-                    element,
-                    history: true
-                })
-            );
+            app.dispatchEvent(new UpdateElementActionEvent({ element }));
 
             deactivatePlugin();
         },

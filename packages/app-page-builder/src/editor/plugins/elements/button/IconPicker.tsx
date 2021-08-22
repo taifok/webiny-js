@@ -1,4 +1,4 @@
-import { PbIcon } from "../../../../types";
+import { PbIcon } from "~/types";
 import React from "react";
 import { Typography } from "@webiny/ui/Typography";
 import { Cell } from "@webiny/ui/Grid";

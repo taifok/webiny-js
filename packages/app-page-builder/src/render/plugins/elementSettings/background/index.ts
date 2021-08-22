@@ -1,6 +1,6 @@
 import { get } from "lodash";
 import kebabCase from "lodash/kebabCase";
-import { PbRenderElementStylePlugin } from "../../../../types";
+import { PbRenderElementStylePlugin } from "~/types";
 import { applyPerDeviceStyleWithFallback } from "../../../utils";
 
 const scaling = {

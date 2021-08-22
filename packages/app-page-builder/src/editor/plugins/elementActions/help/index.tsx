@@ -1,6 +1,6 @@
 import React from "react";
 import { ReactComponent as HelpIcon } from "../../../assets/icons/help_outline.svg";
-import { PbEditorPageElementActionPlugin } from "../../../../types";
+import { PbEditorPageElementActionPlugin } from "~/types";
 
 export default {
     name: "pb-editor-element-action-help",

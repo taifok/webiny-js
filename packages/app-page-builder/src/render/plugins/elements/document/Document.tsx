@@ -1,5 +1,5 @@
 import React from "react";
-import { PbElement } from "../../../../types";
+import { PbElement } from "~/types";
 import RenderElement from "../../../components/Element";
 
 const Document = ({ element }: { element: PbElement }) => {

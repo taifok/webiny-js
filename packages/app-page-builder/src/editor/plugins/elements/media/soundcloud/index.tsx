@@ -11,7 +11,7 @@ import {
     ButtonContainer,
     SimpleButton
 } from "../../../elementSettings/components/StyledComponents";
-import { PbEditorElementPluginArgs } from "../../../../../types";
+import { PbEditorElementPluginArgs } from "~/types";
 
 const PreviewBox = styled("div")({
     textAlign: "center",

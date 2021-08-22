@@ -3,7 +3,7 @@ import { useRecoilValue } from "recoil";
 import { css } from "emotion";
 import get from "lodash/get";
 import { Cell, Grid } from "@webiny/ui/Grid";
-import { PbEditorPageElementSettingsRenderComponentProps } from "../../../../types";
+import { PbEditorPageElementSettingsRenderComponentProps } from "~/types";
 import { activeElementAtom, elementByIdSelector } from "../../../state";
 import ElementAnimation from "../../../../render/components/ElementAnimation";
 import useUpdateHandlers from "../useUpdateHandlers";

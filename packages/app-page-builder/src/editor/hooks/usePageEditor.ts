@@ -1,6 +1,6 @@
 import { useContext } from "react";
-import { EditorContext } from "../contexts/EditorProvider";
+import { EditorAppContext } from "../contexts/EditorAppProvider";
 
 export function usePageEditor() {
-    return useContext(EditorContext);
+    return useContext(EditorAppContext);
 }

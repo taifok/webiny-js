@@ -3,8 +3,8 @@ import kebabCase from "lodash/kebabCase";
 import { PluginCollection } from "@webiny/plugins/types";
 import ImagesList from "./ImagesList";
 import Mosaic from "./components/Mosaic";
-import { PbRenderElementPluginArgs, PbRenderElementPlugin } from "../../../../types";
-import { PbPageElementImagesListComponentPlugin } from "../../../../types";
+import { PbRenderElementPluginArgs, PbRenderElementPlugin } from "~/types";
+import { PbPageElementImagesListComponentPlugin } from "~/types";
 
 export default (args: PbRenderElementPluginArgs = {}): PluginCollection => {
     const elementType = kebabCase(args.elementType || "images-list");

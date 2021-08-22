@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 import classNames from "classnames";
 import get from "lodash/get";
 import { usePageBuilder } from "../../hooks/usePageBuilder";
-import { DisplayMode, PbElement } from "../../types";
+import { DisplayMode, PbElement } from "~/types";
 import { ElementRoot } from "./ElementRoot";
 import { applyFallbackDisplayMode } from "../../editor/plugins/elementSettings/elementSettingsUtils";
 

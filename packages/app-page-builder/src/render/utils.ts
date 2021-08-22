@@ -1,6 +1,6 @@
 import orderBy from "lodash/orderBy";
 import { plugins } from "@webiny/plugins";
-import { PbRenderResponsiveModePlugin } from "../types";
+import { PbRenderResponsiveModePlugin } from "~/types";
 
 type ApplyStyle = ({
     fallbackMode,

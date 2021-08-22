@@ -1,5 +1,5 @@
 import React from "react";
-import { PbElement } from "../../../../types";
+import { PbElement } from "~/types";
 import Text from "../../../components/Text";
 
 type TextPropsType = {

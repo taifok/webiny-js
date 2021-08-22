@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useApolloClient } from "@apollo/react-hooks";
 import React, { createContext, useEffect, useMemo, useRef } from "react";
 import merge from "lodash/merge";

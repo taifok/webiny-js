@@ -4,7 +4,7 @@ import { usePageBuilder } from "../../../../hooks/usePageBuilder";
 import { LIST_PUBLISHED_PAGES } from "./graphql";
 import { plugins } from "@webiny/plugins";
 import { get } from "lodash";
-import { PbPageElementPagesListComponentPlugin } from "../../../../types";
+import { PbPageElementPagesListComponentPlugin } from "~/types";
 import { useRecoilValue } from "recoil";
 import { pageAtom } from "../../../state";
 

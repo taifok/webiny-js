@@ -1,6 +1,6 @@
 import { elementsAtom, rootElementAtom } from "../..";
 import { selector } from "recoil";
-import { PbEditorElement } from "../../../../../types";
+import { PbEditorElement } from "~/types";
 
 export const elementsInContentTotalSelector = selector({
     key: "elementsInContentTotalSelector",

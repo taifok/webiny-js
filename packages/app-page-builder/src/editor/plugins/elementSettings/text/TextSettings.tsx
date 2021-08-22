@@ -13,7 +13,7 @@ import {
     PbEditorPageElementSettingsRenderComponentProps,
     PbEditorResponsiveModePlugin,
     PbThemePlugin
-} from "../../../../types";
+} from "~/types";
 import {
     activeElementAtom,
     elementWithChildrenByIdSelector,

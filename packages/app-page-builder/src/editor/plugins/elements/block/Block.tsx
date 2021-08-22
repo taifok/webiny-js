@@ -2,7 +2,7 @@ import React from "react";
 import BlockContainer from "./BlockContainer";
 import ElementAnimation from "../../../../render/components/ElementAnimation";
 import styled from "@emotion/styled";
-import { PbEditorElement } from "../../../../types";
+import { PbEditorElement } from "~/types";
 import { ElementRoot } from "../../../../render/components/ElementRoot";
 
 const BlockStyle = styled("div")({

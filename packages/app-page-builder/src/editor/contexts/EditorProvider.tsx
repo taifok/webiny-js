@@ -16,6 +16,7 @@ import { PbState } from "~/editor/state/types";
 import RecoilExternal from "./RecoilExternal";
 import { UndoStateChangeActionEvent } from "../actions/undo";
 import { RedoStateChangeActionEvent } from "~/editor/actions/redo";
+import {usePageEditor} from "~/editor/hooks/usePageEditor";
 
 interface SnapshotHistory {
     past: Snapshot[];
@@ -42,7 +43,8 @@ const isTrackedAtomChanged = (state: Partial<PbState>): boolean => {
 
 export const EditorContext = createContext<EditorContextValue>(null);
 
-export const EditorProvider: React.FunctionComponent<any> = ({ app, children }) => {
+export const EditorProvider: React.FunctionComponent<any> = ({ children }) => {
+    const { app } = usePageEditor();
     const setActiveElementId = useSetRecoilState(activeElementAtom);
     const setHighlightElementId = useSetRecoilState(highlightElementAtom);
     const setSidebarAtomValue = useSetRecoilState(sidebarAtom);
@@ -106,7 +108,7 @@ export const EditorProvider: React.FunctionComponent<any> = ({ app, children }) 
             }
 
             if (state.ui) {
-                setUiAtomValue(state.ui);
+                setUiAtomValue(prev => ({ ...prev, ...state.ui }));
             }
 
             if (state.plugins) {
@@ -114,7 +116,7 @@ export const EditorProvider: React.FunctionComponent<any> = ({ app, children }) 
             }
 
             if (state.page) {
-                setPageAtomValue(state.page);
+                setPageAtomValue(prev => ({ ...prev, ...state.page }));
             }
 
             if (state.hasOwnProperty("activeElement")) {

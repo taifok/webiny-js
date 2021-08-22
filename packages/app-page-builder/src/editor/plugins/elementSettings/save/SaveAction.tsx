@@ -3,14 +3,14 @@ import dataURLtoBlob from "dataurl-to-blob";
 import SaveDialog from "./SaveDialog";
 import pick from "lodash.pick";
 import get from "lodash/get";
-import createElementPlugin from "../../../../admin/utils/createElementPlugin";
-import createBlockPlugin from "../../../../admin/utils/createBlockPlugin";
+import createElementPlugin from "~/admin/utils/createElementPlugin";
+import createBlockPlugin from "~/admin/utils/createBlockPlugin";
 import { activeElementAtom, elementByIdSelector } from "../../../state";
 import { useApolloClient } from "@apollo/react-hooks";
 import { plugins } from "@webiny/plugins";
 import { useSnackbar } from "@webiny/app-admin/hooks/useSnackbar";
 import { useKeyHandler } from "../../../hooks/useKeyHandler";
-import { CREATE_PAGE_ELEMENT, UPDATE_PAGE_ELEMENT } from "../../../../admin/graphql/pages";
+import { CREATE_PAGE_ELEMENT, UPDATE_PAGE_ELEMENT } from "~/admin/graphql/pages";
 import { useRecoilValue } from "recoil";
 import { CREATE_FILE } from "./SaveDialog/graphql";
 import { FileUploaderPlugin } from "@webiny/app/types";
@@ -18,8 +18,8 @@ import {
     PbEditorPageElementPlugin,
     PbEditorPageElementSaveActionPlugin,
     PbEditorElement
-} from "../../../../types";
-import { useEventActionHandler } from "../../../hooks/useEventActionHandler";
+} from "~/types";
+import { usePageEditor } from "~/editor/hooks/usePageEditor";
 
 const removeIds = el => {
     delete el.id;
@@ -64,13 +64,13 @@ const SaveAction: React.FunctionComponent = ({ children }) => {
     const activeElementId = useRecoilValue(activeElementAtom);
     const element = useRecoilValue(elementByIdSelector(activeElementId));
     const { addKeyHandler, removeKeyHandler } = useKeyHandler();
-    const { getElementTree } = useEventActionHandler();
+    const { app } = usePageEditor();
     const { showSnackbar } = useSnackbar();
     const [isDialogOpened, setOpenDialog] = useState<boolean>(false);
     const client = useApolloClient();
 
     const onSubmit = async formData => {
-        formData.content = pluginOnSave(removeIds(await getElementTree(element)));
+        formData.content = pluginOnSave(removeIds(app.getElementTree(element)));
 
         const meta = await getDataURLImageDimensions(formData.preview);
         const blob = dataURLtoBlob(formData.preview);

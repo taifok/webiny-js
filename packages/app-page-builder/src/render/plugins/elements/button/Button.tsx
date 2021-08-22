@@ -1,7 +1,7 @@
 import React from "react";
 import kebabCase from "lodash/kebabCase";
 import { ElementRoot } from "../../../components/ElementRoot";
-import { PbElement } from "../../../../types";
+import { PbElement } from "~/types";
 import { Link } from "@webiny/react-router";
 import { PageBuilderContext, PageBuilderContextValue } from "../../../../contexts/PageBuilder";
 

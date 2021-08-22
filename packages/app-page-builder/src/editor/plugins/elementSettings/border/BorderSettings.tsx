@@ -8,7 +8,7 @@ import { Tooltip } from "@webiny/ui/Tooltip";
 import {
     PbEditorPageElementSettingsRenderComponentProps,
     PbEditorResponsiveModePlugin
-} from "../../../../types";
+} from "~/types";
 import { activeElementAtom, elementByIdSelector, uiAtom } from "../../../state";
 import useUpdateHandlers from "../useUpdateHandlers";
 import { applyFallbackDisplayMode } from "../elementSettingsUtils";

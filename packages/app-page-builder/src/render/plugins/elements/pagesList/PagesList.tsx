@@ -7,7 +7,7 @@ import { plugins } from "@webiny/plugins";
 import get from "lodash/get";
 import trimEnd from "lodash/trimEnd";
 
-import { PbPageElementPagesListComponentPlugin } from "../../../../types";
+import { PbPageElementPagesListComponentPlugin } from "~/types";
 
 declare global {
     // eslint-disable-next-line

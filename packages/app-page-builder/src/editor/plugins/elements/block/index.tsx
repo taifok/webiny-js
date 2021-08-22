@@ -4,12 +4,11 @@ import Block from "./Block";
 import {
     CreateElementActionEvent,
     DeleteElementActionEvent,
-    updateElementAction
-} from "../../../actions";
+    UpdateElementActionEvent
+} from "~/editor/actions";
 import { addElementToParent, createDroppedElement } from "../../../helpers";
 import {
     DisplayMode,
-    EventActionHandlerActionCallableResponse,
     PbEditorPageElementPlugin,
     PbEditorElement,
     PbEditorElementPluginArgs
@@ -26,8 +25,6 @@ class BlockElementType extends PbElementType {
         // @ts-ignore
         this.setCreateElement(() => {
             return {
-                type: this.getId(),
-                elements: [],
                 data: {
                     settings: {
                         width: createInitialPerDeviceSettingValue(
@@ -66,46 +63,50 @@ class BlockElementType extends PbElementType {
         this.setRenderer(props => {
             return <Block {...props} />;
         });
-        
-        this.setOnReceived(({ event }) => {
-            console.log("BLock on received", event);
-            return;
-            // const { source, target, position = null } = event.getData();
-            //
-            // const element = createDroppedElement(source as any, target);
-            //
-            // const block = addElementToParent(element, target, position);
-            //
-            // const result = updateElementAction(state, meta, {
-            //     element: block,
-            //     history: true
-            // }) as EventActionHandlerActionCallableResponse;
-            //
-            // result.actions.push(
-            //     new AfterDropElementActionEvent({
-            //         element
-            //     })
-            // );
-            //
-            // if (source.id) {
-            //     // Delete source element
-            //     result.actions.push(
-            //         new DeleteElementActionEvent({
-            //             element: source as PbEditorElement
-            //         })
-            //     );
-            //
-            //     return result;
-            // }
-            //
-            // result.actions.push(
-            //     new CreateElementActionEvent({
-            //         element,
-            //         source: source as any
-            //     })
-            // );
-            // return result;
-        })
+
+        this.setOnReceived(async ({ event, source, target, position }) => {
+            const sourceElementType = event.getApp().getElementType(source.type);
+            const element = sourceElementType.createElement(element => {
+                element.parent = target.id;
+                if (source.id) {
+                    element.elements = source.elements;
+                    element.data = source.data;
+                }
+                return element;
+            });
+
+            const blockElement = addElementToParent(element, target, position);
+
+            console.log("==============ovaj UpdateElementActionEvent==============");
+            await event
+                .getApp()
+                .dispatchEvent(new UpdateElementActionEvent({ element: blockElement }));
+
+            console.log("==============ovaj AfterDropElementActionEvent==============");
+            await event.getApp().dispatchEvent(
+                new AfterDropElementActionEvent({
+                    element
+                })
+            );
+
+            if (source.id) {
+                // Delete source element
+                await event.getApp().dispatchEvent(
+                    new DeleteElementActionEvent({
+                        element: source as PbEditorElement
+                    })
+                );
+
+                return;
+            }
+
+            await event.getApp().dispatchEvent(
+                new CreateElementActionEvent({
+                    element,
+                    source: source as any
+                })
+            );
+        });
     }
 }
 

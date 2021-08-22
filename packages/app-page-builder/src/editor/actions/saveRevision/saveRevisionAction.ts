@@ -1,10 +1,9 @@
 import gql from "graphql-tag";
 import lodashIsEqual from "lodash/isEqual";
 import lodashDebounce from "lodash/debounce";
-import { SaveRevisionActionArgsType } from "./types";
-import { ToggleSaveRevisionStateActionEvent } from "./event";
-import { EventActionCallable } from "~/types";
-import { PageAtomType } from "../../modules";
+import { SaveRevisionActionParamsType } from "./types";
+import { SaveRevisionActionEvent, ToggleSaveRevisionStateActionEvent } from "./event";
+import { PageAtomType } from "~/editor/state";
 
 type PageRevisionType = Pick<PageAtomType, "title" | "snippet" | "path" | "settings"> & {
     category: string;
@@ -17,36 +16,35 @@ const isDataEqualToLastSavedData = (data: PageRevisionType) => {
     return lodashIsEqual(data, lastSavedRevisionData);
 };
 
-const triggerOnFinish = (args?: SaveRevisionActionArgsType): void => {
-    if (!args || !args.onFinish || typeof args.onFinish !== "function") {
+const triggerOnFinish = (params?: SaveRevisionActionParamsType): void => {
+    if (!params || !params.onFinish || typeof params.onFinish !== "function") {
         return;
     }
-    args.onFinish();
+    params.onFinish();
 };
 
 let debouncedSave = null;
 
-export const saveRevisionAction: EventActionCallable<SaveRevisionActionArgsType> = async (
-    state,
-    meta,
-    args = {}
-) => {
-    if (state.page.locked) {
-        return {};
+export const saveRevisionAction = async (event: SaveRevisionActionEvent) => {
+    const eventData = event.getData();
+    const page = event.getApp().getPage();
+
+    if (page.locked) {
+        return;
     }
 
     const data: PageRevisionType = {
-        title: state.page.title,
-        snippet: state.page.snippet,
-        path: state.page.path,
-        settings: state.page.settings,
-        content: await state.getElementTree(),
-        category: state.page.category.slug
+        title: page.title,
+        snippet: page.snippet,
+        path: page.path,
+        settings: page.settings,
+        content: event.getApp().getElementTree(),
+        category: page.category.slug
     };
 
     if (isDataEqualToLastSavedData(data)) {
-        triggerOnFinish(args);
-        return {};
+        triggerOnFinish(eventData);
+        return;
     }
 
     lastSavedRevisionData = data;
@@ -77,26 +75,29 @@ export const saveRevisionAction: EventActionCallable<SaveRevisionActionArgsType>
     }
 
     const runSave = async () => {
-        meta.eventActionHandler.trigger(new ToggleSaveRevisionStateActionEvent({ saving: true }));
+        await event
+            .getApp()
+            .dispatchEvent(new ToggleSaveRevisionStateActionEvent({ saving: true }));
 
-        await meta.client.mutate({
-            mutation: updatePage,
-            variables: {
-                id: state.page.id,
-                data
-            }
-        });
+        // TODO: add hooks to PbEditorApp
+        // await meta.client.mutate({
+        //     mutation: updatePage,
+        //     variables: {
+        //         id: state.page.id,
+        //         data
+        //     }
+        // });
 
-        meta.eventActionHandler.trigger(new ToggleSaveRevisionStateActionEvent({ saving: false }));
-        triggerOnFinish(args);
+        await event
+            .getApp()
+            .dispatchEvent(new ToggleSaveRevisionStateActionEvent({ saving: false }));
+        triggerOnFinish(eventData);
     };
 
-    if (args && args.debounce === false) {
+    if (eventData.debounce === false) {
         runSave();
     } else {
         debouncedSave = lodashDebounce(runSave, 2000);
         debouncedSave();
     }
-
-    return {};
 };

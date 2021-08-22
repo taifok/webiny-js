@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Grid, Cell } from "@webiny/ui/Grid";
 import { plugins } from "@webiny/plugins";
-import { PbPageElementImagesListComponentPlugin } from "../../../../types";
+import { PbPageElementImagesListComponentPlugin } from "~/types";
 import Accordion from "../../elementSettings/components/Accordion";
 import Wrapper from "../../elementSettings/components/Wrapper";
 import SelectField from "../../elementSettings/components/SelectField";

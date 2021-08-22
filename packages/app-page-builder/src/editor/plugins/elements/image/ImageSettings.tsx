@@ -8,7 +8,7 @@ import InputField from "../../elementSettings/components/InputField";
 import SpacingPicker from "../../elementSettings/components/SpacingPicker";
 import useUpdateHandlers from "../../elementSettings/useUpdateHandlers";
 import { justifySelfEndStyle } from "../../elementSettings/components/StyledComponents";
-import { PbEditorPageElementSettingsRenderComponentProps } from "../../../../types";
+import { PbEditorPageElementSettingsRenderComponentProps } from "~/types";
 import { activeElementAtom, elementByIdSelector } from "../../../state";
 
 import {

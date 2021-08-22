@@ -1,4 +1,4 @@
-export type MoveBlockActionArgsType = {
+export type MoveBlockActionParamsType = {
     source: {
         id: string;
         type: string;

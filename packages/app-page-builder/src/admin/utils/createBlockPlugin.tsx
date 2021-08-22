@@ -2,7 +2,7 @@ import React from "react";
 import cloneDeep from "lodash/cloneDeep";
 import { plugins } from "@webiny/plugins";
 import { Image } from "@webiny/ui/Image";
-import { PbEditorBlockPlugin } from "../../types";
+import { PbEditorBlockPlugin } from "~/types";
 
 type BlockElement = {
     id: string;

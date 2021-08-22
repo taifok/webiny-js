@@ -1,10 +1,11 @@
-import { AfterDropElementActionEvent } from "~/editor/actions/afterDropElement/event";
+import { AfterDropElementActionEvent } from "~/editor/actions/afterDropElement/index";
 
 export const afterDropElementAction = (event: AfterDropElementActionEvent) => {
     const { element } = event.getData();
 
     const elementType = event.getApp().getElementType(element.type);
     const onCreate = elementType.getOnCreate();
+    console.log("afterDropElement", onCreate);
     if (onCreate === "open-settings") {
         return {};
     }

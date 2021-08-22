@@ -1,19 +1,8 @@
 import React, { useEffect } from "react";
 import HTML5Backend from "react-dnd-html5-backend";
 import classSet from "classnames";
-import { useEventActionHandler } from "../../hooks/useEventActionHandler";
-import { EventActionHandler, PbEditorEventActionPlugin } from "../../../types";
-import {
-    rootElementAtom,
-    PageAtomType,
-    revisionsAtom,
-    RevisionsAtomType,
-    uiAtom
-} from "../../state";
-import { useRecoilValue, useSetRecoilState } from "recoil";
 import { DndProvider } from "react-dnd";
 import { useKeyHandler } from "../../hooks/useKeyHandler";
-import { plugins } from "@webiny/plugins";
 import "./Editor.scss";
 // Components
 import EditorBar from "./Bar";
@@ -22,79 +11,42 @@ import EditorContent from "./Content";
 import DragPreview from "./DragPreview";
 import Dialogs from "./Dialogs";
 import EditorSideBar from "./EditorSideBar";
-import {usePageEditor} from "~/editor/hooks/usePageEditor";
-
-type PluginRegistryType = Map<string, () => void>;
-
-const registerPlugins = (handler: EventActionHandler): PluginRegistryType => {
-    const registry = new Map();
-    const editorEventActionPlugins = plugins.byType<PbEditorEventActionPlugin>(
-        "pb-editor-event-action-plugin"
-    );
-    for (const pl of editorEventActionPlugins) {
-        if (!pl.name) {
-            throw new Error(
-                `All plugins with type "pb-editor-event-action-plugin" must have a name.`
-            );
-        }
-        registry.set(pl.name, pl.onEditorMount(handler));
-    }
-    return registry;
-};
-const unregisterPlugins = (handler: EventActionHandler, registered: PluginRegistryType): void => {
-    for (const name of registered.keys()) {
-        const cb = registered.get(name);
-        const pl = plugins.byName<PbEditorEventActionPlugin>(name);
-        if (typeof pl.onEditorUnmount === "function") {
-            pl.onEditorUnmount(handler, cb);
-            continue;
-        }
-        cb();
-    }
-};
-
-const triggerActionButtonClick = (name: string): void => {
-    const id = `#action-${name}`;
-    const element = document.querySelector<HTMLElement | null>(id);
-    if (!element) {
-        console.warn(`There is no html element "${id}"`);
-        return;
-    }
-    element.click();
-};
+import { PageAtomType, RevisionsAtomType } from "~/editor/state";
+import { usePageEditor } from "~/editor/hooks/usePageEditor";
+import { useUI } from "~/editor/hooks/useUI";
+import { useRevisions } from "~/editor/hooks/useRevisions";
+import { UndoStateChangeActionEvent } from "~/editor/actions/undo";
+import { RedoStateChangeActionEvent } from "~/editor/actions/redo";
 
 type EditorPropsType = {
     page: PageAtomType;
     revisions: RevisionsAtomType;
 };
-export const Editor: React.FunctionComponent<EditorPropsType> = ({ revisions }) => {
-    const eventActionHandler = useEventActionHandler();
-    const { addKeyHandler, removeKeyHandler } = useKeyHandler();
-    const { isDragging, isResizing } = useRecoilValue(uiAtom);
 
-    const setRevisionsAtomValue = useSetRecoilState(revisionsAtom);
-    const rootElementId = useRecoilValue(rootElementAtom);
+export const Editor: React.FunctionComponent<EditorPropsType> = ({ revisions }) => {
+    const { app } = usePageEditor();
+    const { addKeyHandler, removeKeyHandler } = useKeyHandler();
+    const [{ isDragging, isResizing }] = useUI();
+
+    const [, setRevisions] = useRevisions();
+    const rootElementId = app.getRootElementId();
 
     const firstRender = React.useRef<boolean>(true);
-    const registeredPlugins = React.useRef<PluginRegistryType>();
 
     useEffect(() => {
         addKeyHandler("mod+z", e => {
             e.preventDefault();
-            triggerActionButtonClick("undo");
+            app.dispatchEvent(new UndoStateChangeActionEvent());
         });
         addKeyHandler("mod+shift+z", e => {
             e.preventDefault();
-            triggerActionButtonClick("redo");
+            app.dispatchEvent(new RedoStateChangeActionEvent());
         });
-        registeredPlugins.current = registerPlugins(eventActionHandler);
 
-        setRevisionsAtomValue(revisions);
+        setRevisions(revisions);
         return () => {
             removeKeyHandler("mod+z");
             removeKeyHandler("mod+shift+z");
-
-            unregisterPlugins(eventActionHandler, registeredPlugins.current);
         };
     }, []);
 
@@ -110,9 +62,7 @@ export const Editor: React.FunctionComponent<EditorPropsType> = ({ revisions }) 
         "pb-editor-dragging": isDragging,
         "pb-editor-resizing": isResizing
     };
-    
-    console.log("Rerender Editor.tsx");
-    
+
     return (
         <DndProvider backend={HTML5Backend}>
             <div className={classSet(classes)}>

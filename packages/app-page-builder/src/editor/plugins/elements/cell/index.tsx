@@ -1,26 +1,16 @@
 import React from "react";
-import kebabCase from "lodash/kebabCase";
 import CellContainer from "./CellContainer";
-import { executeAction } from "../../../recoil/eventActions";
-import { UpdateElementActionParamsType } from "../../../actions/updateElement/types";
+import { UpdateElementActionParamsType } from "~/editor/actions/updateElement/types";
 import {
     CreateElementActionEvent,
     DeleteElementActionEvent,
-    updateElementAction,
     UpdateElementActionEvent
-} from "../../../actions";
-import { addElementToParent, createDroppedElement, createElement } from "../../../helpers";
-import {
-    DisplayMode,
-    PbEditorPageElementPlugin,
-    PbEditorPageElementSaveActionPlugin,
-    PbEditorElement,
-    PbEditorElementPluginArgs
-} from "../../../../types";
-import { Plugin } from "@webiny/plugins/types";
+} from "~/editor/actions";
+import { addElementToParent, createElement } from "../../../helpers";
+import { DisplayMode, PbEditorPageElementSaveActionPlugin, PbEditorElement } from "~/types";
 import { AfterDropElementActionEvent } from "../../../actions/afterDropElement";
 import { createInitialPerDeviceSettingValue } from "../../elementSettings/elementSettingsUtils";
-import { PbEditorApp, PbEditorAppPlugin } from "~/editor/contexts/PbEditorApp";
+import { PbEditorAppPlugin } from "~/editor/contexts/PbEditorApp";
 import { PbElementType } from "~/editor/contexts/app/PbElementType";
 //
 // const cellPlugin = (args: PbEditorElementPluginArgs = {}): PbEditorPageElementPlugin => {

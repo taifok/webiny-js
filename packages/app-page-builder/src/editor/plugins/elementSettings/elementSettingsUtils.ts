@@ -5,7 +5,7 @@ import {
     PbEditorResponsiveModePlugin,
     PbRenderResponsiveModePlugin,
     DisplayMode
-} from "../../../types";
+} from "~/types";
 
 export const WIDTH_UNIT_OPTIONS = [
     {

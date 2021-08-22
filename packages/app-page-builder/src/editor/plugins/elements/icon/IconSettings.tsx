@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 import { css } from "emotion";
 import { useRecoilValue } from "recoil";
-import { PbEditorPageElementSettingsRenderComponentProps } from "../../../../types";
+import { PbEditorPageElementSettingsRenderComponentProps } from "~/types";
 import { activeElementAtom, elementWithChildrenByIdSelector } from "../../../state";
 // Components
 import IconPicker from "../../../components/IconPicker";

@@ -2,7 +2,7 @@ import React from "react";
 import { useRecoilValue } from "recoil";
 import kebabCase from "lodash/kebabCase";
 import styled from "@emotion/styled";
-import { PbEditorElement } from "../../../../types";
+import { PbEditorElement } from "~/types";
 import { elementWithChildrenByIdSelector, uiAtom } from "../../../state";
 import ElementAnimation from "../../../../render/components/ElementAnimation";
 import { ElementRoot } from "../../../../render/components/ElementRoot";

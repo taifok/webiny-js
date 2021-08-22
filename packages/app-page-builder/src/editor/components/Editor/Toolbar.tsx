@@ -99,7 +99,6 @@ const renderPlugin = (plugin: PbEditorToolbarTopPlugin | PbEditorToolbarBottomPl
 
 const Toolbar = () => {
     const activePluginsTop = useActivePluginsByType("pb-editor-toolbar-top") as string[];
-    console.log(activePluginsTop);
     const actionsTop = plugins.byType<PbEditorToolbarTopPlugin>("pb-editor-toolbar-top");
     const actionsBottom = plugins.byType<PbEditorToolbarBottomPlugin>("pb-editor-toolbar-bottom");
     return (

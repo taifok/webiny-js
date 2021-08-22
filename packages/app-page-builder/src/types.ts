@@ -1,12 +1,10 @@
 import React, { ComponentType, ReactElement, ReactNode } from "react";
-import { DragObjectWithTypeWithTarget } from "./editor/components/Droppable";
-import { BaseEventAction, EventAction } from "./editor/recoil/eventActions";
 import { PluginsAtomType } from "./editor/state";
-import { PbState } from "./editor/state/types";
 import { Plugin } from "@webiny/app/types";
 import { BindComponent } from "@webiny/form/Bind";
 import { IconPrefix, IconName } from "@fortawesome/fontawesome-svg-core";
 import { Form, FormSetValue } from "@webiny/form/Form";
+import { DropElementActionEvent } from "~/editor/actions";
 
 export type PbElementDataSettingsSpacingValueType = {
     all?: string;
@@ -262,12 +260,6 @@ export type PbAddonRenderPlugin = Plugin & {
     component: ReactElement;
 };
 
-export type PbDocumentElementPlugin = Plugin & {
-    elementType: "document";
-    create(options?: any): PbElement;
-    render(props): ReactElement;
-};
-
 export type PbPageDetailsRevisionContentPlugin = Plugin & {
     type: "pb-page-details-revision-content";
     render(params: { page: Record<string, any>; getPageQuery: any }): ReactElement;
@@ -344,13 +336,7 @@ export type PbEditorPageElementPlugin = Plugin & {
     // A function to check if an element can be deleted.
     canDelete?: (params: { element: PbEditorElement }) => boolean;
     // Executed when another element is dropped on the drop zones of current element.
-    onReceived?: (params: {
-        state?: EventActionHandlerCallableState;
-        meta: EventActionHandlerMeta;
-        source: PbEditorElement | DragObjectWithTypeWithTarget;
-        target: PbEditorElement;
-        position: number | null;
-    }) => EventActionHandlerActionCallableResponse;
+    onReceived?: (params: { event: DropElementActionEvent }) => void;
     // Executed when an immediate child element is deleted
     onChildDeleted?: (params: {
         element: PbEditorElement;
@@ -514,19 +500,6 @@ export type PbEditorPageElementAdvancedSettingsPlugin = Plugin & {
     onSave?: (data: FormData) => FormData;
 };
 
-export type PbEditorEventActionPlugin = Plugin & {
-    type: "pb-editor-event-action-plugin";
-    name: string;
-    // returns an unregister event action callable
-    // please have one action per plugin
-    // you can register more but then unregistering won't work properly
-    onEditorMount: (handler: EventActionHandler) => () => void;
-    // runs when editor is unmounting
-    // by default it runs unregister callable
-    // but dev can do what ever and then run unregister callable - or not
-    onEditorUnmount?: (handler: EventActionHandler, cb: () => void) => void;
-};
-
 export type PbEditorGridPresetPluginType = Plugin & {
     name: string;
     type: "pb-editor-grid-preset";
@@ -593,61 +566,3 @@ export type PbEditorElementPluginArgs = {
 export type PbRenderElementPluginArgs = {
     elementType?: string;
 };
-
-// ============== EVENT ACTION HANDLER ================= //
-export interface EventActionHandlerCallableState extends PbState {
-    getElementById(id: string): Promise<PbEditorElement>;
-    getElementTree(element?: PbEditorElement): Promise<any>;
-}
-
-export interface EventActionHandler {
-    on(
-        target: EventActionHandlerTarget,
-        callable: EventActionCallable
-    ): EventActionHandlerUnregister;
-    trigger<T extends EventActionHandlerCallableArgs>(
-        ev: EventAction<T>
-    ): Promise<Partial<PbState>>;
-    undo: () => void;
-    redo: () => void;
-    startBatch: () => void;
-    endBatch: () => void;
-    enableHistory: () => void;
-    disableHistory: () => void;
-    getElementTree: (element?: PbEditorElement) => Promise<any>;
-}
-
-export interface EventActionHandlerTarget {
-    new (...args: any[]): EventAction<any>;
-}
-export interface EventActionHandlerUnregister {
-    (): boolean;
-}
-
-export interface EventActionHandlerMeta {
-    client: any;
-    eventActionHandler: EventActionHandler;
-}
-
-export interface EventActionHandlerConfig {
-    maxEventActionsNesting: number;
-}
-
-export interface EventActionHandlerActionCallableResponse {
-    state?: Partial<EventActionHandlerCallableState>;
-    actions?: BaseEventAction[];
-}
-
-export interface EventActionHandlerMutationActionCallable<T, A extends any = any> {
-    (state: T, args?: A): T;
-}
-
-export interface EventActionHandlerCallableArgs {
-    [key: string]: any;
-}
-
-export interface EventActionCallable<T extends EventActionHandlerCallableArgs = any> {
-    (state: EventActionHandlerCallableState, meta: EventActionHandlerMeta, args?: T):
-        | EventActionHandlerActionCallableResponse
-        | Promise<EventActionHandlerActionCallableResponse>;
-}

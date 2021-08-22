@@ -14,7 +14,7 @@ import classNames from "classnames";
 import { useConfirmationDialog } from "@webiny/app-admin/hooks/useConfirmationDialog";
 import { useConfigureWebsiteUrlDialog } from "../../../../hooks/useConfigureWebsiteUrl";
 import { plugins } from "@webiny/plugins";
-import { PbPageDetailsHeaderRightOptionsMenuItemPlugin } from "../../../../../types";
+import { PbPageDetailsHeaderRightOptionsMenuItemPlugin } from "~/types";
 import gql from "graphql-tag";
 import { useMutation } from "@apollo/react-hooks";
 import { SecureView } from "@webiny/app-security";

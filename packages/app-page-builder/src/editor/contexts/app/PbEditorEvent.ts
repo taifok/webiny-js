@@ -15,7 +15,7 @@ export class PbEditorEvent<TData = Record<string, any>> {
     private _id: string;
 
     constructor(data?: TData) {
-        this._data = data;
+        this._data = data || {} as TData;
         this._id = nanoid();
     }
 

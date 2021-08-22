@@ -1,6 +1,6 @@
 import React from "react";
 import Document from "./Document";
-import { PbRenderElementPlugin } from "../../../../types";
+import { PbRenderElementPlugin } from "~/types";
 
 export default (): PbRenderElementPlugin => {
     return {

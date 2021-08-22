@@ -10,4 +10,3 @@ export * from "./updateElement";
 export * from "./updatePage";
 export * from "./saveRevision";
 export * from "./updateElementTree";
-export * from "./plugins";

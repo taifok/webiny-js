@@ -14,12 +14,6 @@ export class UpdatePageRevisionActionEvent extends PbEditorEvent<UpdatePageRevis
 export default new PbEditorAppPlugin(app => {
     app.addEventListener(UpdatePageRevisionActionEvent, async event => {
         const { debounce, onFinish, page } = event.getData();
-        await event.getApp().dispatchEvent(
-            new SaveRevisionActionEvent({
-                debounce,
-                onFinish
-            })
-        );
 
         event.setState(state => {
             return {
@@ -30,5 +24,12 @@ export default new PbEditorAppPlugin(app => {
                 }
             };
         });
+
+        await event.getApp().dispatchEvent(
+            new SaveRevisionActionEvent({
+                debounce,
+                onFinish
+            })
+        );
     });
 });

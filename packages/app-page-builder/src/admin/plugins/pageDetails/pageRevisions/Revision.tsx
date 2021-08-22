@@ -28,7 +28,7 @@ import { ReactComponent as PublishIcon } from "../../../assets/round-publish-24p
 import { ReactComponent as UnpublishIcon } from "../../../assets/unpublish.svg";
 import { ReactComponent as DeleteIcon } from "../../../assets/delete.svg";
 import { ReactComponent as PreviewIcon } from "../../../assets/visibility.svg";
-import { PbPageData, PbPageRevision } from "../../../../types";
+import { PbPageData, PbPageRevision } from "~/types";
 import usePermission from "../../../../hooks/usePermission";
 
 type RevisionProps = {

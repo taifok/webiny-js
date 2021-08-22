@@ -1,6 +1,6 @@
 import React from "react";
 import Block from "./Block";
-import { PbRenderElementPlugin } from "../../../../types";
+import { PbRenderElementPlugin } from "~/types";
 
 export default (): PbRenderElementPlugin => {
     return {
