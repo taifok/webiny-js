@@ -18,7 +18,7 @@ import {
     setPagePreviewDimensionMutation,
     rootElementAtom,
     elementsAtom
-} from "../../recoil/modules";
+} from "../../state";
 
 import { usePageBuilder } from "../../../hooks/usePageBuilder";
 import Element from "../Element";

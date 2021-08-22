@@ -1,16 +1,16 @@
 import React, { useCallback } from "react";
-import { useEventActionHandler } from "../../../hooks/useEventActionHandler";
-import { DeleteElementActionEvent } from "../../../recoil/actions";
-import { activeElementAtom, elementByIdSelector } from "../../../recoil/modules";
+import { DeleteElementActionEvent } from "../../../actions";
+import { activeElementAtom, elementByIdSelector } from "../../../state";
 import { plugins } from "@webiny/plugins";
-import { PbEditorPageElementPlugin } from "../../../../types";
+import { PbEditorPageElementPlugin } from "~/types";
 import { useRecoilValue } from "recoil";
+import { usePageEditor } from "~/editor/hooks/usePageEditor";
 
 type DeleteActionPropsType = {
     children: React.ReactElement;
 };
 const DeleteAction: React.FunctionComponent<DeleteActionPropsType> = ({ children }) => {
-    const eventActionHandler = useEventActionHandler();
+    const { app } = usePageEditor();
     const activeElementId = useRecoilValue(activeElementAtom);
     const element = useRecoilValue(elementByIdSelector(activeElementId));
 
@@ -19,7 +19,7 @@ const DeleteAction: React.FunctionComponent<DeleteActionPropsType> = ({ children
     }
 
     const onClick = useCallback(() => {
-        eventActionHandler.trigger(
+        app.dispatchEvent(
             new DeleteElementActionEvent({
                 element
             })

@@ -7,16 +7,16 @@ import {
     PbEditorGridPresetPluginType,
     PbEditorPageElementSettingsRenderComponentProps,
     PbEditorElement
-} from "../../../../types";
-import { useEventActionHandler } from "../../../hooks/useEventActionHandler";
+} from "~/types";
 import { createElement } from "../../../helpers";
 import { calculatePresetPluginCells, getPresetPlugins } from "../../../plugins/gridPresets";
-import { UpdateElementActionEvent } from "../../../recoil/actions";
-import { activeElementAtom, elementWithChildrenByIdSelector } from "../../../recoil/modules";
+import { UpdateElementActionEvent } from "../../../actions";
+import { activeElementAtom, elementWithChildrenByIdSelector } from "../../../state";
 // Components
 import CellSize from "./CellSize";
 import { ContentWrapper } from "../components/StyledComponents";
 import Accordion from "../components/Accordion";
+import { usePageEditor } from "~/editor/hooks/usePageEditor";
 
 const classes = {
     grid: css({
@@ -93,7 +93,7 @@ const updateChildrenWithPreset = (target: PbEditorElement, pl: PbEditorGridPrese
 
 export const GridSettings: React.FunctionComponent<PbEditorPageElementSettingsRenderComponentProps> =
     ({ defaultAccordionValue }) => {
-        const handler = useEventActionHandler();
+        const { app } = usePageEditor();
         const activeElementId = useRecoilValue(activeElementAtom);
         const element = useRecoilValue(
             elementWithChildrenByIdSelector(activeElementId)
@@ -106,7 +106,7 @@ export const GridSettings: React.FunctionComponent<PbEditorPageElementSettingsRe
             if (!cellElement) {
                 throw new Error(`There is no element on index ${index}.`);
             }
-            handler.trigger(
+            app.dispatchEvent(
                 new UpdateElementActionEvent({
                     element: {
                         ...cellElement,
@@ -130,7 +130,7 @@ export const GridSettings: React.FunctionComponent<PbEditorPageElementSettingsRe
             if (cellsType === currentCellsType) {
                 return;
             }
-            handler.trigger(
+            app.dispatchEvent(
                 new UpdateElementActionEvent({
                     element: {
                         ...element,

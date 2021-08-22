@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 import { useRecoilState } from "recoil";
 import { css } from "emotion";
-import { activeElementAtom } from "../../recoil/modules";
+import { activeElementAtom } from "../../state";
 
 const backgroundStyle = css({
     position: "fixed",

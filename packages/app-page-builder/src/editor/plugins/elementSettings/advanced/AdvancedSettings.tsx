@@ -1,13 +1,13 @@
 import React, { useMemo } from "react";
 import { cloneDeep } from "lodash";
 import { merge } from "dot-prop-immutable";
-import { useEventActionHandler } from "../../../hooks/useEventActionHandler";
-import { UpdateElementActionEvent } from "../../../recoil/actions";
+import { UpdateElementActionEvent } from "../../../actions";
 import { plugins } from "@webiny/plugins";
 import { renderPlugins } from "@webiny/app/plugins";
 import { withActiveElement } from "../../../components";
 import { Form } from "@webiny/form";
-import { PbEditorPageElementAdvancedSettingsPlugin, PbEditorElement } from "../../../../types";
+import { PbEditorPageElementAdvancedSettingsPlugin, PbEditorElement } from "~/types";
+import { usePageEditor } from "~/editor/hooks/usePageEditor";
 
 const emptyElement = { data: {}, type: null };
 
@@ -17,7 +17,7 @@ type AdvancedSettingsPropsType = {
 const AdvancedSettings: React.FunctionComponent<AdvancedSettingsPropsType> = ({ element }) => {
     const { data, type } = element || cloneDeep(emptyElement);
 
-    const eventActionHandler = useEventActionHandler();
+    const { app } = usePageEditor();
 
     // Get element settings plugins
     const advancedSettingsPlugin = useMemo(() => {
@@ -36,7 +36,7 @@ const AdvancedSettings: React.FunctionComponent<AdvancedSettingsPropsType> = ({ 
             return formData;
         }, formData);
 
-        eventActionHandler.trigger(
+        app.dispatchEvent(
             new UpdateElementActionEvent({
                 element: merge(element, "data", formData),
                 history: true

@@ -1,16 +1,16 @@
 import React from "react";
-import { useEventActionHandler } from "../../../hooks/useEventActionHandler";
-import { activeElementAtom, elementByIdSelector } from "../../../recoil/modules";
+import { activeElementAtom, elementByIdSelector } from "../../../state";
 import { plugins } from "@webiny/plugins";
-import { PbEditorPageElementPlugin, PbEditorElement } from "../../../../types";
+import { PbEditorPageElementPlugin, PbEditorElement } from "~/types";
 import { useRecoilValue } from "recoil";
-import { CloneElementActionEvent } from "../../../recoil/actions/cloneElement";
+import { CloneElementActionEvent } from "~/editor/actions";
+import { usePageEditor } from "~/editor/hooks/usePageEditor";
 
 type CloneActionPropsType = {
     children: React.ReactElement;
 };
 const CloneAction: React.FunctionComponent<CloneActionPropsType> = ({ children }) => {
-    const eventActionHandler = useEventActionHandler();
+    const { app } = usePageEditor();
     const activeElementId = useRecoilValue(activeElementAtom);
     const element: PbEditorElement = useRecoilValue(elementByIdSelector(activeElementId));
 
@@ -18,11 +18,7 @@ const CloneAction: React.FunctionComponent<CloneActionPropsType> = ({ children }
         return null;
     }
     const onClick = () => {
-        eventActionHandler.trigger(
-            new CloneElementActionEvent({
-                element
-            })
-        );
+        app.dispatchEvent(new CloneElementActionEvent({ element }));
     };
 
     const plugin = plugins

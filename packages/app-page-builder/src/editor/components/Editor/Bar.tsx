@@ -1,6 +1,6 @@
 import React from "react";
 import DefaultEditorBar from "./DefaultEditorBar";
-import { activeElementAtom, pluginsAtom } from "../../recoil/modules";
+import { activeElementAtom, pluginsAtom } from "../../state";
 import { plugins } from "@webiny/plugins";
 import { useRecoilValue } from "recoil";
 import { PbEditorBarPlugin } from "../../../types";

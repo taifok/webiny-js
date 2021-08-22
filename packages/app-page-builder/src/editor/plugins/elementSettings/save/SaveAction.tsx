@@ -5,7 +5,7 @@ import pick from "lodash.pick";
 import get from "lodash/get";
 import createElementPlugin from "../../../../admin/utils/createElementPlugin";
 import createBlockPlugin from "../../../../admin/utils/createBlockPlugin";
-import { activeElementAtom, elementByIdSelector } from "../../../recoil/modules";
+import { activeElementAtom, elementByIdSelector } from "../../../state";
 import { useApolloClient } from "@apollo/react-hooks";
 import { plugins } from "@webiny/plugins";
 import { useSnackbar } from "@webiny/app-admin/hooks/useSnackbar";

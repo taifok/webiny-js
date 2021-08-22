@@ -16,7 +16,7 @@ import {
     activeElementAtom,
     elementWithChildrenByIdSelector,
     uiAtom
-} from "../../../recoil/modules";
+} from "../../../state";
 import useUpdateHandlers, { PostModifyElementArgs } from "../useUpdateHandlers";
 // Icons
 import { ReactComponent as LinkIcon } from "../../../assets/icons/link.svg";

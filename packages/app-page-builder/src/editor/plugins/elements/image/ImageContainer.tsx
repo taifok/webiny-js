@@ -2,10 +2,10 @@ import React, { useCallback } from "react";
 import { useRecoilValue } from "recoil";
 import styled from "@emotion/styled";
 import SingleImageUpload from "@webiny/app-admin/components/SingleImageUpload";
-import { PbEditorElement } from "../../../../types";
-import { useEventActionHandler } from "../../../hooks/useEventActionHandler";
-import { UpdateElementActionEvent } from "../../../recoil/actions";
-import { uiAtom } from "../../../recoil/modules";
+import { PbEditorElement } from "~/types";
+import { UpdateElementActionEvent } from "../../../actions";
+import { uiAtom } from "../../../state";
+import { usePageEditor } from "~/editor/hooks/usePageEditor";
 
 const AlignImage = styled("div")((props: any) => ({
     img: {
@@ -18,7 +18,7 @@ type ImageContainerType = {
 };
 const ImageContainer: React.FunctionComponent<ImageContainerType> = ({ element }) => {
     const { displayMode } = useRecoilValue(uiAtom);
-    const handler = useEventActionHandler();
+    const { app } = usePageEditor();
     const {
         id,
         data: { image = {}, settings = {} }
@@ -39,7 +39,7 @@ const ImageContainer: React.FunctionComponent<ImageContainerType> = ({ element }
 
     const onChange = useCallback(
         async (data: { [key: string]: string }) => {
-            handler.trigger(
+            app.dispatchEvent(
                 new UpdateElementActionEvent({
                     element: {
                         ...element,

@@ -1,21 +1,21 @@
 import { useRef, useState } from "react";
 import { useRecoilValue } from "recoil";
 import { useDrag, useDrop, DropTargetMonitor } from "react-dnd";
-import { elementByIdSelector, rootElementAtom } from "~/editor/recoil/modules";
-import { MoveBlockActionArgsType } from "~/editor/recoil/actions/moveBlock/types";
-import { MoveBlockActionEvent } from "~/editor/recoil/actions";
-import { useEventActionHandler } from "~/editor/hooks/useEventActionHandler";
+import { elementByIdSelector, rootElementAtom } from "~/editor/state";
+import { MoveBlockActionParamsType } from "~/editor/actions/moveBlock/types";
+import { MoveBlockActionEvent } from "~/editor/actions";
 import { DraggableItem } from "~/editor/components/Draggable";
+import { usePageEditor } from "~/editor/hooks/usePageEditor";
 
 export const BLOCK = "block";
 
 export const useMoveBlock = elementId => {
     const rootElementId = useRecoilValue(rootElementAtom);
     const rootElementValue = useRecoilValue(elementByIdSelector(rootElementId));
-    const handler = useEventActionHandler();
+    const { app } = usePageEditor();
 
-    const moveBlock = (args: MoveBlockActionArgsType) => {
-        handler.trigger(new MoveBlockActionEvent(args));
+    const moveBlock = (args: MoveBlockActionParamsType) => {
+        app.dispatchEvent(new MoveBlockActionEvent(args));
     };
 
     const move = (current: number, next: number) => {

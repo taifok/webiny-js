@@ -1,5 +1,5 @@
 import React from "react";
-import { pageAtom } from "../../../recoil/modules";
+import { pageAtom } from "../../../state";
 import { MenuItem } from "@webiny/ui/Menu";
 import { useConfigureWebsiteUrlDialog } from "../../../../admin/hooks/useConfigureWebsiteUrl";
 import { usePageBuilderSettings } from "../../../../admin/hooks/usePageBuilderSettings";

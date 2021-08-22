@@ -1,7 +1,7 @@
 import React from "react";
 import get from "lodash/get";
 import { useRecoilValue } from "recoil";
-import { activeElementAtom, elementWithChildrenByIdSelector } from "../../../recoil/modules";
+import { activeElementAtom, elementWithChildrenByIdSelector } from "../../../state";
 import useUpdateHandlers from "../useUpdateHandlers";
 // Components
 import InputField from "../components/InputField";

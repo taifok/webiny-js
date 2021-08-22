@@ -1,11 +1,11 @@
-import { useEventActionHandler } from "../../hooks/useEventActionHandler";
-import { UpdateElementActionEvent } from "../../recoil/actions";
-import { UpdateElementActionArgsType } from "../../recoil/actions/updateElement/types";
-import { PbEditorElement } from "../../../types";
+import { UpdateElementActionEvent } from "../../actions";
+import { UpdateElementActionParamsType } from "../../actions/updateElement/types";
+import { PbEditorElement } from "~/types";
 import { useMemo } from "react";
 import lodashSet from "lodash/set";
 import lodashMerge from "lodash/merge";
 import { useHandler } from "@webiny/app/hooks/useHandler";
+import { usePageEditor } from "~/editor/hooks/usePageEditor";
 export type PostModifyElementArgs = {
     name: string;
     newValue: any;
@@ -23,9 +23,9 @@ type UseUpdateHandlersType = (props: UpdateHandlersPropsType) => {
     getUpdatePreview: HandlerUpdateCallableType;
 };
 const useUpdateHandlers: UseUpdateHandlersType = props => {
-    const handler = useEventActionHandler();
-    const updateElement = (args: UpdateElementActionArgsType) => {
-        handler.trigger(new UpdateElementActionEvent(args));
+    const { app } = usePageEditor();
+    const updateElement = (args: UpdateElementActionParamsType) => {
+        app.dispatchEvent(new UpdateElementActionEvent(args));
     };
     const updateSettings = useHandler(props, ({ element, dataNamespace, postModifyElement }) => {
         const historyUpdated = {};

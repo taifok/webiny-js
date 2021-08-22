@@ -1,5 +1,5 @@
 import React from "react";
-import { activeElementAtom, elementByIdSelector } from "../recoil/modules";
+import { activeElementAtom, elementByIdSelector } from "../state";
 import { useRecoilValue } from "recoil";
 
 export function withActiveElement() {

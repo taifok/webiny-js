@@ -1,4 +1,4 @@
-import { CreateElementEventActionCallable } from "../../../recoil/actions/createElement/types";
+import { CreateElementEventActionCallable } from "../../../actions/createElement/types";
 import { PbEditorPageElementPlugin, PbEditorElement } from "../../../../types";
 import { plugins } from "@webiny/plugins";
 

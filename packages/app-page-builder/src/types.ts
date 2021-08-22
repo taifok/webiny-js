@@ -1,8 +1,8 @@
 import React, { ComponentType, ReactElement, ReactNode } from "react";
 import { DragObjectWithTypeWithTarget } from "./editor/components/Droppable";
 import { BaseEventAction, EventAction } from "./editor/recoil/eventActions";
-import { PluginsAtomType } from "./editor/recoil/modules";
-import { PbState } from "./editor/recoil/modules/types";
+import { PluginsAtomType } from "./editor/state";
+import { PbState } from "./editor/state/types";
 import { Plugin } from "@webiny/app/types";
 import { BindComponent } from "@webiny/form/Bind";
 import { IconPrefix, IconName } from "@fortawesome/fontawesome-svg-core";
@@ -101,8 +101,8 @@ export enum AlignmentTypesEnum {
 }
 export type PbElementDataSettingsType = {
     alignment?: AlignmentTypesEnum;
-    horizontalAlign?: "left" | "center" | "right" | "justify";
-    horizontalAlignFlex?: "flex-start" | "center" | "flex-end";
+    horizontalAlign?: any; //"left" | "center" | "right" | "justify";
+    horizontalAlignFlex?: any; //"flex-start" | "center" | "flex-end";
     verticalAlign?: "start" | "center" | "end";
     margin?: PbElementDataSettingsMarginType;
     padding?: PbElementDataSettingsPaddingType;
@@ -127,7 +127,6 @@ export type PbElementDataSettingsType = {
 };
 export type PbElementDataType = {
     settings?: PbElementDataSettingsType;
-    // this needs to be any since editor can be changed
     text?: PbElementDataTextType;
     image?: PbElementDataImageType;
     buttonText?: string;

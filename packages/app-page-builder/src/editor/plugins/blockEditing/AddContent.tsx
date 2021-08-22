@@ -4,11 +4,11 @@ import { keyframes } from "emotion";
 import styled from "@emotion/styled";
 import { Elevation } from "@webiny/ui/Elevation";
 import { ButtonFloating } from "@webiny/ui/Button";
-import { useEventActionHandler } from "../../hooks/useEventActionHandler";
 import { ReactComponent as AddIcon } from "../../assets/icons/add.svg";
-import { TogglePluginActionEvent } from "../../recoil/actions";
-import { uiAtom } from "../../recoil/modules";
-import { elementsInContentTotalSelector } from "../../recoil/modules/page/selectors/elementsInContentTotalSelector";
+import { TogglePluginActionEvent } from "../../actions";
+import { uiAtom } from "../../state";
+import { elementsInContentTotalSelector } from "../../state/page/selectors/elementsInContentTotalSelector";
+import { usePageEditor } from "~/editor/hooks/usePageEditor";
 
 const pulse = keyframes`
   0% {
@@ -60,13 +60,13 @@ const AddBlockContent = styled<"div", { displayMode: string }>("div")(({ display
 const AddContent = () => {
     const { displayMode } = useRecoilValue(uiAtom);
     const totalElements = useRecoilValue(elementsInContentTotalSelector);
-    const eventActionHandler = useEventActionHandler();
+    const { app } = usePageEditor();
     if (totalElements) {
         return null;
     }
 
     const onClickHandler = () => {
-        eventActionHandler.trigger(
+        app.dispatchEvent(
             new TogglePluginActionEvent({
                 name: "pb-editor-search-blocks-bar"
             })

@@ -1,9 +1,8 @@
 import React, { useCallback, useEffect, useState } from "react";
 import styled from "@emotion/styled";
 import { Carousel } from "@webiny/ui/Carousel";
-import { useEventActionHandler } from "../../../hooks/useEventActionHandler";
-import { isPluginActiveSelector } from "../../../recoil/modules";
-import { DeactivatePluginActionEvent } from "../../../recoil/actions";
+import { isPluginActiveSelector } from "../../../state";
+import { DeactivatePluginActionEvent } from "../../../actions";
 import { useKeyHandler } from "../../../hooks/useKeyHandler";
 import { useRecoilValue } from "recoil";
 
@@ -17,6 +16,7 @@ import Slide4 from "./slides/Slide4";
 import Slide5 from "./slides/Slide5";
 import Slide6 from "./slides/Slide6";
 import Slide7 from "./slides/Slide7";
+import { usePageEditor } from "~/editor/hooks/usePageEditor";
 
 const Overlay = styled("div")({
     position: "fixed",
@@ -78,7 +78,7 @@ const SlideControl = styled("div")({
 const onboardingPluginName = "pb-editor-toolbar-onboarding";
 
 const Onboarding: React.FunctionComponent = () => {
-    const handler = useEventActionHandler();
+    const { app } = usePageEditor();
     const [slideIndex, setSlideIndex] = useState(0);
     const { addKeyHandler, removeKeyHandler } = useKeyHandler();
     const showOnboarding = useRecoilValue(isPluginActiveSelector(onboardingPluginName));
@@ -89,7 +89,7 @@ const Onboarding: React.FunctionComponent = () => {
 
     const closeDialog = useCallback(() => {
         setSlideIndex(0);
-        handler.trigger(
+        app.dispatchEvent(
             new DeactivatePluginActionEvent({
                 name: onboardingPluginName
             })

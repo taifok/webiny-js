@@ -1,5 +1,5 @@
 import React from "react";
-import { uiAtom } from "../recoil/modules";
+import { uiAtom } from "../state";
 import { ConnectDropTarget, DragObjectWithType, useDrop } from "react-dnd";
 import { useRecoilValue } from "recoil";
 

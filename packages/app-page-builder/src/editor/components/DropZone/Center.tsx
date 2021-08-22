@@ -1,4 +1,4 @@
-import { activeElementAtom } from "../../recoil/modules";
+import { activeElementAtom } from "../../state";
 import React from "react";
 import Droppable, { DroppableIsVisiblePropType, DroppableOnDropPropType } from "./../Droppable";
 import styled from "@emotion/styled";

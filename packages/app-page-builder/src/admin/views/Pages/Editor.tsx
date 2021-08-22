@@ -1,6 +1,5 @@
 import React, { useCallback, useState } from "react";
 import editorMock from "../../assets/editor-mock.png";
-import { createElement } from "~/editor/helpers";
 import { useRouter } from "@webiny/react-router";
 import { useQuery, useMutation } from "@apollo/react-hooks";
 import { Editor as PbEditor } from "../../../editor";
@@ -11,6 +10,7 @@ import { DialogContainer } from "@webiny/app-admin/ui/views/AdminView/components
 import { Typography } from "@webiny/ui/Typography";
 import { LoadingEditor, LoadingTitle } from "./EditorStyled.js";
 import { GET_PAGE, CREATE_PAGE_FROM } from "./graphql";
+import {PbEditorApp} from "~/editor/contexts/PbEditorApp";
 
 const extractPageGetPage = (data: any): any => {
     return data.pageBuilder?.getPage || {};
@@ -30,6 +30,7 @@ const Editor: React.FunctionComponent = () => {
     const { match, history } = useRouter();
     const { showSnackbar } = useSnackbar();
     const ready = useSavedElements();
+    const app = new PbEditorApp();
     const [loading, setLoading] = useState(true);
     const [data, setData] = useState(null);
 
@@ -59,12 +60,12 @@ const Editor: React.FunctionComponent = () => {
             const { revisions = [], content, ...restOfPageData } = data;
             const page = {
                 ...restOfPageData,
-                content: content || createElement("document")
+                content: content || app.getElementType("document").createElement()
             };
 
             return (
                 <React.Fragment>
-                    <PbEditor page={page} revisions={revisions} />
+                    <PbEditor app={app} page={page} revisions={revisions} />
                     <div style={{ zIndex: 30, position: "absolute" }}>
                         <Snackbar />
                     </div>

@@ -1,30 +1,37 @@
 import React from "react";
 import preview from "./preview.png";
-import { createElement } from "../../../helpers";
-import { PbEditorBlockPlugin } from "../../../../types";
+import { PbEditorAppPlugin } from "~/editor/contexts/PbEditorApp";
+import { PbBlockType } from "~/editor/contexts/app/PbBlockType";
 
 const width = 500;
 const height = 73;
 const aspectRatio = width / height;
 
-export default {
-    name: "pb-editor-grid-block",
-    type: "pb-editor-block",
-    category: "general",
-    title: "Grid block",
-    create() {
-        return createElement("block", {
-            elements: [createElement("grid")]
+export class GridBlockType extends PbBlockType {
+    constructor(id = "grid-block") {
+        super(id);
+
+        this.setLabel("Grid block");
+        this.setCategory("general");
+        this.setImage({
+            meta: {
+                width,
+                height,
+                aspectRatio
+            }
         });
-    },
-    image: {
-        meta: {
-            width,
-            height,
-            aspectRatio
-        }
-    },
-    preview() {
-        return <img src={preview} alt={"Empty grid block"} />;
+        this.setPreview(<img src={preview} alt={"Empty grid block"} />);
+        this.setCreateBlock(() => {
+            const block = this.getApp().getElementType("block");
+            const grid = this.getApp().getElementType("grid");
+
+            return block.createElement(element => {
+                return { ...element, elements: [...element.elements, grid.createElement()] };
+            });
+        });
     }
-} as PbEditorBlockPlugin;
+}
+
+export default new PbEditorAppPlugin(app => {
+    app.addBlockType(new GridBlockType());
+});

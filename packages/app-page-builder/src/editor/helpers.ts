@@ -113,19 +113,6 @@ const addElementId = (element: Omit<PbEditorElement, "id">) => {
     return element;
 };
 
-export const createBlockElements = (name: string) => {
-    const plugin = plugins.byName<PbEditorBlockPlugin>(name);
-
-    invariant(plugin, `Missing block plugin "${name}"!`);
-
-    return {
-        id: getNanoid(),
-        data: {},
-        elements: [],
-        ...addElementId(plugin.create())
-    };
-};
-
 export const userElementSettingsPlugins = (elementType: string) => {
     return plugins
         .byType<PbEditorPageElementSettingsPlugin>("pb-editor-page-element-settings")

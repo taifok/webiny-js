@@ -8,16 +8,18 @@ import {
     pageAtom,
     elementsAtom,
     PageAtomType
-} from "./recoil/modules";
+} from "./state";
 import { flattenElements } from "./helpers";
 import { PbEditorElement } from "../types";
+import {PbEditorApp} from "~/editor/contexts/PbEditorApp";
 
 type EditorPropsType = {
+    app: PbEditorApp;
     page: PageAtomType & PbEditorElement;
     revisions: RevisionsAtomType;
 };
 
-export const Editor: React.FunctionComponent<EditorPropsType> = ({ page, revisions }) => {
+export const Editor: React.FunctionComponent<EditorPropsType> = ({ app, page, revisions }) => {
     return (
         <RecoilRoot
             initializeState={({ set }) => {
@@ -33,7 +35,7 @@ export const Editor: React.FunctionComponent<EditorPropsType> = ({ page, revisio
                 set(pageAtom, pageData);
             }}
         >
-            <EditorProvider>
+            <EditorProvider app={app}>
                 <EditorComponent page={page} revisions={revisions} />
             </EditorProvider>
         </RecoilRoot>

@@ -4,7 +4,7 @@ import { plugins } from "@webiny/plugins";
 import { PbEditorPageElementPlugin } from "../../../../types";
 import { useKeyHandler } from "../../../hooks/useKeyHandler";
 import { userElementSettingsPlugins } from "../../../helpers";
-import { activeElementAtom, elementByIdSelector } from "../../../recoil/modules";
+import { activeElementAtom, elementByIdSelector } from "../../../state";
 
 const getElementActions = plugin => {
     if (!plugin || !plugin.settings) {

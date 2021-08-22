@@ -1,22 +1,18 @@
 import React from "react";
 import Document from "./Document";
-import { PbEditorPageElementPlugin, PbEditorElement } from "../../../../types";
+import { PbEditorAppPlugin } from "~/editor/contexts/PbEditorApp";
+import { PbElementType } from "~/editor/contexts/app/PbElementType";
 
-export default (): PbEditorPageElementPlugin => {
-    return {
-        name: "pb-editor-page-element-document",
-        type: "pb-editor-page-element",
-        elementType: "document",
-        create(options = {}) {
-            return {
-                type: "document",
-                elements: [],
-                ...options
-            };
-        },
-        render({ element }) {
-            // TODO figure out if we can change this on the plugin type level
-            return <Document element={element as unknown as PbEditorElement} />;
-        }
-    };
-};
+export class DocumentElementType extends PbElementType {
+    constructor(id = "document") {
+        super(id);
+
+        this.setRenderer(({ element }) => {
+            return <Document element={element} />;
+        });
+    }
+}
+
+export default new PbEditorAppPlugin(app => {
+    app.addElementType(new DocumentElementType());
+});

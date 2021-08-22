@@ -6,16 +6,13 @@ import { Form } from "@webiny/form";
 import { validation } from "@webiny/validation";
 import { withActiveElement } from "../../../components";
 import { DelayedOnChange } from "../../../components/DelayedOnChange";
-import { useEventActionHandler } from "../../../hooks/useEventActionHandler";
-import { UpdateElementActionEvent } from "../../../recoil/actions";
-import {
-    PbEditorPageElementSettingsRenderComponentProps,
-    PbEditorElement
-} from "../../../../types";
+import { UpdateElementActionEvent } from "../../../actions";
+import { PbEditorPageElementSettingsRenderComponentProps, PbEditorElement } from "~/types";
 // Components
 import Accordion from "../components/Accordion";
 import Wrapper from "../components/Wrapper";
 import InputField from "../components/InputField";
+import { usePageEditor } from "~/editor/hooks/usePageEditor";
 
 const classes = {
     gridClass: css({
@@ -35,12 +32,12 @@ type LinkSettingsPropsType = {
 const LinkSettingsComponent: React.FunctionComponent<
     LinkSettingsPropsType & PbEditorPageElementSettingsRenderComponentProps
 > = ({ element, defaultAccordionValue }) => {
-    const handler = useEventActionHandler();
+    const { app } = usePageEditor();
 
     const { href, newTab } = element.data?.link || {};
 
     const updateElement = (element: PbEditorElement) => {
-        handler.trigger(
+        app.dispatchEvent(
             new UpdateElementActionEvent({
                 element,
                 history: true

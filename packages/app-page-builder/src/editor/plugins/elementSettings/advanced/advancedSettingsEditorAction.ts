@@ -1,32 +1,27 @@
-import { CreateElementEventActionCallable } from "../../../recoil/actions/createElement/types";
-import { PbEditorPageElementPlugin } from "../../../../types";
-import { plugins } from "@webiny/plugins";
+import { CreateElementActionEvent } from "~/editor/actions";
 
-export const advancedSettingsEditorAction: CreateElementEventActionCallable = (
-    state,
-    meta,
-    { element, source }
-) => {
+export const advancedSettingsEditorAction = (event: CreateElementActionEvent) => {
+    const { element, source } = event.getData();
     // Check the source of the element (could be `saved` element which behaves differently from other elements)
-    const sourcePlugin = plugins
-        .byType<PbEditorPageElementPlugin>("pb-editor-page-element")
-        .find(pl => pl.elementType === source.type);
-    if (!sourcePlugin) {
-        return {};
+    const sourceElementType = event.getApp().getElementType(source.type);
+
+    if (!sourceElementType) {
+        return;
     }
-    const { onCreate: sourceOnCreate } = sourcePlugin;
+
+    const sourceOnCreate = sourceElementType.getOnCreate();
     if (!sourceOnCreate || sourceOnCreate !== "skip") {
         // If source element does not define a specific `onCreate` behavior - continue with the actual element plugin
-        const plugin = plugins
-            .byType<PbEditorPageElementPlugin>("pb-editor-page-element")
-            .find(pl => pl.elementType === element.type);
-        if (!plugin) {
-            return {};
+        const elementType = event.getApp().getElementType(element.type);
+
+        if (!elementType) {
+            return;
         }
-        const { onCreate } = plugin;
+
+        const onCreate = elementType.getOnCreate();
         if (onCreate && onCreate === "open-settings") {
-            return {
-                state: {
+            event.setState(state => {
+                return {
                     ...state,
                     activeElement: element.id,
                     sidebar: {
@@ -35,9 +30,8 @@ export const advancedSettingsEditorAction: CreateElementEventActionCallable = (
                         // Highlight "Element" settings tab in sidebar.
                         highlightTab: true
                     }
-                }
-            };
+                };
+            });
         }
     }
-    return {};
 };

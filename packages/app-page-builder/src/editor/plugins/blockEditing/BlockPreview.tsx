@@ -10,11 +10,17 @@ import { ReactComponent as EditIcon } from "./icons/round-edit-24px.svg";
 import { ReactComponent as DeleteIcon } from "./icons/delete-24dpx.svg";
 import * as Styled from "./StyledComponents";
 import kebabCase from "lodash/kebabCase";
+import { PbBlockType } from "~/editor/contexts/app/PbBlockType";
 
-const BlockPreview = props => {
-    const { plugin, addBlockToContent, onEdit, onDelete } = props;
+interface Props {
+    block: PbBlockType;
+    [key: string]: any;
+}
+
+const BlockPreview = (props: Props) => {
+    const { block, addBlockToContent, onEdit, onDelete } = props;
     const onClickToAddHandler = ev => {
-        addBlockToContent(plugin);
+        addBlockToContent(block);
         if (ev.shitfKey) {
             return;
         }
@@ -29,9 +35,9 @@ const BlockPreview = props => {
     return (
         <Elevation
             z={1}
-            key={plugin.name}
+            key={block.getId()}
             className={Styled.blockStyle}
-            data-testid={`pb-editor-page-blocks-list-item-${kebabCase(plugin.title)}`}
+            data-testid={`pb-editor-page-blocks-list-item-${kebabCase(block.getLabel())}`}
         >
             <Styled.Overlay>
                 <Styled.Backdrop className={"backdrop"} />
@@ -42,46 +48,46 @@ const BlockPreview = props => {
                         icon={<AddIcon />}
                     />
                 </Styled.AddBlock>
-                {onDelete && (
-                    <Styled.DeleteBlock>
-                        <ConfirmationDialog
-                            title="Delete block"
-                            message="Are you sure you want to delete this block?"
-                            loading={<CircularProgress label={"Deleting block..."} />}
-                        >
-                            {({ showConfirmation }) => (
-                                <>
-                                    {plugin.id ? (
-                                        <IconButton
-                                            icon={<DeleteIcon />}
-                                            onClick={() => showConfirmation(onDelete)}
-                                        />
-                                    ) : (
-                                        <Tooltip content={"Cannot delete."} placement={"top"}>
-                                            <IconButton disabled icon={<DeleteIcon />} />
-                                        </Tooltip>
-                                    )}
-                                </>
-                            )}
-                        </ConfirmationDialog>
-                    </Styled.DeleteBlock>
-                )}
+                {/*{onDelete && (*/}
+                {/*    <Styled.DeleteBlock>*/}
+                {/*        <ConfirmationDialog*/}
+                {/*            title="Delete block"*/}
+                {/*            message="Are you sure you want to delete this block?"*/}
+                {/*            loading={<CircularProgress label={"Deleting block..."} />}*/}
+                {/*        >*/}
+                {/*            {({ showConfirmation }) => (*/}
+                {/*                <>*/}
+                {/*                    {plugin.id ? (*/}
+                {/*                        <IconButton*/}
+                {/*                            icon={<DeleteIcon />}*/}
+                {/*                            onClick={() => showConfirmation(onDelete)}*/}
+                {/*                        />*/}
+                {/*                    ) : (*/}
+                {/*                        <Tooltip content={"Cannot delete."} placement={"top"}>*/}
+                {/*                            <IconButton disabled icon={<DeleteIcon />} />*/}
+                {/*                        </Tooltip>*/}
+                {/*                    )}*/}
+                {/*                </>*/}
+                {/*            )}*/}
+                {/*        </ConfirmationDialog>*/}
+                {/*    </Styled.DeleteBlock>*/}
+                {/*)}*/}
 
-                {onEdit && (
-                    <Styled.EditBlock>
-                        {plugin.id ? (
-                            <IconButton icon={<EditIcon />} onClick={onEdit} />
-                        ) : (
-                            <Tooltip content={"Cannot edit."} placement={"top"}>
-                                <IconButton disabled icon={<EditIcon />} />
-                            </Tooltip>
-                        )}
-                    </Styled.EditBlock>
-                )}
+                {/*{onEdit && (*/}
+                {/*    <Styled.EditBlock>*/}
+                {/*        {plugin.id ? (*/}
+                {/*            <IconButton icon={<EditIcon />} onClick={onEdit} />*/}
+                {/*        ) : (*/}
+                {/*            <Tooltip content={"Cannot edit."} placement={"top"}>*/}
+                {/*                <IconButton disabled icon={<EditIcon />} />*/}
+                {/*            </Tooltip>*/}
+                {/*        )}*/}
+                {/*    </Styled.EditBlock>*/}
+                {/*)}*/}
             </Styled.Overlay>
-            <Styled.BlockPreview>{plugin.preview()}</Styled.BlockPreview>
+            <Styled.BlockPreview>{block.getPreview()}</Styled.BlockPreview>
             <Styled.Title>
-                <Typography use={"overline"}>{plugin.title}</Typography>
+                <Typography use={"overline"}>{block.getLabel()}</Typography>
             </Styled.Title>
         </Elevation>
     );

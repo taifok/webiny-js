@@ -1,5 +1,5 @@
 import React from "react";
-import { activeElementAtom, elementWithChildrenByIdSelector } from "../../../recoil/modules";
+import { activeElementAtom, elementWithChildrenByIdSelector } from "../../../state";
 import { get } from "lodash";
 import { Typography } from "@webiny/ui/Typography";
 import { Grid, Cell } from "@webiny/ui/Grid";

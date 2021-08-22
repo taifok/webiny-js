@@ -1,13 +1,13 @@
 import React from "react";
-import { useEventActionHandler } from "../../../hooks/useEventActionHandler";
-import { TogglePluginActionEvent } from "../../../recoil/actions";
+import { TogglePluginActionEvent } from "../../../actions";
 import { IconButton } from "@webiny/ui/Button";
 import { ReactComponent as SettingsIcon } from "./icons/settings.svg";
+import { usePageEditor } from "~/editor/hooks/usePageEditor";
 
 const PageSettingsButton = () => {
-    const handler = useEventActionHandler();
+    const { app } = usePageEditor();
     const onClickHandler = () => {
-        handler.trigger(
+        app.dispatchEvent(
             new TogglePluginActionEvent({
                 name: "pb-editor-page-settings-bar"
             })

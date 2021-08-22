@@ -1,24 +1,17 @@
 import React, { useCallback } from "react";
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { Transition } from "react-transition-group";
-import { plugins } from "@webiny/plugins";
-import { renderPlugins } from "@webiny/app/plugins";
-import { PbEditorPageElementPlugin, PbEditorElement } from "../../types";
 import Draggable from "./Draggable";
 import tryRenderingPlugin from "../../utils/tryRenderingPlugin";
-import {
-    disableDraggingMutation,
-    elementByIdSelector,
-    enableDraggingMutation,
-    uiAtom,
-    activeElementAtom
-} from "../recoil/modules";
+
 import {
     defaultStyle,
     ElementContainer,
     transitionStyles,
     typeStyle
 } from "./Element/ElementStyled";
+import { usePageEditor } from "~/editor/hooks/usePageEditor";
+import { useElementById } from "~/editor/hooks/useElementById";
+import { useActiveElementId } from "~/editor/hooks/useActiveElementId";
 
 export type ElementPropsType = {
     id: string;
@@ -27,44 +20,34 @@ export type ElementPropsType = {
     isActive: boolean;
 };
 
-const getElementPlugin = (element: PbEditorElement): PbEditorPageElementPlugin => {
-    if (!element) {
-        return null;
-    }
-
-    const pluginsByType = plugins.byType<PbEditorPageElementPlugin>("pb-editor-page-element");
-    return pluginsByType.find(pl => pl.elementType === element.type);
-};
-
 const ElementComponent: React.FunctionComponent<ElementPropsType> = ({
     id: elementId,
     className = "",
     isActive
 }) => {
-    const [element, setElementAtomValue] = useRecoilState(elementByIdSelector(elementId));
-    const setUiAtomValue = useSetRecoilState(uiAtom);
-    const setActiveElementAtomValue = useSetRecoilState(activeElementAtom);
+    const { app } = usePageEditor();
+    const [element, updateElement] = useElementById(elementId);
     const { isHighlighted } = element;
 
-    const plugin = getElementPlugin(element);
+    const elementType = app.getElementType(element.type);
 
     const beginDrag = useCallback(() => {
         const data = { id: element.id, type: element.type };
         setTimeout(() => {
-            setUiAtomValue(enableDraggingMutation);
+            app.setIsDragging(true);
         });
-        return { ...data, target: plugin.target };
+        return { ...data, target: elementType.getTarget() };
     }, [elementId]);
 
     const endDrag = useCallback(() => {
-        setUiAtomValue(disableDraggingMutation);
+        app.setIsDragging(false);
     }, [elementId]);
 
     const onClick = useCallback((): void => {
         if (!element || element.type === "document" || isActive) {
             return;
         }
-        setActiveElementAtomValue(elementId);
+        app.activateElement(elementId);
     }, [elementId, isActive]);
 
     const onMouseOver = useCallback(
@@ -76,7 +59,7 @@ const ElementComponent: React.FunctionComponent<ElementPropsType> = ({
             if (isHighlighted) {
                 return;
             }
-            setElementAtomValue({ isHighlighted: true } as any);
+            updateElement({ isHighlighted: true } as any);
         },
         [elementId]
     );
@@ -84,7 +67,7 @@ const ElementComponent: React.FunctionComponent<ElementPropsType> = ({
         if (!element || element.type === "document") {
             return;
         }
-        setElementAtomValue({ isHighlighted: false } as any);
+        updateElement({ isHighlighted: false } as any);
     }, [elementId]);
 
     const renderDraggable = ({ drag }): JSX.Element => {
@@ -92,25 +75,25 @@ const ElementComponent: React.FunctionComponent<ElementPropsType> = ({
             <div ref={drag} className={"type " + typeStyle}>
                 <div className="background" onClick={onClick} />
                 <div className={"element-holder"} onClick={onClick}>
-                    {renderPlugins("pb-editor-page-element-action", { element, plugin })}
-                    <span>{plugin.elementType}</span>
+                    {/* TODO: {renderPlugins("pb-editor-page-element-action", { element, plugin })}*/}
+                    <span>{elementType.getId()}</span>
                 </div>
             </div>
         );
     };
 
-    if (!plugin) {
+    if (!elementType) {
         return null;
     }
 
     const renderedPlugin = tryRenderingPlugin(() =>
-        plugin.render({
+        elementType.render({
             element,
             isActive
         })
     );
 
-    const isDraggable = Array.isArray(plugin.target) && plugin.target.length > 0;
+    const isDraggable = elementType.getTarget().length > 0;
 
     return (
         <Transition in={true} timeout={250} appear={true}>
@@ -127,7 +110,7 @@ const ElementComponent: React.FunctionComponent<ElementPropsType> = ({
                     <div className={["innerWrapper", className].filter(c => c).join(" ")}>
                         <Draggable
                             enabled={isDraggable}
-                            target={plugin.target}
+                            target={elementType.getTarget()}
                             beginDrag={beginDrag}
                             endDrag={endDrag}
                         >
@@ -144,9 +127,9 @@ const ElementComponent: React.FunctionComponent<ElementPropsType> = ({
 
 const withHighlightElement = (Component: React.FunctionComponent) => {
     return function withHighlightElementComponent(props) {
-        const activeElementAtomValue = useRecoilValue(activeElementAtom);
+        const [activeElementId] = useActiveElementId();
 
-        return <Component {...props} isActive={activeElementAtomValue === props.id} />;
+        return <Component {...props} isActive={activeElementId === props.id} />;
     };
 };
 

@@ -2,15 +2,14 @@ import React from "react";
 import Cell from "./Cell";
 import DropZone from "../../../components/DropZone";
 import styled from "@emotion/styled";
-import { ElementRoot } from "../../../../render/components/ElementRoot";
-import { useEventActionHandler } from "../../../hooks/useEventActionHandler";
+import { ElementRoot } from "~/render/components/ElementRoot";
 import { ReactComponent as AddCircleOutline } from "../../../assets/icons/baseline-add_circle-24px.svg";
 import { DragObjectWithTypeWithTarget } from "../../../components/Droppable";
-import { DropElementActionEvent, TogglePluginActionEvent } from "../../../recoil/actions";
-import { elementByIdSelector } from "../../../recoil/modules";
+import { DropElementActionEvent, TogglePluginActionEvent } from "~/editor/actions";
 import { IconButton } from "@webiny/ui/Button";
 import { css } from "emotion";
-import { useRecoilValue } from "recoil";
+import { usePageEditor } from "~/editor/hooks/usePageEditor";
+import { useElementById } from "~/editor/hooks/useElementById";
 
 const CellContainerStyle = styled<"div", { active }>("div")(({ active }) => ({
     position: "relative",
@@ -46,11 +45,11 @@ const addIcon = css({
 
 type CellPropsType = {
     elementId: string;
-    isActive: boolean;
+    isActive?: boolean;
 };
 const CellContainer: React.FunctionComponent<CellPropsType> = ({ elementId, isActive }) => {
-    const handler = useEventActionHandler();
-    const element = useRecoilValue(elementByIdSelector(elementId));
+    const { app } = usePageEditor();
+    const [element] = useElementById(elementId);
     const { isHighlighted } = element;
     // TODO remove when state is fully switched to use content instead of flat elements
     if (!element) {
@@ -60,7 +59,7 @@ const CellContainer: React.FunctionComponent<CellPropsType> = ({ elementId, isAc
     const totalElements = elements.length;
 
     const onAddClick = () => {
-        handler.trigger(
+        app.dispatchEvent(
             new TogglePluginActionEvent({
                 name: "pb-editor-toolbar-add-element",
                 params: { id, path, type },
@@ -70,7 +69,7 @@ const CellContainer: React.FunctionComponent<CellPropsType> = ({ elementId, isAc
     };
 
     const dropElementAction = (source: DragObjectWithTypeWithTarget, position: number) => {
-        handler.trigger(
+        app.dispatchEvent(
             new DropElementActionEvent({
                 source,
                 target: {

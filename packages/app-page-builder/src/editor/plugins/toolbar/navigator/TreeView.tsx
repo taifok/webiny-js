@@ -3,7 +3,7 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import get from "lodash/get";
 import { Typography } from "@webiny/ui/Typography";
 import { Icon } from "@webiny/ui/Icon";
-import { activeElementAtom, elementByIdSelector, uiAtom } from "~/editor/recoil/modules";
+import { activeElementAtom, elementByIdSelector, uiAtom } from "~/editor/state";
 import { ReactComponent as VisibilityOffIcon } from "~/editor/assets/icons/visibility_off_24px.svg";
 import { useVisibilitySetting } from "~/editor/plugins/elementSettings/visibility/VisibilitySettings";
 import { ElementTypeContainer } from "./StyledComponents";

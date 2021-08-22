@@ -13,9 +13,9 @@ import {
     elementByIdSelector,
     activeElementAtom,
     highlightElementAtom
-} from "../recoil/modules";
+} from "../state";
 
-import { PbState } from "../recoil/modules/types";
+import { PbState } from "../state/types";
 import { EventAction } from "~/editor/recoil/eventActions";
 import {
     EventActionHandlerCallableArgs,

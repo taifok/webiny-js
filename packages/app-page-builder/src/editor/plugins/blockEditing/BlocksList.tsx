@@ -3,6 +3,7 @@ import { get } from "lodash";
 import { List, WindowScroller } from "react-virtualized";
 import BlockPreview from "./BlockPreview";
 import { css } from "emotion";
+import { PbBlockType } from "~/editor/contexts/app/PbBlockType";
 
 const listStyle = css({
     "& .ReactVirtualized__Grid__innerScrollContainer": {
@@ -12,7 +13,12 @@ const listStyle = css({
 
 const listWidth = 800;
 
-const BlocksList = props => {
+interface Props {
+    blocks: PbBlockType[];
+    [key: string]: any;
+}
+
+const BlocksList = (props: Props) => {
     const [, setTimestamp] = useState(null);
     const rightPanelElement = useRef(null);
     const prevProps = useRef(null);
@@ -55,14 +61,14 @@ const BlocksList = props => {
     };
 
     const renderRow = ({ index, key, style }) => {
-        const plugin = blocks[index];
+        const block = blocks[index];
 
         return (
             <div key={key} style={style} data-testid="pb-editor-page-blocks-list-item">
                 <BlockPreview
-                    plugin={plugin}
-                    onEdit={() => onEdit(plugin)}
-                    onDelete={() => onDelete(plugin)}
+                    block={block}
+                    onEdit={() => onEdit(block)}
+                    onDelete={() => onDelete(block)}
                     addBlockToContent={addBlock}
                     deactivatePlugin={deactivatePlugin}
                 />

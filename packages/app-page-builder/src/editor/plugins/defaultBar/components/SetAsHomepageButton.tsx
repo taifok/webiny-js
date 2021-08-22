@@ -1,6 +1,6 @@
 import React from "react";
 import gql from "graphql-tag";
-import { pageAtom } from "../../../recoil/modules";
+import { pageAtom } from "../../../state";
 import { useSnackbar } from "@webiny/app-admin/hooks/useSnackbar";
 import { useRouter } from "@webiny/react-router";
 import { MenuItem } from "@webiny/ui/Menu";

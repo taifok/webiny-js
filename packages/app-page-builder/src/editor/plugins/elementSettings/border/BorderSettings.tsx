@@ -9,7 +9,7 @@ import {
     PbEditorPageElementSettingsRenderComponentProps,
     PbEditorResponsiveModePlugin
 } from "../../../../types";
-import { activeElementAtom, elementByIdSelector, uiAtom } from "../../../recoil/modules";
+import { activeElementAtom, elementByIdSelector, uiAtom } from "../../../state";
 import useUpdateHandlers from "../useUpdateHandlers";
 import { applyFallbackDisplayMode } from "../elementSettingsUtils";
 // Components

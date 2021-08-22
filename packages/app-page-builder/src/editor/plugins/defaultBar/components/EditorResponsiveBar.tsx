@@ -7,8 +7,9 @@ import { IconButton } from "@webiny/ui/Button";
 import { Tooltip } from "@webiny/ui/Tooltip";
 import { Typography } from "@webiny/ui/Typography";
 import { PbEditorResponsiveModePlugin } from "~/types";
-import { uiAtom, setDisplayModeMutation } from "../../../recoil/modules";
+import { uiAtom, setDisplayModeMutation } from "../../../state";
 import { usePageBuilder } from "~/hooks/usePageBuilder";
+import { usePageEditor } from "~/editor/hooks/usePageEditor";
 
 const classes = {
     wrapper: css({
@@ -85,6 +86,7 @@ const classes = {
 
 const EditorResponsiveBar = () => {
     const [{ displayMode, pagePreviewDimension }, setUiAtomValue] = useRecoilState(uiAtom);
+
     const {
         responsiveDisplayMode: { setDisplayMode }
     } = usePageBuilder();
@@ -137,10 +139,12 @@ const EditorResponsiveBar = () => {
         <div className={classes.wrapper}>
             {responsiveBarContent}
             <div className={classes.dimensionIndicator}>
-                <span className="width">
-                    <Typography use={"subtitle2"}>{pagePreviewDimension.width}</Typography>
-                    <Typography use={"subtitle2"}>PX</Typography>
-                </span>
+                {pagePreviewDimension ? (
+                    <span className="width">
+                        <Typography use={"subtitle2"}>{pagePreviewDimension.width}</Typography>
+                        <Typography use={"subtitle2"}>PX</Typography>
+                    </span>
+                ) : null}
                 <span className="height">
                     <Typography use={"subtitle2"}>{"100"}</Typography>
                     <Typography use={"subtitle2"}>%</Typography>

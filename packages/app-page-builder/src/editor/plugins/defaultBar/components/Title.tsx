@@ -1,7 +1,6 @@
 import React, { useState, useCallback, SyntheticEvent } from "react";
-import { useEventActionHandler } from "../../../hooks/useEventActionHandler";
-import { UpdatePageRevisionActionEvent } from "../../../recoil/actions";
-import { pageAtom, PageAtomType } from "../../../recoil/modules";
+import { UpdatePageRevisionActionEvent } from "../../../actions";
+import { pageAtom, PageAtomType } from "../../../state";
 import { useRecoilValue } from "recoil";
 import { useSnackbar } from "@webiny/app-admin/hooks/useSnackbar";
 import { Input } from "@webiny/ui/Input";
@@ -15,6 +14,7 @@ import {
     TitleInputWrapper,
     TitleWrapper
 } from "./Styled";
+import { usePageEditor } from "~/editor/hooks/usePageEditor";
 
 declare global {
     interface Window {
@@ -34,7 +34,7 @@ const extractPageInfo = (page: PageAtomType): any => {
 };
 
 const Title: React.FunctionComponent = () => {
-    const handler = useEventActionHandler();
+    const { app } = usePageEditor();
     const page = useRecoilValue(pageAtom);
     const { showSnackbar } = useSnackbar();
     const { pageTitle, pageVersion, pageLocked, pageCategory } = extractPageInfo(page);
@@ -43,7 +43,7 @@ const Title: React.FunctionComponent = () => {
     let title = stateTitle === null ? pageTitle : stateTitle;
 
     const updatePage = data => {
-        handler.trigger(
+        app.dispatchEvent(
             new UpdatePageRevisionActionEvent({
                 page: data,
                 onFinish: () => {

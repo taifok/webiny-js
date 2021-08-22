@@ -11,20 +11,20 @@ import {
     PbEditorPageElementSettingsRenderComponentProps,
     PbEditorResponsiveModePlugin,
     PbEditorElement
-} from "../../../../types";
-import { useEventActionHandler } from "../../../hooks/useEventActionHandler";
-import { UpdateElementActionEvent } from "../../../../editor/recoil/actions";
+} from "~/types";
+import { UpdateElementActionEvent } from "~/editor/actions";
 import {
     activeElementAtom,
     elementWithChildrenByIdSelector,
     uiAtom
-} from "../../../../editor/recoil/modules";
+} from "../../../../editor/state";
 // Components
 import Accordion from "../components/Accordion";
 import Wrapper from "../components/Wrapper";
 import SpacingPicker from "../components/SpacingPicker";
 import { classes } from "../components/StyledComponents";
 import { applyFallbackDisplayMode } from "../elementSettingsUtils";
+import { usePageEditor } from "~/editor/hooks/usePageEditor";
 
 const rightCellStyle = css({
     justifySelf: "end"
@@ -104,7 +104,7 @@ const Settings: React.FunctionComponent<PbEditorPageElementSettingsRenderCompone
     const activeElementId = useRecoilValue(activeElementAtom);
     const element = useRecoilValue(elementWithChildrenByIdSelector(activeElementId));
 
-    const handler = useEventActionHandler();
+    const { app } = usePageEditor();
     const updateSettings = async (data, form) => {
         const valid = await form.validate();
         if (!valid) {
@@ -117,7 +117,7 @@ const Settings: React.FunctionComponent<PbEditorPageElementSettingsRenderCompone
             set({}, `${DATA_NAMESPACE}.${displayMode}`, data)
         );
 
-        return handler.trigger(
+        return app.dispatchEvent(
             new UpdateElementActionEvent({
                 element: newElement,
                 history: true

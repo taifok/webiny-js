@@ -1,5 +1,4 @@
 import React, { useEffect, useRef } from "react";
-import { useRecoilValue } from "recoil";
 import classNames from "classnames";
 import styled from "@emotion/styled";
 import { css } from "emotion";
@@ -7,9 +6,9 @@ import { Drawer, DrawerContent } from "@webiny/ui/Drawer";
 import { plugins } from "@webiny/plugins";
 import { PbEditorToolbarBottomPlugin, PbEditorToolbarTopPlugin } from "~/types";
 import { useKeyHandler } from "~/editor/hooks/useKeyHandler";
-import { useEventActionHandler } from "~/editor/hooks/useEventActionHandler";
-import { DeactivatePluginActionEvent } from "~/editor/recoil/actions";
-import { activePluginsByTypeNamesSelector } from "~/editor/recoil/modules";
+import { DeactivatePluginActionEvent } from "~/editor/actions";
+import { usePageEditor } from "~/editor/hooks/usePageEditor";
+import { useActivePluginsByType } from "~/editor/hooks/useActivePluginsByType";
 
 const ToolbarDrawerContainer = styled("div")({
     top: 64,
@@ -69,18 +68,14 @@ const ToolbarDrawer: React.FC<ToolbarDrawerProps> = ({
     children,
     drawerClassName
 }) => {
-    const eventActionHandler = useEventActionHandler();
+    const { app } = usePageEditor();
     const { removeKeyHandler, addKeyHandler } = useKeyHandler();
     const last = useRef({ active: null });
     useEffect(() => {
         if (active && !last.current.active) {
             addKeyHandler("escape", e => {
                 e.preventDefault();
-                eventActionHandler.trigger(
-                    new DeactivatePluginActionEvent({
-                        name
-                    })
-                );
+                app.dispatchEvent(new DeactivatePluginActionEvent({ name }));
             });
         }
         if (!active && last.current.active) {
@@ -103,9 +98,8 @@ const renderPlugin = (plugin: PbEditorToolbarTopPlugin | PbEditorToolbarBottomPl
 };
 
 const Toolbar = () => {
-    const activePluginsTop = useRecoilValue(
-        activePluginsByTypeNamesSelector("pb-editor-toolbar-top")
-    );
+    const activePluginsTop = useActivePluginsByType("pb-editor-toolbar-top") as string[];
+    console.log(activePluginsTop);
     const actionsTop = plugins.byType<PbEditorToolbarTopPlugin>("pb-editor-toolbar-top");
     const actionsBottom = plugins.byType<PbEditorToolbarBottomPlugin>("pb-editor-toolbar-bottom");
     return (

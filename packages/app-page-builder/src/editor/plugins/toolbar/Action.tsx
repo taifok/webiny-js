@@ -1,11 +1,11 @@
 import React, { useCallback } from "react";
-import { useEventActionHandler } from "../../hooks/useEventActionHandler";
-import { TogglePluginActionEvent } from "../../recoil/actions";
-import { isPluginActiveSelector } from "../../recoil/modules";
+import { TogglePluginActionEvent } from "../../actions";
+import { isPluginActiveSelector } from "../../state";
 import { css } from "emotion";
 import { IconButton } from "@webiny/ui/Button";
 import { Tooltip } from "@webiny/ui/Tooltip";
 import { useRecoilValue } from "recoil";
+import { usePageEditor } from "~/editor/hooks/usePageEditor";
 
 const activeStyle = css({
     ".mdc-icon-button__icon": {
@@ -38,14 +38,14 @@ const Action: React.FunctionComponent<ActionPropsType> = ({
     plugin,
     closeOtherInGroup
 }) => {
-    const handler = useEventActionHandler();
+    const { app } = usePageEditor();
     const isActive = useRecoilValue(isPluginActiveSelector(plugin));
 
     const togglePlugin = useCallback(() => {
         if (!plugin) {
             return;
         }
-        handler.trigger(
+        app.dispatchEvent(
             new TogglePluginActionEvent({
                 name: plugin,
                 closeOtherInGroup: closeOtherInGroup

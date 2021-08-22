@@ -9,7 +9,7 @@ import {
     revisionsAtom,
     RevisionsAtomType,
     uiAtom
-} from "../../recoil/modules";
+} from "../../state";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { DndProvider } from "react-dnd";
 import { useKeyHandler } from "../../hooks/useKeyHandler";
@@ -22,6 +22,7 @@ import EditorContent from "./Content";
 import DragPreview from "./DragPreview";
 import Dialogs from "./Dialogs";
 import EditorSideBar from "./EditorSideBar";
+import {usePageEditor} from "~/editor/hooks/usePageEditor";
 
 type PluginRegistryType = Map<string, () => void>;
 
@@ -109,6 +110,9 @@ export const Editor: React.FunctionComponent<EditorPropsType> = ({ revisions }) 
         "pb-editor-dragging": isDragging,
         "pb-editor-resizing": isResizing
     };
+    
+    console.log("Rerender Editor.tsx");
+    
     return (
         <DndProvider backend={HTML5Backend}>
             <div className={classSet(classes)}>

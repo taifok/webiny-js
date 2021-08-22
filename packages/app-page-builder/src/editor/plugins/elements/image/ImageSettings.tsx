@@ -9,7 +9,7 @@ import SpacingPicker from "../../elementSettings/components/SpacingPicker";
 import useUpdateHandlers from "../../elementSettings/useUpdateHandlers";
 import { justifySelfEndStyle } from "../../elementSettings/components/StyledComponents";
 import { PbEditorPageElementSettingsRenderComponentProps } from "../../../../types";
-import { activeElementAtom, elementByIdSelector } from "../../../recoil/modules";
+import { activeElementAtom, elementByIdSelector } from "../../../state";
 
 import {
     WIDTH_UNIT_OPTIONS,

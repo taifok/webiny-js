@@ -1,9 +1,9 @@
 import React, { useCallback } from "react";
 import { useRecoilValue } from "recoil";
 import { css } from "emotion";
-import { usePageBuilder } from "../../../../hooks/usePageBuilder";
-import { activeElementAtom, elementWithChildrenByIdSelector } from "../../../recoil/modules";
-import { PbEditorPageElementSettingsRenderComponentProps } from "../../../../types";
+import { usePageBuilder } from "~/hooks/usePageBuilder";
+import { activeElementAtom, elementWithChildrenByIdSelector } from "~/editor/state";
+import { PbEditorPageElementSettingsRenderComponentProps } from "~/types";
 // Components
 import IconPickerComponent from "../../../components/IconPicker";
 import Accordion from "../../elementSettings/components/Accordion";

@@ -3,7 +3,7 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import get from "lodash/get";
 import classNames from "classnames";
 import { PbEditorElement } from "../../types";
-import { elementWithChildrenByIdSelector, activeElementAtom, uiAtom } from "../recoil/modules";
+import { elementWithChildrenByIdSelector, activeElementAtom, uiAtom } from "../state";
 import { ElementRoot } from "../../render/components/ElementRoot";
 import useUpdateHandlers from "../plugins/elementSettings/useUpdateHandlers";
 import ReactMediumEditor from "../components/MediumEditor";

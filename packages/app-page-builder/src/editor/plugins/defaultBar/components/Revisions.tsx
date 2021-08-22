@@ -1,5 +1,5 @@
 import React from "react";
-import { RevisionItemAtomType, revisionsAtom } from "../../../recoil/modules";
+import { RevisionItemAtomType, revisionsAtom } from "../../../state";
 import { css } from "emotion";
 import { useRouter } from "@webiny/react-router";
 import { Menu, MenuItem } from "@webiny/ui/Menu";

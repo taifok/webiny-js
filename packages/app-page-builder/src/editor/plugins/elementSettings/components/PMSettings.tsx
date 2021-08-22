@@ -1,9 +1,8 @@
 import React, { useMemo, useState } from "react";
 import SliderWithInput from "./SliderWithInput";
 import Footer from "./Footer";
-import { useEventActionHandler } from "../../../hooks/useEventActionHandler";
-import { UpdateElementActionEvent } from "../../../recoil/actions";
-import { activeElementAtom, elementWithChildrenByIdSelector } from "../../../recoil/modules";
+import { UpdateElementActionEvent } from "../../../actions";
+import { activeElementAtom, elementWithChildrenByIdSelector } from "../../../state";
 import { Tabs, Tab } from "@webiny/ui/Tabs";
 import { get } from "lodash";
 import { set, merge } from "dot-prop-immutable";
@@ -13,6 +12,7 @@ import { ReactComponent as BorderRightIcon } from "../../../assets/icons/border_
 import { ReactComponent as BorderTopIcon } from "../../../assets/icons/border_top.svg";
 import { ReactComponent as BorderBottomIcon } from "../../../assets/icons/border_bottom.svg";
 import { useRecoilValue } from "recoil";
+import { usePageEditor } from "~/editor/hooks/usePageEditor";
 
 /**
  * PMSettings (Padding/Margin settings).
@@ -26,7 +26,7 @@ type PMSettingsPropsType = {
 };
 
 const PMSettings: React.FunctionComponent<PMSettingsPropsType> = ({ styleAttribute }) => {
-    const handler = useEventActionHandler();
+    const { app } = usePageEditor();
 
     const valueKey = `data.settings.${styleAttribute}`;
     const activeElementId = useRecoilValue(activeElementAtom);
@@ -55,7 +55,7 @@ const PMSettings: React.FunctionComponent<PMSettingsPropsType> = ({ styleAttribu
             });
         }
 
-        handler.trigger(
+        app.dispatchEvent(
             new UpdateElementActionEvent({
                 element: newElement,
                 history

@@ -13,7 +13,7 @@ import {
     activeElementAtom,
     elementWithChildrenByIdSelector,
     uiAtom
-} from "../../../recoil/modules";
+} from "../../../state";
 import { applyFallbackDisplayMode } from "../elementSettingsUtils";
 // Components
 import Accordion from "../../elementSettings/components/Accordion";

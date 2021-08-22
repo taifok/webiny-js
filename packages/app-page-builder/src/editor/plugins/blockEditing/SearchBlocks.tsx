@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { DeactivatePluginActionEvent, UpdateElementActionEvent } from "../../recoil/actions";
-import { createBlockElements } from "../../helpers";
-import { useEventActionHandler } from "../../hooks/useEventActionHandler";
+import { DeactivatePluginActionEvent, UpdateElementActionEvent } from "../../actions";
+import { getNanoid } from "../../helpers";
 import { useMutation } from "@apollo/react-hooks";
 import { useKeyHandler } from "../../hooks/useKeyHandler";
 import { useSnackbar } from "@webiny/app-admin/hooks/useSnackbar";
@@ -19,7 +18,6 @@ import {
     SimpleFormContent,
     SimpleFormHeader
 } from "@webiny/app-admin/components/SimpleForm";
-import { useRecoilValue } from "recoil";
 
 import { ReactComponent as AllIcon } from "./icons/round-clear_all-24px.svg";
 import createBlockPlugin from "../../../admin/utils/createBlockPlugin";
@@ -28,8 +26,9 @@ import { DELETE_PAGE_ELEMENT, UPDATE_PAGE_ELEMENT } from "./graphql";
 import EditBlockDialog from "./EditBlockDialog";
 import { listItem, ListItemTitle, listStyle, TitleContent } from "./SearchBlocksStyled";
 import * as Styled from "./StyledComponents";
-import { PbEditorBlockCategoryPlugin, PbEditorBlockPlugin } from "~/types";
-import { elementWithChildrenByIdSelector, rootElementAtom } from "../../recoil/modules";
+import { PbEditorBlockCategoryPlugin } from "~/types";
+import { usePageEditor } from "~/editor/hooks/usePageEditor";
+import {PbBlockType} from "~/editor/contexts/app/PbBlockType";
 
 const allBlockCategory: PbEditorBlockCategoryPlugin = {
     type: "pb-editor-block-category",
@@ -40,20 +39,21 @@ const allBlockCategory: PbEditorBlockCategoryPlugin = {
     icon: <AllIcon />
 };
 
-const sortBlocks = blocks => {
+const sortBlocks = (blocks: PbBlockType[]) => {
     return blocks.sort(function (a, b) {
-        if (a.name === "pb-editor-block-empty") {
+        // TODO:
+        // if (a.name === "pb-editor-block-empty") {
+        //     return -1;
+        // }
+        //
+        // if (b.name === "pb-editor-block-empty") {
+        //     return 1;
+        // }
+
+        if (a.getLabel() < b.getLabel()) {
             return -1;
         }
-
-        if (b.name === "pb-editor-block-empty") {
-            return 1;
-        }
-
-        if (a.title < b.title) {
-            return -1;
-        }
-        if (a.title > b.title) {
+        if (a.getLabel() > b.getLabel()) {
             return 1;
         }
         return 0;
@@ -61,9 +61,8 @@ const sortBlocks = blocks => {
 };
 
 const SearchBar = () => {
-    const rootElementId = useRecoilValue(rootElementAtom);
-    const content = useRecoilValue(elementWithChildrenByIdSelector(rootElementId));
-    const eventActionHandler = useEventActionHandler();
+    const { app } = usePageEditor();
+    const content = app.getPageContent();
 
     const [search, setSearch] = useState<string>("");
     const [editingBlock, setEditingBlock] = useState(null);
@@ -81,12 +80,12 @@ const SearchBar = () => {
         []
     );
 
-    const allBlocks = plugins.byType<PbEditorBlockPlugin>("pb-editor-block");
+    const allBlocks = app.getBlockTypes();
 
     const { addKeyHandler, removeKeyHandler } = useKeyHandler();
 
     const deactivatePlugin = () => {
-        eventActionHandler.trigger(
+        app.dispatchEvent(
             new DeactivatePluginActionEvent({
                 name: "pb-editor-search-blocks-bar"
             })
@@ -106,13 +105,20 @@ const SearchBar = () => {
         plugin => {
             const element: any = {
                 ...content,
-                elements: [...content.elements, createBlockElements(plugin.name)]
+                elements: [
+                    ...content.elements,
+                    {
+                        id: getNanoid(),
+                        data: {},
+                        elements: [],
+                        ...plugin.create()
+                    }
+                ]
             };
-            eventActionHandler.trigger(
+            app.dispatchEvent(
                 new UpdateElementActionEvent({
                     element,
-                    history: true,
-                    triggerUpdateElementTree: true
+                    history: true
                 })
             );
 
@@ -136,11 +142,11 @@ const SearchBar = () => {
         if (activeCategory !== "all") {
             if (activeCategory === "saved") {
                 output = output.filter(item => {
-                    return item.tags && item.tags.includes("saved");
+                    return item.getTags().includes("saved");
                 });
             } else {
                 output = output.filter(item => {
-                    return item.category === activeCategory;
+                    return item.getCategory() === activeCategory;
                 });
             }
         }
@@ -148,7 +154,7 @@ const SearchBar = () => {
         // Finally, filter by typed search term.
         if (search) {
             output = output.filter(item => {
-                return item.title.toLowerCase().includes(search.toLowerCase());
+                return item.getLabel().toLowerCase().includes(search.toLowerCase());
             });
         }
 
@@ -159,7 +165,7 @@ const SearchBar = () => {
         if (category === "all") {
             return allBlocks.length;
         }
-        return allBlocks.filter(pl => pl.category === category).length;
+        return allBlocks.filter(block => block.getCategory() === category).length;
     }, []);
 
     const { showSnackbar } = useSnackbar();

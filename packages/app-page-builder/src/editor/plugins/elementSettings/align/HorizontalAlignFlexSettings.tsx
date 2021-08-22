@@ -13,14 +13,13 @@ import {
     PbEditorElement,
     PbEditorPageElementSettingsRenderComponentProps,
     PbEditorResponsiveModePlugin
-} from "../../../../types";
-import { useEventActionHandler } from "../../../hooks/useEventActionHandler";
-import { UpdateElementActionEvent } from "../../../recoil/actions";
+} from "~/types";
+import { UpdateElementActionEvent } from "../../../actions";
 import {
     activeElementAtom,
     elementWithChildrenByIdSelector,
     uiAtom
-} from "../../../recoil/modules";
+} from "../../../state";
 import { applyFallbackDisplayMode } from "../elementSettingsUtils";
 // Components
 import { ContentWrapper } from "../components/StyledComponents";
@@ -29,6 +28,7 @@ import Accordion from "../components/Accordion";
 import { ReactComponent as AlignLeftIcon } from "./icons/align_horizontal_left.svg";
 import { ReactComponent as AlignCenterIcon } from "./icons/align_horizontal_center.svg";
 import { ReactComponent as AlignRightIcon } from "./icons/align_horizontal_right.svg";
+import { usePageEditor } from "~/editor/hooks/usePageEditor";
 
 const classes = {
     activeIcon: css({
@@ -71,7 +71,7 @@ const HorizontalAlignFlexSettings: React.FunctionComponent<PbEditorPageElementSe
     ({ defaultAccordionValue = false }) => {
         const { displayMode } = useRecoilValue(uiAtom);
         const propName = `${DATA_NAMESPACE}.${displayMode}`;
-        const handler = useEventActionHandler();
+        const { app } = usePageEditor();
         const activeElementId = useRecoilValue(activeElementAtom);
         const element = useRecoilValue(elementWithChildrenByIdSelector(activeElementId));
         const fallbackValue = useMemo(
@@ -90,7 +90,7 @@ const HorizontalAlignFlexSettings: React.FunctionComponent<PbEditorPageElementSe
         }, [displayMode]);
 
         const updateElement = (element: PbEditorElement) => {
-            handler.trigger(
+            app.dispatchEvent(
                 new UpdateElementActionEvent({
                     element,
                     history: true

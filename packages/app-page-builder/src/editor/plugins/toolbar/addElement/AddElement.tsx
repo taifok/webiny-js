@@ -1,26 +1,22 @@
-import React, { useCallback, useEffect, useState, useMemo } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import * as Styled from "./StyledComponents";
-import { activePluginParamsByNameSelector } from "../../../recoil/modules";
-import { useEventActionHandler } from "../../../hooks/useEventActionHandler";
 import {
     DeactivatePluginActionEvent,
     DragEndActionEvent,
     DragStartActionEvent,
+    DropElementActionDataType,
     DropElementActionEvent
-} from "../../../recoil/actions";
-import { DropElementActionArgsType } from "../../../recoil/actions/dropElement/types";
+} from "../../../actions";
 import Draggable from "../../../components/Draggable";
-import { plugins } from "@webiny/plugins";
-import { usePageBuilder } from "../../../../hooks/usePageBuilder";
-import { useRecoilValue } from "recoil";
 import { css } from "emotion";
 import { List, ListItem, ListItemMeta } from "@webiny/ui/List";
 import { Icon } from "@webiny/ui/Icon";
 import { Typography } from "@webiny/ui/Typography";
 import { ButtonFloating } from "@webiny/ui/Button";
 import { ReactComponent as AddIcon } from "../../../assets/icons/add.svg";
-import { PbEditorPageElementGroupPlugin, PbEditorPageElementPlugin } from "../../../../types";
 import { useKeyHandler } from "../../../hooks/useKeyHandler";
+import { usePageEditor } from "~/editor/hooks/usePageEditor";
+import { PbElementType } from "~/editor/contexts/app/PbElementType";
 
 const ADD_ELEMENT = "pb-editor-toolbar-add-element";
 
@@ -44,41 +40,33 @@ const categoriesList = css({
 });
 
 const AddElement: React.FunctionComponent = () => {
-    const handler = useEventActionHandler();
-    const plugin = useRecoilValue(activePluginParamsByNameSelector(ADD_ELEMENT));
+    const { app } = usePageEditor();
+    const plugin = app.getActivePluginByName(ADD_ELEMENT);
     const { params } = plugin || {};
     const { removeKeyHandler, addKeyHandler } = useKeyHandler();
 
     const dragStart = useCallback(() => {
-        handler.trigger(new DragStartActionEvent());
+        app.dispatchEvent(new DragStartActionEvent());
     }, []);
     const dragEnd = useCallback(() => {
-        handler.trigger(new DragEndActionEvent());
+        app.dispatchEvent(new DragEndActionEvent());
     }, []);
     const deactivatePlugin = useCallback(() => {
-        handler.trigger(
+        app.dispatchEvent(
             new DeactivatePluginActionEvent({
                 name: ADD_ELEMENT
             })
         );
     }, []);
-    const dropElement = useCallback((args: DropElementActionArgsType) => {
-        handler.trigger(new DropElementActionEvent(args));
-    }, []);
-    const getGroups = useCallback(() => {
-        return plugins.byType<PbEditorPageElementGroupPlugin>("pb-editor-page-element-group");
+    const dropElement = useCallback((data: DropElementActionDataType) => {
+        console.log("dropElement in AddElement component", data);
+        app.dispatchEvent(new DropElementActionEvent(data));
     }, []);
 
-    const getGroupElements = useCallback(group => {
-        return plugins
-            .byType<PbEditorPageElementPlugin>("pb-editor-page-element")
-            .filter(el => el.toolbar && el.toolbar.group === group);
-    }, []);
+    const [group, setGroup] = useState<string>(app.getElementGroups()[0].getId());
 
-    const [group, setGroup] = useState<string>(getGroups()[0].name);
-
-    const { theme } = usePageBuilder();
-
+    // TODO: refresh on element title for elemenets that can be renamed.
+    // This should probably be done via an event.
     const refresh = useCallback(() => {
         setGroup(group);
     }, []);
@@ -99,39 +87,38 @@ const AddElement: React.FunctionComponent = () => {
         el.classList.remove("pb-editor-dragging");
     }, []);
 
-    const renderDraggable = useCallback((element, plugin) => {
-        const { elementType } = plugin;
-
+    const renderDraggable = useCallback((element, elementType: PbElementType) => {
+        const id = elementType.getId();
         return (
             <Draggable
                 enabled={true}
-                key={plugin.name}
-                target={plugin.target}
+                key={id}
+                target={elementType.getTarget()}
                 beginDrag={props => {
                     dragStart();
                     setTimeout(deactivatePlugin, 20);
-                    return { type: elementType, target: props.target };
+                    return { type: id, target: props.target };
                 }}
                 endDrag={() => {
                     dragEnd();
                 }}
             >
                 {({ drag }) => (
-                    <div ref={drag}>{renderOverlay(element, null, "Drag to Add", plugin)}</div>
+                    <div ref={drag}>{renderOverlay(element, null, "Drag to Add", elementType)}</div>
                 )}
             </Draggable>
         );
     }, []);
 
     const renderOverlay = useCallback(
-        (element, onClick = null, label, plugin) => {
+        (element, onClick = null, label, elementType: PbElementType) => {
             return (
-                <Styled.ElementPreview>
+                <Styled.ElementPreview key={elementType.getId()}>
                     <Styled.Overlay>
                         <Styled.Backdrop className={"backdrop"} />
                         <Styled.AddBlock className={"add-block"}>
                             <ButtonFloating
-                                data-testid={`pb-editor-add-element-button-${plugin.elementType}`}
+                                data-testid={`pb-editor-add-element-button-${elementType.getId()}`}
                                 onClick={onClick}
                                 label={label}
                                 icon={<AddIcon />}
@@ -176,27 +163,22 @@ const AddElement: React.FunctionComponent = () => {
         return () => removeKeyHandler("escape");
     });
 
-    const emptyViewContent = useMemo(() => {
-        const { group: selectedGroup } = getGroups().find(pl => pl.name === group);
-        return selectedGroup.emptyView;
-    }, [group]);
-
-    const groupElements = group ? getGroupElements(group) : [];
+    const groupElements = group ? app.getElementGroup(group).getElementTypes() : [];
 
     return (
         <Styled.Flex>
             <List className={categoriesList}>
-                {getGroups().map(plugin => (
+                {app.getElementGroups().map(elementGroup => (
                     <ListItem
-                        onClick={() => setGroup(plugin.name)}
-                        key={plugin.name}
-                        className={plugin.name === group && "active"}
+                        onClick={() => setGroup(elementGroup.getId())}
+                        key={elementGroup.getId()}
+                        className={elementGroup.getId() === group && "active"}
                     >
-                        {plugin.group.title}
+                        {elementGroup.getLabel()}
 
-                        {plugin.group.icon && (
+                        {elementGroup.getIcon() && (
                             <ListItemMeta>
-                                <Icon icon={plugin.group.icon} />
+                                <Icon icon={elementGroup.getIcon()} />
                             </ListItemMeta>
                         )}
                     </ListItem>
@@ -204,28 +186,31 @@ const AddElement: React.FunctionComponent = () => {
             </List>
             <Styled.Elements>
                 {groupElements.length
-                    ? groupElements.map(plugin => {
+                    ? groupElements.map(elementType => {
                           return (params ? renderClickable : renderDraggable)(
                               <div data-role="draggable">
                                   <Styled.ElementBox>
                                       <Styled.ElementTitle>
-                                          {typeof plugin.toolbar.title === "function" ? (
-                                              plugin.toolbar.title({ refresh })
-                                          ) : (
-                                              <Typography use="overline">
-                                                  {plugin.toolbar.title}
-                                              </Typography>
-                                          )}
+                                          <Typography use="overline">
+                                              {elementType.getLabel()}
+                                          </Typography>
+                                          {/*{typeof plugin.toolbar.title === "function" ? (*/}
+                                          {/*    plugin.toolbar.title({ refresh })*/}
+                                          {/*) : (*/}
+                                          {/*    <Typography use="overline">*/}
+                                          {/*        {elementType.getLabel()}*/}
+                                          {/*    </Typography>*/}
+                                          {/*)}*/}
                                       </Styled.ElementTitle>
                                       <Styled.ElementPreviewCanvas>
-                                          {plugin.toolbar.preview({ theme })}
+                                          {elementType.getToolbarPreview()}
                                       </Styled.ElementPreviewCanvas>
                                   </Styled.ElementBox>
                               </div>,
-                              plugin
+                              elementType
                           );
                       })
-                    : emptyViewContent}
+                    : app.getElementGroup(group).getEmptyView()}
             </Styled.Elements>
         </Styled.Flex>
     );

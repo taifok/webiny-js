@@ -2,7 +2,7 @@ import React, { useCallback } from "react";
 import { css } from "emotion";
 import { useRecoilValue } from "recoil";
 import { PbEditorPageElementSettingsRenderComponentProps } from "../../../../types";
-import { activeElementAtom, elementWithChildrenByIdSelector } from "../../../recoil/modules";
+import { activeElementAtom, elementWithChildrenByIdSelector } from "../../../state";
 // Components
 import IconPicker from "../../../components/IconPicker";
 import Accordion from "../../elementSettings/components/Accordion";

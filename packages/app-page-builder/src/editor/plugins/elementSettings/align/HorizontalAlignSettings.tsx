@@ -7,12 +7,11 @@ import {
     PbEditorPageElementPlugin,
     PbEditorElement,
     PbEditorPageElementSettingsRenderComponentProps
-} from "../../../../types";
+} from "~/types";
 import { Tooltip } from "@webiny/ui/Tooltip";
 import { IconButton } from "@webiny/ui/Button";
-import { useEventActionHandler } from "../../../hooks/useEventActionHandler";
-import { UpdateElementActionEvent } from "../../../recoil/actions";
-import { activeElementAtom, elementWithChildrenByIdSelector } from "../../../recoil/modules";
+import { UpdateElementActionEvent } from "../../../actions";
+import { activeElementAtom, elementWithChildrenByIdSelector } from "../../../state";
 // Components
 import { ContentWrapper } from "../components/StyledComponents";
 import Accordion from "../components/Accordion";
@@ -21,6 +20,7 @@ import { ReactComponent as AlignTextLeftIcon } from "./icons/format_align_left.s
 import { ReactComponent as AlignTextCenterIcon } from "./icons/format_align_center.svg";
 import { ReactComponent as AlignTextRightIcon } from "./icons/format_align_right.svg";
 import { ReactComponent as AlignTextJustifyIcon } from "./icons/format_align_justify.svg";
+import { usePageEditor } from "~/editor/hooks/usePageEditor";
 
 const classes = {
     activeIcon: css({
@@ -70,13 +70,13 @@ type HorizontalAlignActionPropsType = {
 const HorizontalAlignSettings: React.FunctionComponent<
     HorizontalAlignActionPropsType & PbEditorPageElementSettingsRenderComponentProps
 > = ({ options: { alignments = DEFAULT_ALIGNMENTS }, defaultAccordionValue }) => {
-    const handler = useEventActionHandler();
+    const { app } = usePageEditor();
     const activeElementId = useRecoilValue(activeElementAtom);
     const element = useRecoilValue(elementWithChildrenByIdSelector(activeElementId));
     const align = getAlignValue(element, defaultAlignValue);
 
     const updateElement = (element: PbEditorElement) => {
-        handler.trigger(
+        app.dispatchEvent(
             new UpdateElementActionEvent({
                 element,
                 history: true

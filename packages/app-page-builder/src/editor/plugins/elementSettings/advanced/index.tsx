@@ -1,13 +1,7 @@
-import { PbEditorEventActionPlugin } from "../../../../types";
-import { CreateElementActionEvent } from "../../../recoil/actions";
+import { CreateElementActionEvent } from "../../../actions";
 import { advancedSettingsEditorAction } from "./advancedSettingsEditorAction";
+import { PbEditorAppPlugin } from "~/editor/contexts/PbEditorApp";
 
-export default [
-    {
-        name: "pb-editor-event-action-advanced-settings",
-        type: "pb-editor-event-action-plugin",
-        onEditorMount(handler) {
-            return handler.on(CreateElementActionEvent, advancedSettingsEditorAction);
-        }
-    } as PbEditorEventActionPlugin
-];
+export default new PbEditorAppPlugin(app => {
+    app.addEventListener(CreateElementActionEvent, advancedSettingsEditorAction);
+});

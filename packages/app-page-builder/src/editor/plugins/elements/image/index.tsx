@@ -4,7 +4,7 @@ import kebabCase from "lodash/kebabCase";
 import ImageSettings from "./ImageSettings";
 import Image from "./Image";
 import { imageCreatedEditorAction } from "./imageCreatedEditorAction";
-import { CreateElementActionEvent } from "../../../recoil/actions";
+import { CreateElementActionEvent } from "../../../actions";
 import { ReactComponent as ImageIcon } from "./round-image-24px.svg";
 import {
     PbEditorPageElementPlugin,
@@ -94,19 +94,19 @@ export default (args: PbEditorElementPluginArgs = {}): Plugin[] => {
                 return <Image element={element} />;
             }
         } as PbEditorPageElementPlugin,
-        {
-            name: "pb-editor-page-element-style-settings-image",
-            type: "pb-editor-page-element-style-settings",
-            render() {
-                return <ImageSettings />;
-            }
-        } as PbEditorPageElementStyleSettingsPlugin,
-        {
-            name: "pb-editor-event-action-image-created",
-            type: "pb-editor-event-action-plugin",
-            onEditorMount(handler) {
-                return handler.on(CreateElementActionEvent, imageCreatedEditorAction);
-            }
-        } as PbEditorEventActionPlugin
+        // {
+        //     name: "pb-editor-page-element-style-settings-image",
+        //     type: "pb-editor-page-element-style-settings",
+        //     render() {
+        //         return <ImageSettings />;
+        //     }
+        // } as PbEditorPageElementStyleSettingsPlugin,
+        // {
+        //     name: "pb-editor-event-action-image-created",
+        //     type: "pb-editor-event-action-plugin",
+        //     onEditorMount(handler) {
+        //         return handler.on(CreateElementActionEvent, imageCreatedEditorAction);
+        //     }
+        // } as PbEditorEventActionPlugin
     ];
 };

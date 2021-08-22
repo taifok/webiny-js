@@ -5,7 +5,7 @@ import {
     CreateElementActionEvent,
     DeleteElementActionEvent,
     updateElementAction
-} from "../../../recoil/actions";
+} from "../../../actions";
 import { addElementToParent, createDroppedElement } from "../../../helpers";
 import {
     DisplayMode,
@@ -13,37 +13,20 @@ import {
     PbEditorPageElementPlugin,
     PbEditorElement,
     PbEditorElementPluginArgs
-} from "../../../../types";
-import { AfterDropElementActionEvent } from "../../../recoil/actions/afterDropElement";
+} from "~/types";
+import { AfterDropElementActionEvent } from "../../../actions/afterDropElement";
 import { createInitialPerDeviceSettingValue } from "../../elementSettings/elementSettingsUtils";
+import { PbEditorAppPlugin } from "~/editor/contexts/PbEditorApp";
+import { PbElementType } from "~/editor/contexts/app/PbElementType";
 
-export default (args: PbEditorElementPluginArgs = {}): PbEditorPageElementPlugin => {
-    const elementSettings = [
-        "pb-editor-page-element-style-settings-background",
-        "pb-editor-page-element-style-settings-animation",
-        "pb-editor-page-element-style-settings-border",
-        "pb-editor-page-element-style-settings-shadow",
-        "pb-editor-page-element-style-settings-padding",
-        "pb-editor-page-element-style-settings-margin",
-        "pb-editor-page-element-style-settings-width",
-        "pb-editor-page-element-style-settings-height",
-        "pb-editor-page-element-style-settings-horizontal-align-flex",
-        "pb-editor-page-element-style-settings-vertical-align",
-        "pb-editor-page-element-settings-clone",
-        "pb-editor-page-element-settings-delete"
-    ];
+class BlockElementType extends PbElementType {
+    constructor(id = "block") {
+        super(id);
 
-    const elementType = kebabCase(args.elementType || "block");
-
-    return {
-        name: `pb-editor-page-element-${elementType}`,
-        type: "pb-editor-page-element",
-        elementType: elementType,
-        settings:
-            typeof args.settings === "function" ? args.settings(elementSettings) : elementSettings,
-        create(options = {}) {
-            const defaultValue = {
-                type: this.elementType,
+        // @ts-ignore
+        this.setCreateElement(() => {
+            return {
+                type: this.getId(),
                 elements: [],
                 data: {
                     settings: {
@@ -76,50 +59,73 @@ export default (args: PbEditorElementPluginArgs = {}): PbEditorPageElementPlugin
                             DisplayMode.DESKTOP
                         )
                     }
-                },
-                ...options
+                }
             };
+        });
 
-            return typeof args.create === "function" ? args.create(defaultValue) : defaultValue;
-        },
-        render(props) {
+        this.setRenderer(props => {
             return <Block {...props} />;
-        },
-        // This callback is executed when another element is dropped on the drop zones with type "block"
-        onReceived({ source, target, position = null, state, meta }) {
-            const element = createDroppedElement(source as any, target);
+        });
+        
+        this.setOnReceived(({ event }) => {
+            console.log("BLock on received", event);
+            return;
+            // const { source, target, position = null } = event.getData();
+            //
+            // const element = createDroppedElement(source as any, target);
+            //
+            // const block = addElementToParent(element, target, position);
+            //
+            // const result = updateElementAction(state, meta, {
+            //     element: block,
+            //     history: true
+            // }) as EventActionHandlerActionCallableResponse;
+            //
+            // result.actions.push(
+            //     new AfterDropElementActionEvent({
+            //         element
+            //     })
+            // );
+            //
+            // if (source.id) {
+            //     // Delete source element
+            //     result.actions.push(
+            //         new DeleteElementActionEvent({
+            //             element: source as PbEditorElement
+            //         })
+            //     );
+            //
+            //     return result;
+            // }
+            //
+            // result.actions.push(
+            //     new CreateElementActionEvent({
+            //         element,
+            //         source: source as any
+            //     })
+            // );
+            // return result;
+        })
+    }
+}
 
-            const block = addElementToParent(element, target, position);
+export default new PbEditorAppPlugin(app => {
+    app.addElementType(new BlockElementType());
+});
 
-            const result = updateElementAction(state, meta, {
-                element: block,
-                history: true
-            }) as EventActionHandlerActionCallableResponse;
-
-            result.actions.push(
-                new AfterDropElementActionEvent({
-                    element
-                })
-            );
-
-            if (source.id) {
-                // Delete source element
-                result.actions.push(
-                    new DeleteElementActionEvent({
-                        element: source as PbEditorElement
-                    })
-                );
-
-                return result;
-            }
-
-            result.actions.push(
-                new CreateElementActionEvent({
-                    element,
-                    source: source as any
-                })
-            );
-            return result;
-        }
-    };
-};
+// export default (args: PbEditorElementPluginArgs = {}): PbEditorPageElementPlugin => {
+//     const elementSettings = [
+//         "pb-editor-page-element-style-settings-background",
+//         "pb-editor-page-element-style-settings-animation",
+//         "pb-editor-page-element-style-settings-border",
+//         "pb-editor-page-element-style-settings-shadow",
+//         "pb-editor-page-element-style-settings-padding",
+//         "pb-editor-page-element-style-settings-margin",
+//         "pb-editor-page-element-style-settings-width",
+//         "pb-editor-page-element-style-settings-height",
+//         "pb-editor-page-element-style-settings-horizontal-align-flex",
+//         "pb-editor-page-element-style-settings-vertical-align",
+//         "pb-editor-page-element-settings-clone",
+//         "pb-editor-page-element-settings-delete"
+//     ];
+// };

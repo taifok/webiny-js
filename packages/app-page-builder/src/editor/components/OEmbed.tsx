@@ -4,10 +4,10 @@ import { css } from "emotion";
 import { useQuery } from "@apollo/react-hooks";
 import { useSnackbar } from "@webiny/app-admin/hooks/useSnackbar";
 import { Typography } from "@webiny/ui/Typography";
-import { useEventActionHandler } from "../hooks/useEventActionHandler";
-import { UpdateElementActionEvent } from "../recoil/actions";
+import { UpdateElementActionEvent } from "../actions";
 import { PbEditorElement } from "../../types";
 import useRenderEmptyEmbed from "../plugins/elements/utils/oembed/useRenderEmptyEmbed";
+import { usePageEditor } from "~/editor/hooks/usePageEditor";
 
 function appendSDK(props) {
     const { sdk, global, element } = props;
@@ -74,7 +74,7 @@ export type OEmbedProps = {
 };
 const OEmbedComponent = (props: OEmbedProps) => {
     const [errorMessage, setErrorMessage] = useState(null);
-    const eventActionHandler = useEventActionHandler();
+    const { app } = usePageEditor();
     const { showSnackbar } = useSnackbar();
     const { element, onData = d => d } = props;
 
@@ -105,7 +105,7 @@ const OEmbedComponent = (props: OEmbedProps) => {
                         oembed: onData(oembed)
                     }
                 };
-                eventActionHandler.trigger(
+                app.dispatchEvent(
                     new UpdateElementActionEvent({
                         element: newElement,
                         history: true

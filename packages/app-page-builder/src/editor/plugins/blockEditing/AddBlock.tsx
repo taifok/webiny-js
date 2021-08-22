@@ -1,9 +1,9 @@
 import React from "react";
 import styled from "@emotion/styled";
-import { useEventActionHandler } from "../../hooks/useEventActionHandler";
-import { TogglePluginActionEvent } from "../../recoil/actions";
+import { TogglePluginActionEvent } from "../../actions";
 import { ButtonFloating } from "@webiny/ui/Button";
 import { ReactComponent as AddIcon } from "../../assets/icons/add.svg";
+import { usePageEditor } from "~/editor/hooks/usePageEditor";
 
 const SIDEBAR_WIDTH = 300;
 const BottomRight = styled("div")({
@@ -14,10 +14,10 @@ const BottomRight = styled("div")({
 });
 
 const AddBlock = () => {
-    const handler = useEventActionHandler();
+    const { app } = usePageEditor();
 
     const onClickHandler = () => {
-        handler.trigger(
+        app.dispatchEvent(
             new TogglePluginActionEvent({
                 name: "pb-editor-search-blocks-bar"
             })

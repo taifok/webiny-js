@@ -9,7 +9,7 @@ import { useSnackbar } from "@webiny/app-admin/hooks/useSnackbar";
 import { ConfirmationDialog } from "@webiny/ui/ConfirmationDialog";
 import { ButtonPrimary } from "@webiny/ui/Button";
 import { GET_PAGE } from "../../../../admin/graphql/pages";
-import { pageAtom } from "../../../recoil/modules";
+import { pageAtom } from "../../../state";
 import { PUBLISH_PAGE } from "./PublishPageButton/graphql";
 import usePermission from "../../../../hooks/usePermission";
 

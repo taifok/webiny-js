@@ -1,7 +1,7 @@
 import React from "react";
 import lodashGet from "lodash/get";
 import ColorPickerCmp from "../../../components/ColorPicker/ColorPicker";
-import { activeElementAtom, elementByIdSelector } from "../../../recoil/modules";
+import { activeElementAtom, elementByIdSelector } from "../../../state";
 import { Typography } from "@webiny/ui/Typography";
 import { Grid, Cell } from "@webiny/ui/Grid";
 import { useRecoilValue } from "recoil";

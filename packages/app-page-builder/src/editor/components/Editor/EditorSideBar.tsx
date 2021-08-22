@@ -10,7 +10,7 @@ import {
     sidebarAtom,
     highlightSidebarTabMutation,
     updateSidebarActiveTabIndexMutation
-} from "../../recoil/modules";
+} from "../../state";
 import StyleSettingsTabContent from "./Sidebar/StyleSettingsTabContent";
 import ElementSettingsTabContent from "./Sidebar/ElementSettingsTabContent";
 

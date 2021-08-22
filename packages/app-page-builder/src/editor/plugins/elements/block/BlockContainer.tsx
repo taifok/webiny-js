@@ -6,11 +6,11 @@ import { IconButton } from "@webiny/ui/Button";
 import DropZone from "../../../components/DropZone";
 import Element from "../../../components/Element";
 import { DragObjectWithTypeWithTarget } from "../../../components/Droppable";
-import { useEventActionHandler } from "../../../hooks/useEventActionHandler";
-import { DropElementActionEvent, TogglePluginActionEvent } from "../../../recoil/actions";
-import { elementByIdSelector, uiAtom, highlightElementAtom } from "../../../recoil/modules";
+import { DropElementActionEvent, TogglePluginActionEvent } from "../../../actions";
+import { elementByIdSelector, uiAtom, highlightElementAtom } from "../../../state";
 import { ReactComponent as AddCircleOutline } from "../../../assets/icons/baseline-add_circle-24px.svg";
 import BlockContainerInnerWrapper from "./BlockContainerInnerWrapper";
+import { usePageEditor } from "~/editor/hooks/usePageEditor";
 
 const addIcon = css({
     color: "var(--mdc-theme-secondary)",
@@ -38,7 +38,7 @@ const BlockContainer: React.FunctionComponent<BlockContainerPropsType> = ({
     elementId
 }) => {
     const { displayMode } = useRecoilValue(uiAtom);
-    const handler = useEventActionHandler();
+    const { app } = usePageEditor();
     const element = useRecoilValue(elementByIdSelector(elementId));
     const highlightedElement = useRecoilValue(highlightElementAtom);
     const { id, path, type, elements } = element;
@@ -54,7 +54,7 @@ const BlockContainer: React.FunctionComponent<BlockContainerPropsType> = ({
     const justifyContent = elementStyle[`--${kebabCase(displayMode)}-align-items`];
 
     const onAddClick = () => {
-        handler.trigger(
+        app.dispatchEvent(
             new TogglePluginActionEvent({
                 name: "pb-editor-toolbar-add-element",
                 params: { id, path, type }
@@ -63,7 +63,7 @@ const BlockContainer: React.FunctionComponent<BlockContainerPropsType> = ({
     };
 
     const dropElementAction = (source: DragObjectWithTypeWithTarget, position: number) => {
-        handler.trigger(
+        app.dispatchEvent(
             new DropElementActionEvent({
                 source,
                 target: {

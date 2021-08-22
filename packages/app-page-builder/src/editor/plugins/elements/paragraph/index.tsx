@@ -1,65 +1,38 @@
 import React from "react";
-import kebabCase from "lodash/kebabCase";
-import {
-    DisplayMode,
-    PbEditorPageElementPlugin,
-    PbEditorElementPluginArgs
-} from "../../../../types";
+import { DisplayMode } from "~/types";
 import Text, { textClassName } from "./Paragraph";
 import { createInitialTextValue } from "../utils/textUtils";
 import { createInitialPerDeviceSettingValue } from "../../elementSettings/elementSettingsUtils";
+import { PbElementType } from "~/editor/contexts/app/PbElementType";
 
-export default (args: PbEditorElementPluginArgs = {}): PbEditorPageElementPlugin => {
-    const defaultText = `Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+const defaultText = `Lorem ipsum dolor sit amet, consectetur adipiscing elit.
      Suspendisse varius enim in eros elementum tristique.
      Duis cursus, mi quis viverra ornare, eros dolor interdum nulla, ut commodo diam libero vitae erat.
      Aenean faucibus nibh et justo cursus id rutrum lorem imperdiet. Nunc ut sem vitae risus tristique posuere.`;
 
-    const elementType = kebabCase(args.elementType || "paragraph");
+export class ParagraphElementType extends PbElementType {
+    constructor(id = "paragraph") {
+        super(id);
 
-    const defaultToolbar = {
-        title: "Paragraph",
-        group: "pb-editor-element-group-basic",
-        preview() {
-            return <p className={textClassName}>{defaultText}</p>;
-        }
-    };
-
-    const defaultSettings = [
-        "pb-editor-page-element-style-settings-text",
-        "pb-editor-page-element-style-settings-background",
-        "pb-editor-page-element-style-settings-border",
-        "pb-editor-page-element-style-settings-shadow",
-        "pb-editor-page-element-style-settings-padding",
-        "pb-editor-page-element-style-settings-margin",
-        "pb-editor-page-element-settings-clone",
-        "pb-editor-page-element-settings-delete"
-    ];
-
-    return {
-        name: `pb-editor-page-element-${elementType}`,
-        type: "pb-editor-page-element",
-        elementType: elementType,
-        toolbar: typeof args.toolbar === "function" ? args.toolbar(defaultToolbar) : defaultToolbar,
-        settings:
-            typeof args.settings === "function" ? args.settings(defaultSettings) : defaultSettings,
-        target: ["cell", "block"],
-        create({ content = {}, ...options }) {
-            const previewText = content.text || defaultText;
-
-            const defaultValue = {
-                type: this.elementType,
-                elements: [],
+        this.setLabel("Paragraph");
+        this.setToolbarPreview(<p className={textClassName}>{defaultText}</p>);
+        this.setRenderer(({ element }) => {
+            return <Text elementId={element.id} />;
+        });
+        // @ts-ignore
+        this.setCreateElement(() => {
+            return {
+                type: this.getId(),
                 data: {
                     text: {
                         ...createInitialPerDeviceSettingValue(
                             createInitialTextValue({
-                                type: this.elementType
+                                type: this.getId()
                             }),
                             DisplayMode.DESKTOP
                         ),
                         data: {
-                            text: previewText
+                            text: defaultText
                         }
                     },
                     settings: {
@@ -72,14 +45,21 @@ export default (args: PbEditorElementPluginArgs = {}): PbEditorPageElementPlugin
                             DisplayMode.DESKTOP
                         )
                     }
-                },
-                ...options
+                }
             };
-
-            return typeof args.create === "function" ? args.create(defaultValue) : defaultValue;
-        },
-        render({ element }) {
-            return <Text elementId={element.id} />;
-        }
-    };
-};
+        });
+    }
+}
+//
+// export default (args: PbEditorElementPluginArgs = {}): PbEditorPageElementPlugin => {
+//     const defaultSettings = [
+//         "pb-editor-page-element-style-settings-text",
+//         "pb-editor-page-element-style-settings-background",
+//         "pb-editor-page-element-style-settings-border",
+//         "pb-editor-page-element-style-settings-shadow",
+//         "pb-editor-page-element-style-settings-padding",
+//         "pb-editor-page-element-style-settings-margin",
+//         "pb-editor-page-element-settings-clone",
+//         "pb-editor-page-element-settings-delete"
+//     ];
+// };

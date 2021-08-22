@@ -1,16 +1,13 @@
 import React from "react";
 import styled from "@emotion/styled";
-import kebabCase from "lodash/kebabCase";
+import dotProp from "dot-prop-immutable";
 import GridContainer from "./GridContainer";
 import { ReactComponent as GridIcon } from "../../../assets/icons/view_quilt.svg";
-import { createElement } from "../../../helpers";
-import {
-    PbEditorPageElementPlugin,
-    DisplayMode,
-    PbEditorElementPluginArgs
-} from "../../../../types";
+import { DisplayMode } from "~/types";
 import { getDefaultPresetCellsTypePluginType, calculatePresetCells } from "../../gridPresets";
 import { createInitialPerDeviceSettingValue } from "../../elementSettings/elementSettingsUtils";
+import { PbElementType } from "~/editor/contexts/app/PbElementType";
+import { PbEditorApp, PbEditorAppPlugin } from "~/editor/contexts/PbEditorApp";
 
 const PreviewBox = styled("div")({
     textAlign: "center",
@@ -21,72 +18,38 @@ const PreviewBox = styled("div")({
     }
 });
 
-const createDefaultCells = (cellsType: string) => {
+const createDefaultCells = (app: PbEditorApp, cellsType: string) => {
+    const cellElementType = app.getElementType("cell");
     const cells = calculatePresetCells(cellsType);
     return cells.map(size => {
-        return createElement("cell", {
-            data: {
-                settings: {
-                    grid: {
-                        size
-                    }
-                }
-            }
+        return cellElementType.createElement(element => {
+            return dotProp.set(element, "data.settings.grid.size", size);
         });
     });
 };
 
-export default (args: PbEditorElementPluginArgs = {}): PbEditorPageElementPlugin => {
-    const defaultSettings = [
-        "pb-editor-page-element-style-settings-grid",
-        "pb-editor-page-element-style-settings-background",
-        "pb-editor-page-element-style-settings-animation",
-        "pb-editor-page-element-style-settings-border",
-        "pb-editor-page-element-style-settings-shadow",
-        "pb-editor-page-element-style-settings-padding",
-        "pb-editor-page-element-style-settings-margin",
-        "pb-editor-page-element-style-settings-width",
-        "pb-editor-page-element-style-settings-height",
-        "pb-editor-page-element-style-settings-horizontal-align-flex",
-        "pb-editor-page-element-style-settings-vertical-align",
-        "pb-editor-page-element-settings-clone",
-        "pb-editor-page-element-settings-delete"
-    ];
+export class GridElementType extends PbElementType {
+    constructor(id = "grid") {
+        super(id);
 
-    const elementType = kebabCase(args.elementType || "grid");
+        this.setLabel("Grid");
+        this.setToolbarPreview(
+            <PreviewBox>
+                <GridIcon />
+            </PreviewBox>
+        );
 
-    const defaultToolbar = {
-        title: "Grid",
-        group: "pb-editor-element-group-layout",
-        preview() {
-            return (
-                <PreviewBox>
-                    <GridIcon />
-                </PreviewBox>
-            );
-        }
-    };
+        this.setRenderer(({ element }) => {
+            return <GridContainer element={element} />;
+        });
 
-    return {
-        type: "pb-editor-page-element",
-        name: `pb-editor-page-element-${elementType}`,
-        elementType: elementType,
-        toolbar: typeof args.toolbar === "function" ? args.toolbar(defaultToolbar) : defaultToolbar,
-        settings:
-            typeof args.settings === "function" ? args.settings(defaultSettings) : defaultSettings,
+        // @ts-ignore
+        this.setCreateElement(() => {
+            const cellsType = getDefaultPresetCellsTypePluginType();
 
-        target: ["cell", "block"],
-        canDelete: () => {
-            return true;
-        },
-        create: (options = {}) => {
-            const { elements, data = {} } = options;
-            const defaultCellsType = getDefaultPresetCellsTypePluginType();
-            const cellsType = data.settings?.cellsType || defaultCellsType;
-
-            const defaultValue = {
-                type: elementType,
-                elements: elements || createDefaultCells(cellsType),
+            return {
+                type: this.getId(),
+                elements: createDefaultCells(this.getApp(), cellsType),
                 data: {
                     settings: {
                         width: createInitialPerDeviceSettingValue(
@@ -121,14 +84,33 @@ export default (args: PbEditorElementPluginArgs = {}): PbEditorPageElementPlugin
                             DisplayMode.DESKTOP
                         )
                     }
-                },
-                ...options
+                }
             };
+        });
+    }
+}
 
-            return typeof args.create === "function" ? args.create(defaultValue) : defaultValue;
-        },
-        render({ element }) {
-            return <GridContainer element={element} />;
-        }
-    };
-};
+export default new PbEditorAppPlugin(app => {
+    const gridElementType = new GridElementType();
+    const basicGroup = app.getElementGroup("basic");
+    basicGroup.addElementType(gridElementType);
+    app.addElementType(gridElementType);
+});
+
+// export default (args: PbEditorElementPluginArgs = {}) => {
+//     const defaultSettings = [
+//         "pb-editor-page-element-style-settings-grid",
+//         "pb-editor-page-element-style-settings-background",
+//         "pb-editor-page-element-style-settings-animation",
+//         "pb-editor-page-element-style-settings-border",
+//         "pb-editor-page-element-style-settings-shadow",
+//         "pb-editor-page-element-style-settings-padding",
+//         "pb-editor-page-element-style-settings-margin",
+//         "pb-editor-page-element-style-settings-width",
+//         "pb-editor-page-element-style-settings-height",
+//         "pb-editor-page-element-style-settings-horizontal-align-flex",
+//         "pb-editor-page-element-style-settings-vertical-align",
+//         "pb-editor-page-element-settings-clone",
+//         "pb-editor-page-element-settings-delete"
+//     ];
+// };

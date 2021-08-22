@@ -6,7 +6,7 @@ import { plugins } from "@webiny/plugins";
 import { get } from "lodash";
 import { PbPageElementPagesListComponentPlugin } from "../../../../types";
 import { useRecoilValue } from "recoil";
-import { pageAtom } from "../../../recoil/modules";
+import { pageAtom } from "../../../state";
 
 const PagesList = props => {
     const { component, ...vars } = props.data;

@@ -1,12 +1,12 @@
-import { useEventActionHandler } from "../../../hooks/useEventActionHandler";
-import { TogglePluginActionEvent } from "../../../recoil/actions";
+import { TogglePluginActionEvent } from "../../../actions";
 import React, { useEffect, useCallback, ReactElement } from "react";
-import { isPluginActiveSelector, activePluginsByTypeTotalSelector } from "../../../recoil/modules";
+import { isPluginActiveSelector, activePluginsByTypeTotalSelector } from "../../../state";
 import { css } from "emotion";
 import { IconButton } from "@webiny/ui/Button";
 import { useKeyHandler } from "../../../hooks/useKeyHandler";
 import { Tooltip } from "@webiny/ui/Tooltip";
 import { useRecoilValue } from "recoil";
+import { usePageEditor } from "~/editor/hooks/usePageEditor";
 
 const editorPageElementSettingsPluginType = "pb-editor-page-element-settings";
 
@@ -34,7 +34,7 @@ const Action: React.FunctionComponent<ActionProps> = ({
     shortcut = [],
     ...props
 }) => {
-    const eventActionHandler = useEventActionHandler();
+    const { app } = usePageEditor();
     const isPluginActive = useRecoilValue(isPluginActiveSelector(plugin));
     const settingsActive =
         useRecoilValue(activePluginsByTypeTotalSelector(editorPageElementSettingsPluginType)) > 0;
@@ -45,7 +45,7 @@ const Action: React.FunctionComponent<ActionProps> = ({
         if (typeof onClick === "function") {
             return onClick();
         }
-        eventActionHandler.trigger(
+        app.dispatchEvent(
             new TogglePluginActionEvent({
                 name: plugin,
                 closeOtherInGroup: true

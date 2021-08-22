@@ -6,7 +6,7 @@ import {
     elementByIdSelector,
     elementsAtom,
     highlightElementAtom
-} from "../../recoil/modules";
+} from "../../state";
 import { breadcrumbs } from "./styles";
 
 const Breadcrumbs: React.FunctionComponent = () => {

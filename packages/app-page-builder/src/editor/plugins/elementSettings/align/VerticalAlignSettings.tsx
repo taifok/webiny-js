@@ -13,14 +13,13 @@ import {
     PbEditorElement,
     PbEditorPageElementSettingsRenderComponentProps,
     PbEditorResponsiveModePlugin
-} from "../../../../types";
-import { useEventActionHandler } from "../../../hooks/useEventActionHandler";
-import { UpdateElementActionEvent } from "../../../recoil/actions";
+} from "~/types";
+import { UpdateElementActionEvent } from "../../../actions";
 import {
     activeElementAtom,
     uiAtom,
     elementWithChildrenByIdSelector
-} from "../../../recoil/modules";
+} from "../../../state";
 import { applyFallbackDisplayMode } from "../elementSettingsUtils";
 // Components
 import { ContentWrapper } from "../components/StyledComponents";
@@ -29,6 +28,7 @@ import Accordion from "../components/Accordion";
 import { ReactComponent as AlignTopIcon } from "./icons/align_vertical_top.svg";
 import { ReactComponent as AlignCenterIcon } from "./icons/align_vertical_center.svg";
 import { ReactComponent as AlignBottomIcon } from "./icons/align_vertical_bottom.svg";
+import { usePageEditor } from "~/editor/hooks/usePageEditor";
 
 const classes = {
     activeIcon: css({
@@ -73,7 +73,7 @@ const VerticalAlignSettings: React.FunctionComponent<PbEditorPageElementSettings
     ({ defaultAccordionValue }) => {
         const { displayMode } = useRecoilValue(uiAtom);
         const propName = `${DATA_NAMESPACE}.${displayMode}`;
-        const handler = useEventActionHandler();
+        const { app } = usePageEditor();
         const activeElementId = useRecoilValue(activeElementAtom);
         const element = useRecoilValue(elementWithChildrenByIdSelector(activeElementId));
         const fallbackValue = useMemo(
@@ -92,7 +92,7 @@ const VerticalAlignSettings: React.FunctionComponent<PbEditorPageElementSettings
         }, [displayMode]);
 
         const updateElement = (element: PbEditorElement) => {
-            handler.trigger(
+            app.dispatchEvent(
                 new UpdateElementActionEvent({
                     element,
                     history: true

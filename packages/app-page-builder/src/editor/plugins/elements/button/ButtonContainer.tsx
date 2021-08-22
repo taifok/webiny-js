@@ -5,11 +5,11 @@ import classNames from "classnames";
 import kebabCase from "lodash/kebabCase";
 import merge from "lodash/merge";
 import set from "lodash/set";
-import { PbEditorElement } from "../../../../types";
-import { useEventActionHandler } from "../../../hooks/useEventActionHandler";
-import { UpdateElementActionEvent } from "../../../recoil/actions";
-import { elementByIdSelector, uiAtom } from "../../../recoil/modules";
+import { PbEditorElement } from "~/types";
+import { UpdateElementActionEvent } from "../../../actions";
+import { elementByIdSelector, uiAtom } from "../../../state";
 import SimpleEditableText from "./SimpleEditableText";
+import { usePageEditor } from "~/editor/hooks/usePageEditor";
 
 const buttonEditStyle = css({
     "&.button__content--empty": {
@@ -33,7 +33,7 @@ const ButtonContainer: React.FunctionComponent<ButtonContainerPropsType> = ({
     elementAttributes,
     elementId
 }) => {
-    const eventActionHandler = useEventActionHandler();
+    const { app } = usePageEditor();
     const uiAtomValue = useRecoilValue(uiAtom);
     const element = useRecoilValue(elementByIdSelector(elementId));
     const { type = "default", icon = {}, buttonText } = element.data || {};
@@ -62,7 +62,7 @@ const ButtonContainer: React.FunctionComponent<ButtonContainerPropsType> = ({
             set({ elements: [] }, DATA_NAMESPACE, value.current)
         );
 
-        eventActionHandler.trigger(
+        app.dispatchEvent(
             new UpdateElementActionEvent({
                 element: newElement,
                 history: true
