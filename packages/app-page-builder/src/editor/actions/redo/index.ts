@@ -1,3 +1,3 @@
-import { PbEditorEvent } from "~/editor/contexts/app/PbEditorEvent";
+import { PbEditorEvent } from "~/editor/app/PbEditorEvent";
 
 export class RedoStateChangeActionEvent extends PbEditorEvent {}

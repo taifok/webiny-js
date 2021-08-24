@@ -2,12 +2,12 @@ import React from "react";
 import styled from "@emotion/styled";
 import dotProp from "dot-prop-immutable";
 import GridContainer from "./GridContainer";
-import { ReactComponent as GridIcon } from "../../../assets/icons/view_quilt.svg";
+import { ReactComponent as GridIcon } from "~/editor/assets/icons/view_quilt.svg";
 import { DisplayMode } from "~/types";
 import { getDefaultPresetCellsTypePluginType, calculatePresetCells } from "../../gridPresets";
 import { createInitialPerDeviceSettingValue } from "../../elementSettings/elementSettingsUtils";
-import { PbElementType } from "~/editor/contexts/app/PbElementType";
-import { PbEditorApp, PbEditorAppPlugin } from "~/editor/contexts/PbEditorApp";
+import { PbElementType } from "~/editor/app/PbElementType";
+import { PbEditorApp, PbEditorAppPlugin } from "~/editor/app/PbEditorApp";
 
 const PreviewBox = styled("div")({
     textAlign: "center",

@@ -1,10 +1,9 @@
-import { useCallback, useEffect } from "react";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useEffect } from "react";
 import { plugins } from "@webiny/plugins";
 import { PbEditorPageElementPlugin } from "~/types";
-import { useKeyHandler } from "../../../hooks/useKeyHandler";
+import { useKeyHandler } from "~/editor/hooks/useKeyHandler";
 import { userElementStyleSettingsPlugins } from "../../../helpers";
-import { activeElementAtom, elementByIdSelector } from "../../../state";
+import { useActiveElement } from "~/editor/hooks/useActiveElement";
 
 const getElementActions = plugin => {
     if (!plugin || !plugin.settings) {
@@ -49,23 +48,18 @@ const getElementActions = plugin => {
 };
 
 const useElementStyleSettings = () => {
-    const [activeElement, setActiveElementAtomValue] = useRecoilState(activeElementAtom);
-    const element = useRecoilValue(elementByIdSelector(activeElement));
+    const [element, setActiveElement] = useActiveElement();
     const elementType = element?.type;
-
-    const deactivateElement = useCallback(() => {
-        setActiveElementAtomValue(null);
-    }, []);
-
+    
     const { addKeyHandler, removeKeyHandler } = useKeyHandler();
 
     useEffect(() => {
         addKeyHandler("escape", e => {
             e.preventDefault();
-            deactivateElement();
+            setActiveElement(null)
         });
         return () => removeKeyHandler("escape");
-    });
+    }, []);
 
     const plugin = plugins
         .byType<PbEditorPageElementPlugin>("pb-editor-page-element")

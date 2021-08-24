@@ -25,7 +25,7 @@ const Block = ({ element }: { element: PbElement }) => {
                      */
                     const alignItems = elementStyle[`--${kebabCase(displayMode)}-justify-content`];
                     const justifyContent = elementStyle[`--${kebabCase(displayMode)}-align-items`];
-
+                    
                     return (
                         <div
                             style={{ width: "100%", display: "flex" }}

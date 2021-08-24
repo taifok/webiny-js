@@ -1,5 +1,4 @@
-import { UpdateElementActionEvent } from "../../actions";
-import { UpdateElementActionParamsType } from "../../actions/updateElement/types";
+import { UpdateElementActionEvent, UpdateElementActionParamsType } from "~/editor/actions";
 import { PbEditorElement } from "~/types";
 import { useMemo } from "react";
 import lodashSet from "lodash/set";

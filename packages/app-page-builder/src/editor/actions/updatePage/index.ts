@@ -1,5 +1,5 @@
-import { PbEditorAppPlugin } from "~/editor/contexts/PbEditorApp";
-import { PbEditorEvent } from "~/editor/contexts/app/PbEditorEvent";
+import { PbEditorAppPlugin } from "~/editor/app/PbEditorApp";
+import { PbEditorEvent } from "~/editor/app/PbEditorEvent";
 import { PageAtomType } from "~/editor/state";
 import { SaveRevisionActionEvent } from "~/editor/actions";
 
@@ -12,7 +12,7 @@ export type UpdatePageRevisionActionParamsType = {
 export class UpdatePageRevisionActionEvent extends PbEditorEvent<UpdatePageRevisionActionParamsType> {}
 
 export default new PbEditorAppPlugin(app => {
-    app.addEventListener(UpdatePageRevisionActionEvent, async event => {
+    app.addEventListener(UpdatePageRevisionActionEvent, event => {
         const { debounce, onFinish, page } = event.getData();
 
         event.setState(state => {
@@ -25,7 +25,7 @@ export default new PbEditorAppPlugin(app => {
             };
         });
 
-        await event.getApp().dispatchEvent(
+        event.getApp().dispatchEvent(
             new SaveRevisionActionEvent({
                 debounce,
                 onFinish

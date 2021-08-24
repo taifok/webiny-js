@@ -1,6 +1,6 @@
 import { deleteElementAction } from "./action";
-import { PbEditorAppPlugin } from "~/editor/contexts/PbEditorApp";
-import { PbEditorEvent } from "~/editor/contexts/app/PbEditorEvent";
+import { PbEditorAppPlugin } from "~/editor/app/PbEditorApp";
+import { PbEditorEvent } from "~/editor/app/PbEditorEvent";
 import { PbEditorElement } from "~/types";
 
 export type DeleteElementActionParamsType = {

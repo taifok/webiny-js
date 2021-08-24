@@ -1,7 +1,20 @@
 import { moveBlockAction } from "./action";
-import { MoveBlockActionParamsType } from "./types";
-import { PbEditorEvent } from "~/editor/contexts/app/PbEditorEvent";
-import { PbEditorAppPlugin } from "~/editor/contexts/PbEditorApp";
+import { PbEditorEvent } from "~/editor/app/PbEditorEvent";
+import { PbEditorAppPlugin } from "~/editor/app/PbEditorApp";
+
+export type MoveBlockActionParamsType = {
+    source: {
+        id: string;
+        type: string;
+        position: number;
+    };
+    target: {
+        id: string;
+        type: string;
+        position: number;
+    };
+    rootElementId: string;
+};
 
 export class MoveBlockActionEvent extends PbEditorEvent<MoveBlockActionParamsType> {}
 

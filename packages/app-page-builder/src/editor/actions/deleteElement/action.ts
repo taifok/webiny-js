@@ -12,9 +12,9 @@ const removeElementFromParent = (parent: PbEditorElement, id: string): PbEditorE
     };
 };
 
-export const deleteElementAction = async (event: DeleteElementActionEvent) => {
+export const deleteElementAction = (event: DeleteElementActionEvent) => {
     const { element } = event.getData();
-    const parent = await event.getApp().getElementParentById(element.id);
+    const parent = event.getApp().getElementParentById(element.id);
     const newParent = removeElementFromParent(parent, element.id);
 
     event.setState(state => {
@@ -29,6 +29,6 @@ export const deleteElementAction = async (event: DeleteElementActionEvent) => {
         };
     });
 
-    await event.getApp().dispatchEvent(new SaveRevisionActionEvent());
-    await event.getApp().dispatchEvent(new UpdateElementTreeActionEvent());
+    event.getApp().dispatchEvent(new SaveRevisionActionEvent());
+    event.getApp().dispatchEvent(new UpdateElementTreeActionEvent());
 };

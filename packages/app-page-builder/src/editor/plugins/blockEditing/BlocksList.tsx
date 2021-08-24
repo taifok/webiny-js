@@ -3,7 +3,7 @@ import { get } from "lodash";
 import { List, WindowScroller } from "react-virtualized";
 import BlockPreview from "./BlockPreview";
 import { css } from "emotion";
-import { PbBlockType } from "~/editor/contexts/app/PbBlockType";
+import { PbBlockType } from "~/editor/app/PbBlockType";
 
 const listStyle = css({
     "& .ReactVirtualized__Grid__innerScrollContainer": {

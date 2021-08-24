@@ -36,7 +36,7 @@ const ElementComponent: React.FunctionComponent<ElementPropsType> = ({
         setTimeout(() => {
             app.setIsDragging(true);
         });
-        return { ...data, target: elementType.getTarget() };
+        return { ...data, target: elementType.getDropTarget() };
     }, [elementId]);
 
     const endDrag = useCallback(() => {
@@ -93,7 +93,7 @@ const ElementComponent: React.FunctionComponent<ElementPropsType> = ({
         })
     );
 
-    const isDraggable = elementType.getTarget().length > 0;
+    const isDraggable = elementType.getDropTarget().length > 0;
 
     return (
         <Transition in={true} timeout={250} appear={true}>
@@ -110,7 +110,7 @@ const ElementComponent: React.FunctionComponent<ElementPropsType> = ({
                     <div className={["innerWrapper", className].filter(c => c).join(" ")}>
                         <Draggable
                             enabled={isDraggable}
-                            target={elementType.getTarget()}
+                            target={elementType.getDropTarget()}
                             beginDrag={beginDrag}
                             endDrag={endDrag}
                         >

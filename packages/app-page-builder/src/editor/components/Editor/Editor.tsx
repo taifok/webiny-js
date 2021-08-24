@@ -10,13 +10,14 @@ import EditorToolbar from "./Toolbar";
 import EditorContent from "./Content";
 import DragPreview from "./DragPreview";
 import Dialogs from "./Dialogs";
-import EditorSideBar from "./EditorSideBar";
+import ElementSideBar from "./ElementSideBar";
 import { PageAtomType, RevisionsAtomType } from "~/editor/state";
 import { usePageEditor } from "~/editor/hooks/usePageEditor";
 import { useUI } from "~/editor/hooks/useUI";
 import { useRevisions } from "~/editor/hooks/useRevisions";
 import { UndoStateChangeActionEvent } from "~/editor/actions/undo";
 import { RedoStateChangeActionEvent } from "~/editor/actions/redo";
+import { EditorPreviewContent } from "./EditorPreviewContent";
 
 type EditorPropsType = {
     page: PageAtomType;
@@ -69,7 +70,8 @@ export const Editor: React.FunctionComponent<EditorPropsType> = ({ revisions }) 
                 <EditorBar />
                 <EditorToolbar />
                 <EditorContent />
-                <EditorSideBar />
+                <EditorPreviewContent />
+                <ElementSideBar />
                 <Dialogs />
                 <DragPreview />
             </div>

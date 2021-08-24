@@ -1,7 +1,13 @@
-import React, { createContext, useEffect, useRef } from "react";
-import { PbEditorApp } from "~/editor/contexts/PbEditorApp";
+import React, { useEffect, useRef } from "react";
+import { PbEditorApp } from "~/editor/app/PbEditorApp";
 import { PbEditorElement } from "~/types";
-import { Snapshot, useGotoRecoilSnapshot, useRecoilCallback, useSetRecoilState } from "recoil";
+import {
+    Snapshot,
+    useGotoRecoilSnapshot,
+    useRecoilCallback,
+    useRecoilSnapshot,
+    useSetRecoilState
+} from "recoil";
 import {
     activeElementAtom,
     highlightElementAtom,
@@ -11,12 +17,12 @@ import {
     sidebarAtom,
     uiAtom
 } from "~/editor/state";
-import { ApplyStateChangesActionEvent } from "./app/ApplyStateChangesActionEvent";
+import { ApplyStateChangesActionEvent } from "../app/ApplyStateChangesActionEvent";
 import { PbState } from "~/editor/state/types";
-import RecoilExternal from "./RecoilExternal";
 import { UndoStateChangeActionEvent } from "../actions/undo";
 import { RedoStateChangeActionEvent } from "~/editor/actions/redo";
-import {usePageEditor} from "~/editor/hooks/usePageEditor";
+import { usePageEditor } from "~/editor/hooks/usePageEditor";
+import { SaveRevisionActionEvent } from "~/editor/actions";
 
 interface SnapshotHistory {
     past: Snapshot[];
@@ -31,6 +37,7 @@ export interface EditorContextValue {
     app: PbEditorApp;
 }
 const trackedAtoms = ["elements"];
+
 const isTrackedAtomChanged = (state: Partial<PbState>): boolean => {
     for (const atom of trackedAtoms) {
         if (!state[atom]) {
@@ -41,9 +48,7 @@ const isTrackedAtomChanged = (state: Partial<PbState>): boolean => {
     return false;
 };
 
-export const EditorContext = createContext<EditorContextValue>(null);
-
-export const EditorProvider: React.FunctionComponent<any> = ({ children }) => {
+export const EditorState: React.FunctionComponent<any> = () => {
     const { app } = usePageEditor();
     const setActiveElementId = useSetRecoilState(activeElementAtom);
     const setHighlightElementId = useSetRecoilState(highlightElementAtom);
@@ -52,18 +57,22 @@ export const EditorProvider: React.FunctionComponent<any> = ({ children }) => {
     const setPluginsAtomValue = useSetRecoilState(pluginsAtom);
     const setUiAtomValue = useSetRecoilState(uiAtom);
     const goToSnapshot = useGotoRecoilSnapshot();
+    const currentSnapshot = useRecoilSnapshot();
 
     const snapshotsHistory = useRef<SnapshotHistory>({
         past: [],
         future: [],
-        present: null,
+        present: currentSnapshot,
         busy: false,
         isBatching: false,
         isDisabled: false
     });
 
     const takeSnapshot = useRecoilCallback(({ snapshot }) => () => {
-        return snapshot;
+        return snapshot.map(snap => {
+            // We want to reset the `pluginsAtom` to avoid UI state being tracked in history.
+            snap.set(pluginsAtom, currentSnapshot.getLoadable(pluginsAtom).contents);
+        });
     });
 
     const createStateHistorySnapshot = (): void => {
@@ -75,7 +84,7 @@ export const EditorProvider: React.FunctionComponent<any> = ({ children }) => {
         // since this is the new starting point of the state history
         snapshotsHistory.current.future = [];
         snapshotsHistory.current.past.push(takeSnapshot());
-        snapshotsHistory.current.present = null;
+        snapshotsHistory.current.present = currentSnapshot;
         snapshotsHistory.current.busy = false;
     };
 
@@ -93,13 +102,16 @@ export const EditorProvider: React.FunctionComponent<any> = ({ children }) => {
     });
 
     useEffect(() => {
+        snapshotsHistory.current.present = currentSnapshot;
+    }, [currentSnapshot]);
+
+    useEffect(() => {
         app.addEventListener(ApplyStateChangesActionEvent, event => {
             const { state } = event.getData();
 
             if (Object.values(state).length === 0) {
                 return;
             } else if (
-                history &&
                 snapshotsHistory.current.isBatching === false &&
                 snapshotsHistory.current.isDisabled === false &&
                 isTrackedAtomChanged(state)
@@ -145,13 +157,15 @@ export const EditorProvider: React.FunctionComponent<any> = ({ children }) => {
                 snapshotsHistory.current.busy = false;
                 return;
             }
-            const futureSnapshot = snapshotsHistory.current.present || takeSnapshot();
+            const futureSnapshot = snapshotsHistory.current.present || currentSnapshot;
             snapshotsHistory.current.future.unshift(futureSnapshot);
 
             snapshotsHistory.current.present = previousSnapshot;
 
             goToSnapshot(previousSnapshot);
             snapshotsHistory.current.busy = false;
+
+            app.dispatchEvent(new SaveRevisionActionEvent());
         });
         app.addEventListener(RedoStateChangeActionEvent, () => {
             if (snapshotsHistory.current.busy === true) {
@@ -160,7 +174,6 @@ export const EditorProvider: React.FunctionComponent<any> = ({ children }) => {
             snapshotsHistory.current.busy = true;
             const nextSnapshot = snapshotsHistory.current.future.shift();
             if (!nextSnapshot) {
-                snapshotsHistory.current.present = null;
                 snapshotsHistory.current.busy = false;
                 return;
             } else if (snapshotsHistory.current.present) {
@@ -170,15 +183,11 @@ export const EditorProvider: React.FunctionComponent<any> = ({ children }) => {
 
             goToSnapshot(nextSnapshot);
             snapshotsHistory.current.busy = false;
+            app.dispatchEvent(new SaveRevisionActionEvent());
         });
     }, []);
 
     window["PbEditorApp"] = app;
 
-    return (
-        <EditorContext.Provider value={{ app: app }}>
-            <RecoilExternal />
-            {children}
-        </EditorContext.Provider>
-    );
+    return null;
 };

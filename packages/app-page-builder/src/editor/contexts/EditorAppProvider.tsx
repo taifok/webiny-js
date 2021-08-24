@@ -1,5 +1,5 @@
 import React from "react";
-import { PbEditorApp } from "~/editor/contexts/PbEditorApp";
+import { PbEditorApp } from "~/editor/app/PbEditorApp";
 
 export const EditorAppContext = React.createContext<{ app: PbEditorApp }>(null);
 

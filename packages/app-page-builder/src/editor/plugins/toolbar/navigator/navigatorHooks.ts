@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import { useRecoilValue } from "recoil";
 import { useDrag, useDrop, DropTargetMonitor } from "react-dnd";
 import { elementByIdSelector, rootElementAtom } from "~/editor/state";
-import { MoveBlockActionParamsType } from "~/editor/actions/moveBlock/types";
+import { MoveBlockActionParamsType } from "~/editor/actions/moveBlock";
 import { MoveBlockActionEvent } from "~/editor/actions";
 import { DraggableItem } from "~/editor/components/Draggable";
 import { usePageEditor } from "~/editor/hooks/usePageEditor";

@@ -1,5 +1,5 @@
-import { PbEditorAppPlugin } from "~/editor/contexts/PbEditorApp";
-import { PbEditorEvent } from "~/editor/contexts/app/PbEditorEvent";
+import { PbEditorAppPlugin } from "~/editor/app/PbEditorApp";
+import { PbEditorEvent } from "~/editor/app/PbEditorEvent";
 
 export class DragStartActionEvent extends PbEditorEvent {}
 export class DragEndActionEvent extends PbEditorEvent {}

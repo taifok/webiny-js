@@ -5,7 +5,6 @@ import omit from "lodash/omit";
 import { DragObjectWithTypeWithTarget } from "./components/Droppable";
 import { plugins } from "@webiny/plugins";
 import {
-    PbEditorBlockPlugin,
     PbEditorPageElementPlugin,
     PbEditorPageElementSettingsPlugin,
     PbEditorPageElementStyleSettingsPlugin,
@@ -113,6 +112,8 @@ const addElementId = (element: Omit<PbEditorElement, "id">) => {
     return element;
 };
 
+// TODO: this we no longer need.
+// These are the bidirectional links when you define just the settings plugins and need to somehow link it to specific elements.
 export const userElementSettingsPlugins = (elementType: string) => {
     return plugins
         .byType<PbEditorPageElementSettingsPlugin>("pb-editor-page-element-settings")

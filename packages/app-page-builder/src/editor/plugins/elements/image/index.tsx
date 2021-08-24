@@ -7,8 +7,8 @@ import { ReactComponent as ImageIcon } from "./round-image-24px.svg";
 import { DisplayMode, PbEditorElementPluginArgs } from "~/types";
 import { Plugin } from "@webiny/plugins/types";
 import { createInitialPerDeviceSettingValue } from "../../elementSettings/elementSettingsUtils";
-import { PbEditorAppPlugin } from "~/editor/contexts/PbEditorApp";
-import { PbElementType } from "~/editor/contexts/app/PbElementType";
+import { PbEditorAppPlugin } from "~/editor/app/PbEditorApp";
+import { PbElementType } from "~/editor/app/PbElementType";
 import { CreateElementActionEvent } from "~/editor/actions";
 
 const PreviewBox = styled("div")({
@@ -20,7 +20,7 @@ const PreviewBox = styled("div")({
     }
 });
 
-class ImageElementType extends PbElementType {
+export class ImageElementType extends PbElementType {
     constructor(id = "image") {
         super(id);
 

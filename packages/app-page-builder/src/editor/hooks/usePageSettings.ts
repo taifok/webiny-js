@@ -3,10 +3,7 @@ import { useRecoilValue } from "recoil";
 import { useSnackbar } from "@webiny/app-admin/hooks/useSnackbar";
 import { pageAtom } from "~/editor/state";
 import { useKeyHandler } from "~/editor/hooks/useKeyHandler";
-import {
-    DeactivatePluginActionEvent,
-    UpdatePageRevisionActionEvent
-} from "~/editor/actions";
+import { DeactivatePluginActionEvent, UpdatePageRevisionActionEvent } from "~/editor/actions";
 import { usePageEditor } from "~/editor/hooks/usePageEditor";
 
 export type UsePageSettings = ReturnType<typeof usePageSettings>;

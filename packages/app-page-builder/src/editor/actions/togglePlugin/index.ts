@@ -1,8 +1,15 @@
-import { TogglePluginActionEvent } from "./event";
 import { togglePluginAction } from "./action";
-import { PbEditorAppPlugin } from "~/editor/contexts/PbEditorApp";
+import { PbEditorAppPlugin } from "~/editor/app/PbEditorApp";
+import { PbEditorEvent } from "~/editor/app/PbEditorEvent";
+import { PluginsAtomPluginParamsType } from "~/editor/state";
 
-export * from "./event";
+export type TogglePluginActionParamsType = {
+    name: string;
+    params?: PluginsAtomPluginParamsType;
+    closeOtherInGroup?: boolean;
+};
+
+export class TogglePluginActionEvent extends PbEditorEvent<TogglePluginActionParamsType> {}
 
 export default new PbEditorAppPlugin(app => {
     app.addEventListener(TogglePluginActionEvent, togglePluginAction);

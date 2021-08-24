@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useRef, useState, useEffect } from "react";
 import editorMock from "../../assets/editor-mock.png";
 import { useRouter } from "@webiny/react-router";
 import { useQuery, useMutation } from "@apollo/react-hooks";
@@ -10,8 +10,8 @@ import { DialogContainer } from "@webiny/app-admin/ui/views/AdminView/components
 import { Typography } from "@webiny/ui/Typography";
 import { LoadingEditor, LoadingTitle } from "./EditorStyled.js";
 import { GET_PAGE, CREATE_PAGE_FROM } from "./graphql";
-import {PbEditorApp} from "~/editor/contexts/PbEditorApp";
-import {EditorAppProvider} from "~/editor/contexts/EditorAppProvider";
+import { PbEditorApp } from "~/editor/app/PbEditorApp";
+import { EditorAppProvider } from "~/editor/contexts/EditorAppProvider";
 
 const extractPageGetPage = (data: any): any => {
     return data.pageBuilder?.getPage || {};
@@ -31,9 +31,13 @@ const Editor: React.FunctionComponent = () => {
     const { match, history } = useRouter();
     const { showSnackbar } = useSnackbar();
     const ready = useSavedElements();
-    const app = new PbEditorApp();
+    const appRef = useRef(null);
     const [loading, setLoading] = useState(true);
     const [data, setData] = useState(null);
+
+    useEffect(() => {
+        appRef.current = new PbEditorApp();
+    }, []);
 
     const params: { id: string } = match.params as any;
 
@@ -61,11 +65,11 @@ const Editor: React.FunctionComponent = () => {
             const { revisions = [], content, ...restOfPageData } = data;
             const page = {
                 ...restOfPageData,
-                content: content || app.getElementType("document").createElement()
+                content: content || appRef.current.getElementType("document").createElement()
             };
 
             return (
-                <EditorAppProvider app={app}>
+                <EditorAppProvider app={appRef.current}>
                     <PbEditor page={page} revisions={revisions} />
                     <div style={{ zIndex: 30, position: "absolute" }}>
                         <Snackbar />

@@ -4,7 +4,8 @@ import merge from "lodash/merge";
 import {
     PbEditorResponsiveModePlugin,
     PbRenderResponsiveModePlugin,
-    DisplayMode
+    DisplayMode,
+    PbPerDeviceSettings
 } from "~/types";
 
 export const WIDTH_UNIT_OPTIONS = [
@@ -53,7 +54,10 @@ export const HEIGHT_UNIT_OPTIONS = [
     }
 ];
 
-export const createInitialPerDeviceSettingValue = (defaultValue: any, baseDisplayMode?: string) => {
+export function createInitialPerDeviceSettingValue<TData = any>(
+    defaultValue: TData,
+    baseDisplayMode?: DisplayMode
+): PbPerDeviceSettings<TData> {
     // Only set "baseDisplayMode" value if present
     if (baseDisplayMode) {
         return {
@@ -70,8 +74,9 @@ export const createInitialPerDeviceSettingValue = (defaultValue: any, baseDispla
     editorModes.forEach(({ displayMode }) => {
         value[displayMode] = defaultValue;
     });
+
     return value;
-};
+}
 
 export const applyFallbackDisplayMode = (mode: DisplayMode, getValue: any) => {
     // Get display modes

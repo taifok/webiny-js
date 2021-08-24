@@ -1,8 +1,19 @@
-import { SaveRevisionActionEvent, ToggleSaveRevisionStateActionEvent } from "./event";
 import { saveRevisionAction } from "./saveRevisionAction";
-import { PbEditorAppPlugin } from "~/editor/contexts/PbEditorApp";
+import { PbEditorAppPlugin } from "~/editor/app/PbEditorApp";
+import { PbEditorEvent } from "~/editor/app/PbEditorEvent";
 
-export * from "./event";
+export class SaveRevisionActionEvent extends PbEditorEvent<SaveRevisionActionParamsType> {}
+
+export class ToggleSaveRevisionStateActionEvent extends PbEditorEvent<ToggleSaveRevisionStateActionParamsType> {}
+
+export type SaveRevisionActionParamsType = {
+    debounce?: boolean;
+    onFinish?: () => void;
+};
+
+export type ToggleSaveRevisionStateActionParamsType = {
+    saving: boolean;
+};
 
 export default new PbEditorAppPlugin(app => {
     app.addEventListener(SaveRevisionActionEvent, saveRevisionAction);

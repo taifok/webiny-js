@@ -37,7 +37,7 @@ const PanelHighLight = styled("div")({
     "@keyframes wf-blink-in": { "40%": { opacity: 1 } }
 });
 
-const EditorSideBar = () => {
+const ElementSideBar = () => {
     const [element] = useActiveElement();
     const [sidebar, updateSidebar] = useElementSidebar();
 
@@ -66,4 +66,4 @@ const EditorSideBar = () => {
     );
 };
 
-export default React.memo(EditorSideBar);
+export default React.memo(ElementSideBar);

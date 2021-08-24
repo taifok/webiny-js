@@ -1,9 +1,13 @@
 import React from "react";
-import { DisplayMode } from "~/types";
+import { DisplayMode, PbElementDataTextType, PbParagraphElementPerDeviceData } from "~/types";
 import Text, { textClassName } from "./Paragraph";
 import { createInitialTextValue } from "../utils/textUtils";
 import { createInitialPerDeviceSettingValue } from "../../elementSettings/elementSettingsUtils";
-import { PbElementType } from "~/editor/contexts/app/PbElementType";
+import { PbElementType } from "~/editor/app/PbElementType";
+import { PbEditorAppPlugin } from "~/editor/app/PbEditorApp";
+import BackgroundSettings from "~/editor/plugins/elementSettings/background/BackgroundSettings";
+import { PbElementAction } from "~/editor/app/PbElementAction";
+import { PbEditorPlugin } from "~/editor/app/PbEditorPlugin";
 
 const defaultText = `Lorem ipsum dolor sit amet, consectetur adipiscing elit.
      Suspendisse varius enim in eros elementum tristique.
@@ -19,37 +23,64 @@ export class ParagraphElementType extends PbElementType {
         this.setRenderer(({ element }) => {
             return <Text elementId={element.id} />;
         });
-        // @ts-ignore
-        this.setCreateElement(() => {
-            return {
-                type: this.getId(),
-                data: {
-                    text: {
-                        ...createInitialPerDeviceSettingValue(
-                            createInitialTextValue({
-                                type: this.getId()
-                            }),
-                            DisplayMode.DESKTOP
-                        ),
-                        data: {
-                            text: defaultText
-                        }
-                    },
-                    settings: {
-                        margin: createInitialPerDeviceSettingValue(
-                            { all: "0px" },
-                            DisplayMode.DESKTOP
-                        ),
-                        padding: createInitialPerDeviceSettingValue(
-                            { all: "0px" },
-                            DisplayMode.DESKTOP
-                        )
+        this.setCreateElement(() => ({
+            data: {
+                text: {
+                    ...createInitialPerDeviceSettingValue(
+                        createInitialTextValue({
+                            type: this.getId()
+                        }),
+                        DisplayMode.DESKTOP
+                    ),
+                    data: {
+                        text: defaultText
                     }
+                },
+                settings: {
+                    margin: createInitialPerDeviceSettingValue({ all: "0px" }, DisplayMode.DESKTOP),
+                    padding: createInitialPerDeviceSettingValue({ all: "0px" }, DisplayMode.DESKTOP)
                 }
-            };
-        });
+            }
+        }));
     }
 }
+
+// new PbEditorPlugin(PbEditorApp, app => {
+//     app.addElementType(new ParagraphElementType());
+// });
+//
+// new PbEditorPlugin(BackgroundSettings, settings => {
+//     background.setLabel("Pozadina");
+// });
+//
+// export default new PbEditorAppPlugin(app => {
+//     app.getElementTypes().forEach(et => {
+//         const background = et.getElementStyleSettings().find(s => s instanceof BackgroundSettings);
+//         background.setLabel("Pozadina");
+//     });
+// });
+
+export default [
+    new PbEditorAppPlugin(app => {
+        const paragraph = new ParagraphElementType();
+        app.addElementType(paragraph);
+
+        // Assign to "basic" group
+        const basicGroup = app.getElementGroup("basic");
+        basicGroup.addElementType(paragraph);
+
+        //
+        // paragraph.addElementAction(new DuplicateElementAction())
+        // paragraph.addElementAction(new SaveElementAction())
+        //
+        // paragraph.addElementSettings(new IframeSourceSettings())
+        // paragraph.addElementSettings(new ImageSourceSettings())
+        //
+        // paragraph.addStyleSettings(new BackgroundSettings())
+        // paragraph.addStyleSettings(new VisibilitySettings())
+    })
+];
+
 //
 // export default (args: PbEditorElementPluginArgs = {}): PbEditorPageElementPlugin => {
 //     const defaultSettings = [

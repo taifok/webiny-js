@@ -1,5 +1,5 @@
 import React from "react";
-import { PbEditorApp } from "../PbEditorApp";
+import { PbEditorApp } from "./PbEditorApp";
 import { PbEditorElement } from "~/types";
 
 interface PbBlockCreateBlock {

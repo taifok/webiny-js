@@ -1,5 +1,5 @@
 import React from "react";
-import { PbElementType } from "~/editor/contexts/app/PbElementType";
+import { PbElementType } from "~/editor/app/PbElementType";
 
 export class PbElementGroup {
     private _id: string;

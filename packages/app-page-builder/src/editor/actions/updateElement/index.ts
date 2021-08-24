@@ -1,12 +1,26 @@
-import { PbEditorAppPlugin } from "~/editor/contexts/PbEditorApp";
-import { UpdateElementActionEvent } from "./event";
+import { PbEditorAppPlugin } from "~/editor/app/PbEditorApp";
 import { flattenElements } from "~/editor/helpers";
 import { SaveRevisionActionEvent, UpdateElementTreeActionEvent } from "~/editor/actions";
+import { PbEditorEvent } from "~/editor/app/PbEditorEvent";
+import { PbEditorElement } from "~/types";
 
-export * from "./event";
+export type UpdateElementActionParamsType = {
+    element: PbEditorElement;
+    history?: boolean;
+};
+
+export class UpdateElementActionEvent extends PbEditorEvent<UpdateElementActionParamsType> {
+    constructor(data: UpdateElementActionParamsType) {
+        if (typeof data.history === "undefined") {
+            data.history = true;
+        }
+
+        super(data);
+    }
+}
 
 export default new PbEditorAppPlugin(app => {
-    app.addEventListener(UpdateElementActionEvent, async (event: UpdateElementActionEvent) => {
+    app.addEventListener(UpdateElementActionEvent, (event: UpdateElementActionEvent) => {
         const { element, history } = event.getData();
 
         console.warn("TODO", "finish updateElement action");
@@ -24,8 +38,8 @@ export default new PbEditorAppPlugin(app => {
             //         "You cannot save revision while updating if you do not pass client arg."
             //     );
             // }
-            await event.getApp().dispatchEvent(new SaveRevisionActionEvent());
+            event.getApp().dispatchEvent(new SaveRevisionActionEvent());
         }
-        await event.getApp().dispatchEvent(new UpdateElementTreeActionEvent());
+        event.getApp().dispatchEvent(new UpdateElementTreeActionEvent());
     });
 });

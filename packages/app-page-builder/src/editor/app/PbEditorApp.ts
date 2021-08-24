@@ -1,21 +1,22 @@
 import { plugins } from "@webiny/plugins";
-import { PbElementGroup } from "~/editor/contexts/app/PbElementGroup";
-import { PbElementType } from "~/editor/contexts/app/PbElementType";
-import { ApplyFunction, ClassPlugin, Pluginable } from "~/editor/contexts/app/Pluginable";
-import { PbEditorEvent } from "./app/PbEditorEvent";
+import { PbElementGroup } from "./PbElementGroup";
+import { PbElementType } from "./PbElementType";
+import { ApplyFunction, ClassPlugin, Pluginable } from "./Pluginable";
+import { PbEditorEvent } from "./PbEditorEvent";
 import {
     activeElementAtom,
     elementByIdSelector,
     elementWithChildrenByIdSelector,
+    highlightElementAtom,
     pageAtom,
     pluginsAtom,
     rootElementAtom,
     uiAtom
 } from "~/editor/state";
-import { PbBlockType } from "~/editor/contexts/app/PbBlockType";
-import { ApplyStateChangesActionEvent } from "~/editor/contexts/app/ApplyStateChangesActionEvent";
-import { PbEventState } from "~/editor/contexts/app/PbEventState";
-import { getState, setState } from "./RecoilExternal";
+import { PbBlockType } from "./PbBlockType";
+import { ApplyStateChangesActionEvent } from "./ApplyStateChangesActionEvent";
+import { PbEventState } from "./PbEventState";
+import { getState, setState, ValueOrSetter } from "../components/RecoilExternal";
 import { PbEditorElement } from "~/types";
 
 type Class<T> = new (...args: any[]) => T;
@@ -31,18 +32,23 @@ export class PbEditorApp extends Pluginable {
     private _events = new Map<Class<PbEditorEvent>, Set<PbEventHandler>>();
     private _eventState: PbEventState;
     private _rootEventId: string;
+    private _eventDepth = 0;
 
     constructor() {
-        super();
+        super("PbEditorApp");
 
-        this.applyPlugins(PbEditorApp);
+        this.applyPlugins();
     }
 
-    async dispatchEvent(event: PbEditorEvent) {
-        if (!this._eventState) {
+    dispatchEvent(event: PbEditorEvent) {
+        if (!this._rootEventId) {
             this._eventState = new PbEventState(this);
             this._rootEventId = event.getId();
         }
+        this._eventDepth++;
+
+        console.group(event.getDisplayName());
+        console.log("Event data:", event.getData());
 
         event.setApp(this);
         event.setEventState(this._eventState);
@@ -53,22 +59,27 @@ export class PbEditorApp extends Pluginable {
         ).reverse() as PbEventHandler[];
 
         for (const eventHandler of eventHandlers) {
-            await eventHandler(event);
+            eventHandler(event);
             if (event.isStopped()) {
                 return;
             }
         }
 
-        if (!(event instanceof ApplyStateChangesActionEvent) && this._eventState) {
-            this.dispatchEvent(
-                new ApplyStateChangesActionEvent({ state: this._eventState.getState() })
-            );
-        }
-
         // Once we complete the event execution, we can nullify the event state.
         if (event.getId() === this._rootEventId) {
-            this._eventState = null;
+            if (!(event instanceof ApplyStateChangesActionEvent) && this._eventState) {
+                if (Object.keys(this._eventState.getState()).length > 0) {
+                    this.dispatchEvent(
+                        new ApplyStateChangesActionEvent({ state: this._eventState.getState() })
+                    );
+                }
+            }
+            this._rootEventId = null;
         }
+
+        this._eventDepth--;
+
+        console.groupEnd();
     }
 
     addEventListener<TEvent extends PbEditorEvent = PbEditorEvent>(
@@ -98,6 +109,7 @@ export class PbEditorApp extends Pluginable {
 
     addElementType(elementType: PbElementType) {
         elementType.setApp(this);
+        elementType.applyPlugins();
         this._elementTypes.set(elementType.getId(), elementType);
     }
 
@@ -109,7 +121,31 @@ export class PbEditorApp extends Pluginable {
         setState(activeElementAtom, null);
     }
 
-    getElementType(id: string) {
+    highlightElement(id: string) {
+        const highlightedElement = getState(highlightElementAtom);
+        if (highlightedElement) {
+            // Un-highlight the element that is currently highlighted.
+            this.updateElementById(highlightedElement, prevValue => {
+                return {
+                    ...prevValue,
+                    isHighlighted: false
+                };
+            });
+        }
+
+        // Set the new highlighted element
+        setState(highlightElementAtom, id);
+
+        // Update the element that is about to be highlighted
+        this.updateElementById(id, prevValue => {
+            return {
+                ...prevValue,
+                isHighlighted: true
+            };
+        });
+    }
+
+    getElementType(id: string): PbElementType {
         return this._elementTypes.get(id);
     }
 
@@ -128,6 +164,10 @@ export class PbEditorApp extends Pluginable {
 
         // Return element value from state.
         return getState(elementByIdSelector(id));
+    }
+
+    updateElementById(id: string, setter: ValueOrSetter<PbEditorElement>) {
+        setState(elementByIdSelector(id), setter);
     }
 
     getElementParentById(id): PbEditorElement {
@@ -254,6 +294,8 @@ export class PbEditorApp extends Pluginable {
 
         setState(pluginsAtom, editorPlugins);
     }
+
+    private setupLegacyPlugins() {}
 }
 
 export class PbEditorAppPlugin extends ClassPlugin<PbEditorApp> {

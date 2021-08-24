@@ -60,15 +60,21 @@ export type PbElementDataSettingsBorderType = {
         left?: boolean;
     };
 };
-export type PbElementDataTextType = {
+
+export interface PbParagraphElementPerDeviceData {
+    type?: string;
     color?: string;
     alignment: string;
     typography: string;
     tag: string;
+}
+
+export interface PbElementDataTextType
+    extends PbPerDeviceSettings<PbParagraphElementPerDeviceData> {
     data: {
         text: string;
     };
-};
+}
 export type PbElementDataImageType = {
     width?: string | number;
     height?: string | number;
@@ -97,32 +103,42 @@ export enum AlignmentTypesEnum {
     VERTICAL_CENTER = "verticalCenter",
     VERTICAL_BOTTOM = "verticalBottom"
 }
-export type PbElementDataSettingsType = {
-    alignment?: AlignmentTypesEnum;
-    horizontalAlign?: any; //"left" | "center" | "right" | "justify";
-    horizontalAlignFlex?: any; //"flex-start" | "center" | "flex-end";
-    verticalAlign?: "start" | "center" | "end";
-    margin?: PbElementDataSettingsMarginType;
-    padding?: PbElementDataSettingsPaddingType;
-    height?: {
-        value?: number;
-    };
-    background?: PbElementDataSettingsBackgroundType;
-    border?: PbElementDataSettingsBorderType;
-    grid?: {
-        cellsType?: string;
-        size?: number;
-    };
-    columnWidth?: {
-        value?: string;
-    };
-    width?: {
-        value?: string;
-    };
-    className?: string;
-    form?: PbElementDataSettingsFormType;
+export interface PbElementDataSettingsType
+    extends PbPerDeviceSettings<{
+        alignment?: AlignmentTypesEnum;
+        horizontalAlign?: any; //"left" | "center" | "right" | "justify";
+        horizontalAlignFlex?: any; //"flex-start" | "center" | "flex-end";
+        verticalAlign?: "start" | "center" | "end";
+        margin?: PbElementDataSettingsMarginType;
+        padding?: PbElementDataSettingsPaddingType;
+        height?: {
+            value?: number;
+        };
+        background?: PbElementDataSettingsBackgroundType;
+        border?: PbElementDataSettingsBorderType;
+        grid?: {
+            cellsType?: string;
+            size?: number;
+        };
+        columnWidth?: {
+            value?: string;
+        };
+        width?: {
+            value?: string;
+        };
+        className?: string;
+        form?: PbElementDataSettingsFormType;
+    }> {
     [key: string]: any;
-};
+}
+
+export interface PbPerDeviceSettings<TData> {
+    [DisplayMode.DESKTOP]?: TData;
+    [DisplayMode.TABLET]?: TData;
+    [DisplayMode.MOBILE_PORTRAIT]?: TData;
+    [DisplayMode.MOBILE_LANDSCAPE]?: TData;
+}
+
 export type PbElementDataType = {
     settings?: PbElementDataSettingsType;
     text?: PbElementDataTextType;
@@ -153,6 +169,8 @@ export type PbEditorElement = {
     data: PbElementDataType;
     parent?: string;
     elements: (string | PbEditorElement)[];
+    // A helper value for React; not stored into DB.
+    isHighlighted?: boolean; 
     [key: string]: any;
 };
 

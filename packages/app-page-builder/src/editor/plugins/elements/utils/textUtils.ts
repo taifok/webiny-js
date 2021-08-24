@@ -1,5 +1,5 @@
 import { plugins } from "@webiny/plugins";
-import { PbThemePlugin } from "~/types";
+import { PbParagraphElementPerDeviceData, PbThemePlugin } from "~/types";
 
 const getTypographyFromTheme = (type: string) => {
     const [{ theme }] = plugins.byType<PbThemePlugin>("pb-theme");
@@ -21,7 +21,7 @@ export const createInitialTextValue = ({
     type,
     alignment = "left",
     tag = "div"
-}: CreateInitialTextValueArgs) => {
+}: CreateInitialTextValueArgs): PbParagraphElementPerDeviceData => {
     const typography = getTypographyFromTheme(type);
 
     return {

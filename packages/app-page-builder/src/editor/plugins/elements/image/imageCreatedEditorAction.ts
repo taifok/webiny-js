@@ -1,5 +1,6 @@
 import { PbEditorElement } from "~/types";
 import { CreateElementActionEvent } from "~/editor/actions";
+import { ApplyStateChangesActionEvent } from "~/editor/app/ApplyStateChangesActionEvent";
 
 const MAX_ELEMENT_FIND_RETRIES = 10;
 const ELEMENT_FIND_RETRY_TIMEOUT = 100;

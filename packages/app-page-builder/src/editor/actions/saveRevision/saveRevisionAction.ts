@@ -1,8 +1,11 @@
 import gql from "graphql-tag";
 import lodashIsEqual from "lodash/isEqual";
 import lodashDebounce from "lodash/debounce";
-import { SaveRevisionActionParamsType } from "./types";
-import { SaveRevisionActionEvent, ToggleSaveRevisionStateActionEvent } from "./event";
+import {
+    SaveRevisionActionEvent,
+    ToggleSaveRevisionStateActionEvent,
+    SaveRevisionActionParamsType
+} from "./index";
 import { PageAtomType } from "~/editor/state";
 
 type PageRevisionType = Pick<PageAtomType, "title" | "snippet" | "path" | "settings"> & {

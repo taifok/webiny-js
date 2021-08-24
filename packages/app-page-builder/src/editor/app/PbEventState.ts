@@ -1,5 +1,5 @@
 import { PbState } from "~/editor/state/types";
-import { PbEditorApp } from "~/editor/contexts/PbEditorApp";
+import { PbEditorApp } from "~/editor/app/PbEditorApp";
 
 interface PbEventStateSetter {
     (state: Partial<PbState>): Partial<PbState>;

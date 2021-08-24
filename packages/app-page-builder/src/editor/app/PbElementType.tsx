@@ -1,9 +1,12 @@
 import React from "react";
 import { customAlphabet } from "nanoid";
-import { PbElementSettings } from "~/editor/contexts/app/PbElementSettings";
-import { PbEditorApp } from "~/editor/contexts/PbEditorApp";
-import { PbEditorEvent } from "~/editor/contexts/app/PbEditorEvent";
+import { PbElementSettings } from "~/editor/app/PbElementSettings";
+import { PbEditorApp } from "~/editor/app/PbEditorApp";
+import { PbEditorEvent } from "~/editor/app/PbEditorEvent";
 import { PbEditorElement } from "~/types";
+import { PbElementAction } from "~/editor/app/PbElementAction";
+import { PbElementStyleSettings } from "~/editor/app/PbElementStyleSettings";
+import { Pluginable } from "~/editor/app/Pluginable";
 
 const ALPHANUMERIC = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 export const getNanoID = customAlphabet(ALPHANUMERIC, 10);
@@ -14,7 +17,7 @@ interface PbElementRendererParams {
 }
 
 interface PbElementRenderer {
-    (params: PbElementRendererParams): React.ReactNode;
+    (params: PbElementRendererParams): JSX.Element;
 }
 
 interface PbElementCanDelete {
@@ -38,13 +41,14 @@ interface CreateElementModifier {
     (element: PbEditorElement): PbEditorElement;
 }
 
-export class PbElementType {
+export class PbElementType extends Pluginable {
     private _version = process.env.REACT_APP_WEBINY_VERSION;
-    private _id: string;
     private _label: string;
     private _toolbarPreview: React.ReactElement;
+    private _actions: PbElementAction[];
+    private _styleSettings: PbElementStyleSettings[];
     private _settings: PbElementSettings[];
-    private _target = ["cell", "block"];
+    private _dropTarget = ["cell", "block"];
     private _onCreate: string; // open-settings
     private _onReceived: PbElementOnReceived;
     private _canDelete: PbElementCanDelete;
@@ -52,20 +56,12 @@ export class PbElementType {
     private _renderer: PbElementRenderer;
     private _app: PbEditorApp;
 
-    constructor(id: string) {
-        this._id = id;
-    }
-
     getApp(): PbEditorApp {
         return this._app;
     }
 
     setApp(app: PbEditorApp) {
         this._app = app;
-    }
-
-    getId() {
-        return this._id;
     }
 
     getLabel(): string {
@@ -96,12 +92,12 @@ export class PbElementType {
         this._settings = value;
     }
 
-    getTarget(): string[] {
-        return this._target;
+    getDropTarget(): string[] {
+        return this._dropTarget;
     }
 
-    setTarget(value: string[]) {
-        this._target = value;
+    setDropTarget(value: string[]) {
+        this._dropTarget = value;
     }
 
     getCreateElement(): CreateElement {
@@ -179,7 +175,7 @@ export class PbElementType {
 
     private defaultCreateElement(): Partial<PbEditorElement> {
         return {
-            type: this._id,
+            type: this.getId(),
             data: {},
             elements: []
         };

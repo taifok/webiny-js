@@ -1,60 +1,15 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { useRecoilCallback, useRecoilSnapshot, useRecoilState, useRecoilValue } from "recoil";
+import React, { useEffect, useState } from "react";
 import { PbEditorElement } from "~/types";
-import {
-    activeElementAtom,
-    elementByIdSelector,
-    elementsAtom,
-    highlightElementAtom
-} from "../../state";
 import { breadcrumbs } from "./styles";
+import { useActiveElement } from "~/editor/hooks/useActiveElement";
+import { usePageEditor } from "~/editor/hooks/usePageEditor";
 
 const Breadcrumbs: React.FunctionComponent = () => {
+    const { app } = usePageEditor();
+    const [activeElement, setActiveElement] = useActiveElement();
     const [items, setItems] = useState([]);
-    const [activeElement, setActiveElementAtomValue] = useRecoilState(activeElementAtom);
-    const element = useRecoilValue(elementByIdSelector(activeElement));
-    const [highlightElementAtomValue, setHighlightElementAtomValue] =
-        useRecoilState(highlightElementAtom);
-    const snapshot = useRecoilSnapshot();
-    const lazyHighlight = useRecoilCallback(
-        ({ set }) =>
-            async (id: string) => {
-                if (highlightElementAtomValue) {
-                    // Update the element that is currently highlighted
-                    set(elementsAtom(highlightElementAtomValue), prevValue => {
-                        return {
-                            ...prevValue,
-                            isHighlighted: false
-                        };
-                    });
-                }
 
-                // Set the new highlighted element
-                setHighlightElementAtomValue(id);
-
-                // Update the element that is about to be highlighted
-                set(elementsAtom(id), prevValue => {
-                    return {
-                        ...prevValue,
-                        isHighlighted: true
-                    };
-                });
-            },
-        [highlightElementAtomValue]
-    );
-
-    const highlightElement = useCallback(
-        (id: string) => {
-            lazyHighlight(id);
-        },
-        [lazyHighlight]
-    );
-
-    const activateElement = useCallback((id: string) => {
-        setActiveElementAtomValue(id);
-    }, []);
-
-    const createBreadCrumbs = async (activeElement: PbEditorElement) => {
+    const createBreadCrumbs = (activeElement: PbEditorElement) => {
         const list = [];
         let element = activeElement;
         while (element.parent) {
@@ -67,18 +22,18 @@ const Breadcrumbs: React.FunctionComponent = () => {
                 break;
             }
 
-            element = await snapshot.getPromise(elementByIdSelector(element.parent));
+            element = app.getElementById(element.parent);
         }
         setItems(list.reverse());
     };
 
     useEffect(() => {
-        if (element) {
-            createBreadCrumbs(element);
+        if (activeElement) {
+            createBreadCrumbs(activeElement);
         }
-    }, [element]);
+    }, [activeElement]);
 
-    if (!element) {
+    if (!activeElement) {
         return null;
     }
 
@@ -87,8 +42,8 @@ const Breadcrumbs: React.FunctionComponent = () => {
             {items.map(({ id, type }, index) => (
                 <li
                     key={id}
-                    onMouseOver={() => highlightElement(id)}
-                    onClick={() => activateElement(id)}
+                    onMouseOver={() => app.highlightElement(id)}
+                    onClick={() => setActiveElement(id)}
                 >
                     <span
                         className={"element"}

@@ -1,22 +1,19 @@
 import React from "react";
-import kebabCase from "lodash/kebabCase";
 import Block from "./Block";
 import {
     CreateElementActionEvent,
     DeleteElementActionEvent,
     UpdateElementActionEvent
 } from "~/editor/actions";
-import { addElementToParent, createDroppedElement } from "../../../helpers";
+import { addElementToParent } from "../../../helpers";
 import {
     DisplayMode,
-    PbEditorPageElementPlugin,
     PbEditorElement,
-    PbEditorElementPluginArgs
 } from "~/types";
 import { AfterDropElementActionEvent } from "../../../actions/afterDropElement";
 import { createInitialPerDeviceSettingValue } from "../../elementSettings/elementSettingsUtils";
-import { PbEditorAppPlugin } from "~/editor/contexts/PbEditorApp";
-import { PbElementType } from "~/editor/contexts/app/PbElementType";
+import { PbEditorAppPlugin } from "~/editor/app/PbEditorApp";
+import { PbElementType } from "~/editor/app/PbElementType";
 
 class BlockElementType extends PbElementType {
     constructor(id = "block") {
@@ -64,7 +61,7 @@ class BlockElementType extends PbElementType {
             return <Block {...props} />;
         });
 
-        this.setOnReceived(async ({ event, source, target, position }) => {
+        this.setOnReceived(({ event, source, target, position }) => {
             const sourceElementType = event.getApp().getElementType(source.type);
             const element = sourceElementType.createElement(element => {
                 element.parent = target.id;
@@ -77,13 +74,11 @@ class BlockElementType extends PbElementType {
 
             const blockElement = addElementToParent(element, target, position);
 
-            console.log("==============ovaj UpdateElementActionEvent==============");
-            await event
+            event
                 .getApp()
                 .dispatchEvent(new UpdateElementActionEvent({ element: blockElement }));
 
-            console.log("==============ovaj AfterDropElementActionEvent==============");
-            await event.getApp().dispatchEvent(
+            event.getApp().dispatchEvent(
                 new AfterDropElementActionEvent({
                     element
                 })
@@ -91,7 +86,7 @@ class BlockElementType extends PbElementType {
 
             if (source.id) {
                 // Delete source element
-                await event.getApp().dispatchEvent(
+                event.getApp().dispatchEvent(
                     new DeleteElementActionEvent({
                         element: source as PbEditorElement
                     })
@@ -100,7 +95,7 @@ class BlockElementType extends PbElementType {
                 return;
             }
 
-            await event.getApp().dispatchEvent(
+            event.getApp().dispatchEvent(
                 new CreateElementActionEvent({
                     element,
                     source: source as any
@@ -111,7 +106,8 @@ class BlockElementType extends PbElementType {
 }
 
 export default new PbEditorAppPlugin(app => {
-    app.addElementType(new BlockElementType());
+    const block = new BlockElementType()
+    app.addElementType(block);
 });
 
 // export default (args: PbEditorElementPluginArgs = {}): PbEditorPageElementPlugin => {

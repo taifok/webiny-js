@@ -10,7 +10,7 @@ import { ReactComponent as EditIcon } from "./icons/round-edit-24px.svg";
 import { ReactComponent as DeleteIcon } from "./icons/delete-24dpx.svg";
 import * as Styled from "./StyledComponents";
 import kebabCase from "lodash/kebabCase";
-import { PbBlockType } from "~/editor/contexts/app/PbBlockType";
+import { PbBlockType } from "~/editor/app/PbBlockType";
 
 interface Props {
     block: PbBlockType;

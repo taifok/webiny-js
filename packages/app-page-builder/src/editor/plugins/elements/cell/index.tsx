@@ -1,6 +1,5 @@
 import React from "react";
 import CellContainer from "./CellContainer";
-import { UpdateElementActionParamsType } from "~/editor/actions/updateElement/types";
 import {
     CreateElementActionEvent,
     DeleteElementActionEvent,
@@ -8,10 +7,10 @@ import {
 } from "~/editor/actions";
 import { addElementToParent, createElement } from "../../../helpers";
 import { DisplayMode, PbEditorPageElementSaveActionPlugin, PbEditorElement } from "~/types";
-import { AfterDropElementActionEvent } from "../../../actions/afterDropElement";
-import { createInitialPerDeviceSettingValue } from "../../elementSettings/elementSettingsUtils";
-import { PbEditorAppPlugin } from "~/editor/contexts/PbEditorApp";
-import { PbElementType } from "~/editor/contexts/app/PbElementType";
+import { AfterDropElementActionEvent } from "~/editor/actions/afterDropElement";
+import { createInitialPerDeviceSettingValue } from "~/editor/plugins/elementSettings/elementSettingsUtils";
+import { PbEditorAppPlugin } from "~/editor/app/PbEditorApp";
+import { PbElementType } from "~/editor/app/PbElementType";
 //
 // const cellPlugin = (args: PbEditorElementPluginArgs = {}): PbEditorPageElementPlugin => {
 //     const defaultSettings = [
@@ -98,7 +97,7 @@ export class CellElementType extends PbElementType {
             };
         });
 
-        this.setOnReceived(async ({ event, source, position, target }) => {
+        this.setOnReceived(({ event, source, position, target }) => {
             const elementType = event.getApp().getElementType(source.type);
 
             const element = source.id
@@ -108,18 +107,18 @@ export class CellElementType extends PbElementType {
 
             const parent = addElementToParent(element, target, position);
 
-            await event.getApp().dispatchEvent(
+            event.getApp().dispatchEvent(
                 new UpdateElementActionEvent({
                     element: parent,
                     history: true
                 })
             );
 
-            await event.getApp().dispatchEvent(new AfterDropElementActionEvent({ element }));
+            event.getApp().dispatchEvent(new AfterDropElementActionEvent({ element }));
 
             if (source.id) {
                 // Delete source element
-                await event.getApp().dispatchEvent(
+                event.getApp().dispatchEvent(
                     new DeleteElementActionEvent({
                         element: source as PbEditorElement
                     })
@@ -128,7 +127,7 @@ export class CellElementType extends PbElementType {
                 return;
             }
 
-            await event.getApp().dispatchEvent(
+            event.getApp().dispatchEvent(
                 new CreateElementActionEvent({
                     element,
                     source: source as PbEditorElement

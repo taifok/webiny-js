@@ -1,8 +1,10 @@
-import { RecoilState, useRecoilCallback, RecoilValueReadOnly } from "recoil";
+import { RecoilState, useRecoilCallback, RecoilValueReadOnly, SetterOrUpdater } from "recoil";
+
+export type ValueOrSetter<T> = SetterOrUpdater<T> | (T | ((prevValue: T) => T));
 
 interface Portal {
     getState?: <T>(atom: RecoilState<T> | RecoilValueReadOnly<T>) => T;
-    setState?: <T>(state: RecoilState<T>, valueOrSetter: T | ((prevValue: T) => T)) => void;
+    setState?: <T>(state: RecoilState<T>, valueOrSetter: ValueOrSetter<T>) => void;
 }
 
 const portal: Portal = {};

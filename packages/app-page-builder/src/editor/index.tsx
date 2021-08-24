@@ -1,10 +1,11 @@
 import React from "react";
 import { Editor as EditorComponent } from "./components/Editor";
-import { EditorProvider } from "./contexts/EditorProvider";
+import { EditorState } from "./contexts/EditorState";
 import { RecoilRoot } from "recoil";
 import { rootElementAtom, RevisionsAtomType, pageAtom, elementsAtom, PageAtomType } from "./state";
 import { flattenElements } from "./helpers";
 import { PbEditorElement } from "~/types";
+import RecoilExternal from "./components/RecoilExternal";
 
 type EditorPropsType = {
     page: PageAtomType & PbEditorElement;
@@ -27,9 +28,9 @@ export const Editor: React.FunctionComponent<EditorPropsType> = ({ page, revisio
                 set(pageAtom, pageData);
             }}
         >
-            <EditorProvider>
-                <EditorComponent page={page} revisions={revisions} />
-            </EditorProvider>
+            <RecoilExternal />
+            <EditorState />
+            <EditorComponent page={page} revisions={revisions} />
         </RecoilRoot>
     );
 };

@@ -5,6 +5,7 @@ import { PbEditorPageElementPlugin } from "~/types";
 import { useKeyHandler } from "../../../hooks/useKeyHandler";
 import { userElementSettingsPlugins } from "../../../helpers";
 import { activeElementAtom, elementByIdSelector } from "../../../state";
+import { useActiveElement } from "~/editor/hooks/useActiveElement";
 
 const getElementActions = plugin => {
     if (!plugin || !plugin.settings) {
@@ -44,21 +45,15 @@ const getElementActions = plugin => {
 };
 
 const useElementSettings = () => {
-    const [activeElement, setActiveElementAtomValue] = useRecoilState(activeElementAtom);
-    const element = useRecoilValue(elementByIdSelector(activeElement));
+    const [element, setActiveElement] = useActiveElement();
     const elementType = element ? element.type : undefined;
-
-    const deactivateElement = useCallback(() => {
-        3;
-        setActiveElementAtomValue(null);
-    }, []);
 
     const { addKeyHandler, removeKeyHandler } = useKeyHandler();
 
     useEffect(() => {
         addKeyHandler("escape", e => {
             e.preventDefault();
-            deactivateElement();
+            setActiveElement(null);
         });
         return () => removeKeyHandler("escape");
     });

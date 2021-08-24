@@ -30,7 +30,7 @@ const Element = (props: ElementProps) => {
     }
 
     const renderedPlugin = tryRenderingPlugin(() => plugin.render({ theme, element }));
-
+    
     return <>{renderedPlugin}</>;
 };
 

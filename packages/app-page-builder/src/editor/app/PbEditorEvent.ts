@@ -1,7 +1,10 @@
-import { PbEditorApp } from "../PbEditorApp";
+import { PbEditorApp } from "./PbEditorApp";
 import { PbState } from "~/editor/state/types";
-import { PbEventState } from "~/editor/contexts/app/PbEventState";
-import { nanoid } from "nanoid";
+import { PbEventState } from "~/editor/app/PbEventState";
+import { customAlphabet } from "nanoid";
+
+const ALPHANUMERIC = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+export const getNanoID = customAlphabet(ALPHANUMERIC, 10);
 
 interface PbEditorEventStateSetter {
     (state: Partial<PbState>): Partial<PbState>;
@@ -15,12 +18,16 @@ export class PbEditorEvent<TData = Record<string, any>> {
     private _id: string;
 
     constructor(data?: TData) {
-        this._data = data || {} as TData;
-        this._id = nanoid();
+        this._data = data || ({} as TData);
+        this._id = getNanoID();
     }
 
     getId() {
-        return `${this.constructor.name}:${this._id}`;
+        return this._id;
+    }
+
+    getDisplayName() {
+        return `${this.constructor.name} (${this._id})`;
     }
 
     getApp() {

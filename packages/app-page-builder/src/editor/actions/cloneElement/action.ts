@@ -1,6 +1,6 @@
 import { CloneElementActionEvent, UpdateElementActionEvent } from "..";
 import { PbEditorElement } from "~/types";
-import { PbEditorApp } from "~/editor/contexts/PbEditorApp";
+import { PbEditorApp } from "~/editor/app/PbEditorApp";
 import { getNanoid } from "~/editor/helpers";
 
 export const cloneElement = async (
@@ -18,21 +18,21 @@ export const cloneElement = async (
     };
 };
 
-export const cloneElementAction = async (event: CloneElementActionEvent) => {
+export const cloneElementAction = (event: CloneElementActionEvent) => {
     const { element } = event.getData();
-    const parent = await event.getApp().getElementById(element.parent);
+    const parent = event.getApp().getElementById(element.parent);
     const position = parent.elements.findIndex(el => el === element.id) + 1;
 
     const newElement: any = {
         ...parent,
         elements: [
             ...parent.elements.slice(0, position),
-            await cloneElement(event.getApp(), element),
+            cloneElement(event.getApp(), element),
             ...(position < parent.elements.length ? parent.elements.slice(position) : [])
         ]
     };
 
-    await event.getApp().dispatchEvent(
+    event.getApp().dispatchEvent(
         new UpdateElementActionEvent({
             element: newElement,
             history: true

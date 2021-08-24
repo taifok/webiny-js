@@ -14,7 +14,7 @@ import { ButtonFloating } from "@webiny/ui/Button";
 import { ReactComponent as AddIcon } from "../../../assets/icons/add.svg";
 import { useKeyHandler } from "../../../hooks/useKeyHandler";
 import { usePageEditor } from "~/editor/hooks/usePageEditor";
-import { PbElementType } from "~/editor/contexts/app/PbElementType";
+import { PbElementType } from "~/editor/app/PbElementType";
 
 const ADD_ELEMENT = "pb-editor-toolbar-add-element";
 
@@ -85,7 +85,7 @@ const AddElement: React.FunctionComponent = () => {
             <Draggable
                 enabled={true}
                 key={id}
-                target={elementType.getTarget()}
+                target={elementType.getDropTarget()}
                 beginDrag={props => {
                     dragStart();
                     setTimeout(deactivatePlugin, 20);

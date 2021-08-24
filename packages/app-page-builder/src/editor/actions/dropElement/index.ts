@@ -1,5 +1,5 @@
-import { PbEditorAppPlugin } from "~/editor/contexts/PbEditorApp";
-import { PbEditorEvent } from "~/editor/contexts/app/PbEditorEvent";
+import { PbEditorAppPlugin } from "~/editor/app/PbEditorApp";
+import { PbEditorEvent } from "~/editor/app/PbEditorEvent";
 
 import invariant from "invariant";
 import { DragObjectWithTypeWithTarget } from "~/editor/components/Droppable";
@@ -17,11 +17,11 @@ export type DropElementActionDataType = {
 export class DropElementActionEvent extends PbEditorEvent<DropElementActionDataType> {}
 
 export default new PbEditorAppPlugin(app => {
-    app.addEventListener(DropElementActionEvent, async (event: DropElementActionEvent) => {
+    app.addEventListener(DropElementActionEvent, (event: DropElementActionEvent) => {
         const { source, target } = event.getData();
         const { id, type, position } = target;
 
-        const targetElement = await event.getApp().getElementById(id);
+        const targetElement = event.getApp().getElementById(id);
         if (!targetElement) {
             throw new Error(`There is no element with id "${id}"`);
         }
@@ -33,9 +33,9 @@ export default new PbEditorAppPlugin(app => {
             "To accept drops, element type must have an `onReceived` callback configured."
         );
 
-        const sourceElement = source.id ? await event.getApp().getElementById(source.id) : source;
+        const sourceElement = source.id ? event.getApp().getElementById(source.id) : source;
 
-        await onReceived({
+        onReceived({
             event,
             source: sourceElement,
             target: targetElement,

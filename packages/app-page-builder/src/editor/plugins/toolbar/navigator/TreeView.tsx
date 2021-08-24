@@ -44,6 +44,8 @@ const getHighlightItemProps = ({ dropItemAbove, isOver, elementType }) => {
 };
 
 const TreeViewItem = ({ element, level, children, index }) => {
+    // TODO
+    return null;
     const elementId = element.id;
     const { displayMode } = useRecoilValue(uiAtom);
     const [activeElement, setActiveElementAtomValue] = useRecoilState(activeElementAtom);
