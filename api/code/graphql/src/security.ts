@@ -1,12 +1,14 @@
 import tenancy from "@webiny/api-tenancy";
-import security from "@webiny/api-security";
+import security, { SecurityIdentity } from "@webiny/api-security";
 import personalAccessTokenAuthentication from "@webiny/api-security-admin-users/authentication/personalAccessToken";
 import apiKeyAuthentication from "@webiny/api-security-admin-users/authentication/apiKey";
 import userAuthorization from "@webiny/api-security-admin-users/authorization/user";
 import apiKeyAuthorization from "@webiny/api-security-admin-users/authorization/apiKey";
 import anonymousAuthorization from "@webiny/api-security-admin-users/authorization/anonymous";
-import cognitoAuthentication from "@webiny/api-security-cognito-authentication";
-import cognitoIdentityProvider from "@webiny/api-security-admin-users-cognito";
+import { OktaAuthenticationPlugin } from "@webiny/api-security-okta-authentication/OktaAuthenticationPlugin";
+import { OktaAssignUserToGroup } from "@webiny/api-security-okta-authentication/OktaAssignUserToGroup";
+import { SecurityContext } from "@webiny/api-security/types";
+//import cognitoIdentityProvider from "@webiny/api-security-admin-users-cognito";
 
 export default () => [
     /**
@@ -24,10 +26,10 @@ export default () => [
      * It also extends the GraphQL schema with things like "password", which we don't handle
      * natively in our security, but Cognito will handle it for us.
      */
-    cognitoIdentityProvider({
-        region: process.env.COGNITO_REGION,
-        userPoolId: process.env.COGNITO_USER_POOL_ID
-    }),
+    // cognitoIdentityProvider({
+    //     region: process.env.COGNITO_REGION,
+    //     userPoolId: process.env.COGNITO_USER_POOL_ID
+    // }),
 
     /**
      * Adds a context plugin to process `security-authentication` plugins.
@@ -53,13 +55,39 @@ export default () => [
     apiKeyAuthentication({ identityType: "api-key" }),
 
     /**
-     * Cognito authentication plugin.
-     * This plugin will verify the authorization token against a provided User Pool.
+     * Okta authentication plugin.
+     * This plugin will verify the authorization token against a provided issuer and clientId.
      */
-    cognitoAuthentication({
-        region: process.env.COGNITO_REGION,
-        userPoolId: process.env.COGNITO_USER_POOL_ID,
-        identityType: "admin"
+    new OktaAuthenticationPlugin({
+        clientId: process.env.OKTA_CLIENT_ID,
+        issuer: process.env.OKTA_ISSUER,
+        getIdentity({ token }) {
+            // In Okta, `name` is provided using the `profile` scope and it contains full name.
+            const [firstName, lastName] = (token.name || "").split(" ");
+            
+            // Create an instance of SecurityIdentity 
+            return new SecurityIdentity({
+                id: token.email,
+                type: "admin",
+                displayName: token.name,
+                // This part stores JWT claims into SecurityIdentity
+                firstName,
+                lastName,
+                group: token.webiny_group
+            });
+        }
+    }),
+
+    /**
+     * This plugin hooks into `onLogin` event and links the user with a group specified in the `group` attribute
+     * which is taken from `webiny_group` claim (see above).
+     */
+    new OktaAssignUserToGroup({
+        getUserGroupSlug(context: SecurityContext) {
+            const identity = context.security.getIdentity();
+            // Use the claim value assigned in OktaAuthenticationPlugin.getIdentity
+            return identity.group;
+        }
     }),
 
     /**

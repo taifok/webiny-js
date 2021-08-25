@@ -208,17 +208,25 @@ export default new ContextPlugin<AdminUsersContext>(async context => {
                     user,
                     inputData: data
                 });
+
                 result = await storageOperations.createUser({
                     user
                 });
+
+                await loaders.updateDataLoaderUserCache(result.id, result);
+                
                 await executeCallback<UserPlugin["afterCreate"]>(userPlugins, "afterCreate", {
                     context,
                     user: result,
                     inputData: data
                 });
                 const tenant = tenancy.getCurrentTenant();
-                const group = await security.groups.getGroup(groupSlug, options);
-                await security.users.linkUserToTenant(result.login, tenant, group);
+
+                if (groupSlug) {
+                    const group = await security.groups.getGroup(groupSlug, options);
+                    await security.users.linkUserToTenant(result.login, tenant, group);
+                }
+
                 return result;
             } catch (ex) {
                 throw new WebinyError(

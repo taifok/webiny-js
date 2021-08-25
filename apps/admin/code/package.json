@@ -23,6 +23,7 @@
     "@webiny/app-security": "^5.13.0",
     "@webiny/app-security-admin-users": "^5.13.0",
     "@webiny/app-security-admin-users-cognito": "^5.13.0",
+    "@webiny/app-security-admin-users-okta": "^5.13.0",
     "@webiny/app-tenancy": "^5.13.0",
     "@webiny/cli": "^5.13.0",
     "@webiny/cli-plugin-deploy-pulumi": "^5.13.0",

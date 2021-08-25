@@ -45,7 +45,6 @@ export class UserLoaders {
         try {
             const results = await this.storageOperations.listUsers({
                 where: {
-                    tenant: undefined,
                     id_in: ids
                 }
             });

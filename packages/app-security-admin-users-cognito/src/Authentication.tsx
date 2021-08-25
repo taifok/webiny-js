@@ -3,7 +3,6 @@ import {
     Authenticator,
     AuthenticatorProps
 } from "@webiny/app-security-cognito-authentication/Authenticator";
-import { View } from "@webiny/app/components/View";
 
 import SignIn from "./views/SignIn";
 import RequireNewPassword from "./views/RequireNewPassword";
@@ -18,9 +17,7 @@ export const Authentication = ({ children, getIdentityData }: Props) => {
     return (
         <Authenticator getIdentityData={getIdentityData}>
             <CheckingUser />
-            <View name={"admin.authentication.signIn"}>
-                <SignIn />
-            </View>
+            <SignIn />
             <RequireNewPassword />
             <ForgotPassword />
             <SetNewPassword />

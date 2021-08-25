@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from "react";
 import { ApolloProvider } from "@apollo/react-components";
 import { UiProvider } from "@webiny/app/contexts/Ui";
@@ -10,10 +11,14 @@ import { AppInstaller } from "@webiny/app-admin/components/AppInstaller";
 import { CmsProvider } from "@webiny/app-headless-cms/admin/contexts/Cms";
 import { PageBuilderProvider } from "@webiny/app-page-builder/contexts/PageBuilder";
 import { BrowserRouter } from "@webiny/react-router";
-import { Authentication } from "@webiny/app-security-admin-users-cognito/Authentication";
+import { Authentication } from "@webiny/app-security-admin-users-okta/Authentication";
 import { createApolloClient } from "./components/apolloClient";
 import { Telemetry } from "./components/Telemetry";
 import { getIdentityData } from "./components/getIdentityData";
+import { oktaSignIn, oktaAuth } from "./okta";
+
+window["oktaSignIn"] = oktaSignIn;
+window["oktaAuth"] = oktaAuth;
 
 // Import styles which include custom theme styles
 import "./App.scss";
@@ -53,7 +58,11 @@ export const App = () => (
                             and prompt for login, if necessary. Once logged in, it sets the identity data into
                             the <SecurityProvider>.
                         */}
-                        <Authentication getIdentityData={getIdentityData}>
+                        <Authentication
+                            getIdentityData={getIdentityData}
+                            oktaAuth={oktaAuth}
+                            oktaSignIn={oktaSignIn}
+                        >
                             {/*
                                 <TenancyProvider> controls access to different tenants and manages permissions a user
                                 has on each particular tenant. At this point, Webiny doesn't provide a tenancy management app so

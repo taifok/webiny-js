@@ -13,7 +13,7 @@ import { LOGIN } from "@webiny/app-security-admin-users/graphql";
  */
 
 /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
-export const getIdentityData = async ({ client, payload }) => {
+export const getIdentityData = async ({ client }) => {
     const { data } = await client.mutate({ mutation: LOGIN });
     return data.security.login.data;
 };
