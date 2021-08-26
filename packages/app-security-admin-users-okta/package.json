@@ -10,7 +10,7 @@
   "contributors": [
     "Pavel Denisjuk <pavel@webiny.com>"
   ],
-  "license": "MIT",
+  "license": "Webiny Enterprise",
   "dependencies": {
     "@emotion/styled": "^10.0.27",
     "@okta/okta-auth-js": "^5.3.1",

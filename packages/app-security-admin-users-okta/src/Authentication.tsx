@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect } from "react";
+import React, { useCallback, useState, useEffect, useRef } from "react";
 import { setContext } from "apollo-link-context";
 import { useApolloClient } from "@apollo/react-hooks";
 import { Security } from "@okta/okta-react";
@@ -25,6 +25,7 @@ export const Authentication = ({
     oktaSignIn,
     children
 }: AuthenticationProps) => {
+    const timerRef = useRef(null);
     const apolloClient = useApolloClient();
     const { identity, setIdentity } = useSecurity();
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -37,6 +38,18 @@ export const Authentication = ({
 
     useEffect(() => {
         plugins.register(
+            new ApolloLinkPlugin(() => {
+                return setContext(async (_, payload) => {
+                    clearTimeout(timerRef.current);
+
+                    timerRef.current = setTimeout(() => {
+                        // Reload browser after 1 hour of inactivity
+                        window.location.reload();
+                    }, 3600000);
+
+                    return payload;
+                });
+            }),
             new ApolloLinkPlugin(() => {
                 return setContext(async (_, { headers }) => {
                     // If "Authorization" header is already set, don't overwrite it.
@@ -75,12 +88,13 @@ export const Authentication = ({
                         login,
                         ...data,
                         logout() {
+                            clearTimeout(timerRef.current);
                             oktaAuth.signOut();
                             setIdentity(null);
                         }
                     })
                 );
-            } catch(err) {
+            } catch (err) {
                 console.log(err);
             }
         } else {

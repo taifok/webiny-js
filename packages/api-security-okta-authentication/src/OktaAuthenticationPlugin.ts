@@ -3,6 +3,7 @@ import jwkToPem from "jwk-to-pem";
 import fetch from "node-fetch";
 import util from "util";
 import { SecurityIdentity } from "@webiny/api-security";
+import Error from "@webiny/error";
 import { HttpContext } from "@webiny/handler-http/types";
 import { Context as HandlerContext } from "@webiny/handler/types";
 import { AuthenticationPlugin } from "@webiny/api-security/plugins/AuthenticationPlugin";
@@ -16,10 +17,7 @@ type Context = HandlerContext<HttpContext>;
 export interface Config {
     issuer: string;
     clientId: string;
-    getIdentity(
-        params: { token: { [key: string]: any } },
-        context: Context
-    ): SecurityIdentity;
+    getIdentity(params: { token: { [key: string]: any } }, context: Context): SecurityIdentity;
 }
 
 const jwksCache = new Map<string, Record<string, any>[]>();
@@ -43,23 +41,25 @@ export class OktaAuthenticationPlugin extends AuthenticationPlugin {
         idToken = idToken.replace(/bearer\s/i, "");
 
         if (isJwt(idToken) && httpMethod === "POST") {
-            const jwks = await this.getJWKs();
-            const { header } = jwt.decode(idToken, { complete: true });
-            const jwk = jwks.find(key => key.kid === header.kid);
+            try {
+                const jwks = await this.getJWKs();
+                const { header } = jwt.decode(idToken, { complete: true });
+                const jwk = jwks.find(key => key.kid === header.kid);
 
-            if (!jwk) {
-                return;
+                if (!jwk) {
+                    return;
+                }
+
+                const token = await verify(idToken, jwkToPem(jwk));
+                if (!token.jti.startsWith("ID.")) {
+                    throw new Error("idToken is invalid!", "SECURITY_OKTA_INVALID_TOKEN");
+                }
+
+                return this._config.getIdentity({ token }, context);
+            } catch (err) {
+                console.log("OktaAuthenticationPlugin", err);
+                throw new Error(err.message, "SECURITY_OKTA_INVALID_TOKEN");
             }
-
-            const token = await verify(idToken, jwkToPem(jwk));
-            if (!token.jti.startsWith("ID.")) {
-                const error = new Error("idToken is invalid!");
-                throw Object.assign(error, {
-                    code: "SECURITY_COGNITO_INVALID_TOKEN"
-                });
-            }
-
-            return this._config.getIdentity({ token }, context);
         }
     }
 
