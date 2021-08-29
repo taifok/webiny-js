@@ -8,7 +8,6 @@ import { useHistory } from "@webiny/react-router";
 import { CircularProgress } from "@webiny/ui/Progress";
 import { SecurityIdentity, useSecurity } from "@webiny/app-security";
 import { ApolloLinkPlugin } from "@webiny/app/plugins/ApolloLinkPlugin";
-import "@okta/okta-signin-widget/dist/css/okta-sign-in.min.css";
 
 import OktaSignInWidget from "./OktaSignInWidget";
 
@@ -54,6 +53,10 @@ export const Authentication = ({
                 return setContext(async (_, { headers }) => {
                     // If "Authorization" header is already set, don't overwrite it.
                     if (headers && headers.Authorization) {
+                        return { headers };
+                    }
+
+                    if (!oktaAuth.isAuthenticated()) {
                         return { headers };
                     }
 
@@ -109,6 +112,9 @@ export const Authentication = ({
 
         return () => authStateManager.unsubscribe(authStateChanged);
     }, []);
+
+    // For some reason, Okta complains about duplicate "restoreOriginalUri" if we don't unset it here.
+    delete oktaAuth.options.restoreOriginalUri;
 
     return (
         <Security oktaAuth={oktaAuth} restoreOriginalUri={restoreOriginalUri}>

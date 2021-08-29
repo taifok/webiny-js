@@ -5,6 +5,8 @@ export interface Config {
     getUserGroupSlug(context: SecurityContext): string;
 }
 
+// TODO: this plugin should be part of `api-security-access-control` package, and can be used as a generic plugin
+// not tied to Okta
 export class OktaAssignUserToGroup extends UserPlugin {
     private config: Config;
 

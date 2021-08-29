@@ -1,14 +1,7 @@
 {
   "extends": "../../tsconfig.build.json",
   "include": ["./src"],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "../api-security",
-    "../handler",
-    "../handler-http",
-    "../error"
-  ],
+  "exclude": ["node_modules", "dist", "../api-security", "../api-security-admin-users"],
   "compilerOptions": {
     "rootDir": "./src",
     "outDir": "./dist",

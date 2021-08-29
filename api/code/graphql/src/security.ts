@@ -6,7 +6,7 @@ import userAuthorization from "@webiny/api-security-admin-users/authorization/us
 import apiKeyAuthorization from "@webiny/api-security-admin-users/authorization/apiKey";
 import anonymousAuthorization from "@webiny/api-security-admin-users/authorization/anonymous";
 import { OktaAuthenticationPlugin } from "@webiny/api-security-okta-authentication/OktaAuthenticationPlugin";
-import { OktaAssignUserToGroup } from "@webiny/api-security-okta-authentication/OktaAssignUserToGroup";
+import { OktaAssignUserToGroup } from "@webiny/api-security-admin-users-okta/OktaAssignUserToGroup";
 import { SecurityContext } from "@webiny/api-security/types";
 //import cognitoIdentityProvider from "@webiny/api-security-admin-users-cognito";
 
@@ -64,8 +64,8 @@ export default () => [
         getIdentity({ token }) {
             // In Okta, `name` is provided using the `profile` scope and it contains full name.
             const [firstName, lastName] = (token.name || "").split(" ");
-            
-            // Create an instance of SecurityIdentity 
+
+            // Create an instance of SecurityIdentity
             return new SecurityIdentity({
                 id: token.email,
                 type: "admin",

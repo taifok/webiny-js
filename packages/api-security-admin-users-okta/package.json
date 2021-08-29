@@ -1,24 +1,19 @@
 {
-  "name": "@webiny/api-security-okta-authentication",
+  "name": "@webiny/api-security-admin-users-okta",
   "version": "5.13.0",
   "main": "index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/webiny/webiny-js.git"
   },
-  "description": "Security authentication plugin for Okta",
+  "description": "Okta hooks for admin users",
   "contributors": [
     "Pavel Denisjuk <pavel@webiny.com>"
   ],
   "license": "Webiny Enterprise",
   "dependencies": {
     "@webiny/api-security": "^5.13.0",
-    "@webiny/error": "^5.13.0",
-    "@webiny/handler": "^5.13.0",
-    "@webiny/handler-http": "^5.13.0",
-    "jsonwebtoken": "^8.5.1",
-    "jwk-to-pem": "^2.0.1",
-    "node-fetch": "^2.6.1"
+    "@webiny/api-security-admin-users": "^5.13.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.5.5",

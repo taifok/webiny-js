@@ -3,6 +3,7 @@ import accountDetails from "@webiny/app-security-admin-users/plugins/userMenu/ac
 import signOut from "@webiny/app-security-admin-users/plugins/userMenu/signOut";
 import userImage from "@webiny/app-security-admin-users/plugins/userMenu/userImage";
 import userInfo from "@webiny/app-security-admin-users/plugins/userMenu/userInfo";
+import adminUsersOkta from "@webiny/app-security-admin-users-okta";
 
 export default [
     /**
@@ -15,5 +16,6 @@ export default [
     accountDetails(),
     signOut(),
     userImage(),
-    userInfo()
+    userInfo(),
+    adminUsersOkta()
 ];

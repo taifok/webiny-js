@@ -132,13 +132,12 @@ export class UsersFormView extends UIView {
                 name: "login",
                 label: "Email",
                 validators: () => validation.create("required,email"),
-                beforeChange: (value: string, cb) => cb(value.toLowerCase())
+                beforeChange: (value: string, cb) => cb(value.toLowerCase()),
+                isDisabled: () => {
+                    return this.getUserFormHook().user.login !== undefined;
+                }
             })
         );
-
-        bioAccordion.getElement<InputElement>("login").setIsDisabled(() => {
-            return this.getUserFormHook().user.login !== undefined;
-        });
 
         const groupAccordion = accordion.getElement<AccordionItemElement>("groups");
         groupAccordion.addElement(

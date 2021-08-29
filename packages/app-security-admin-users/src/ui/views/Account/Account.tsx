@@ -106,6 +106,7 @@ const UserAccountForm = () => {
                                                 </Cell>
                                                 <Cell span={12}>
                                                     <Input
+                                                        disabled={true}
                                                         value={data.login}
                                                         label={t`Email`}
                                                         description={

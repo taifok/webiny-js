@@ -133,12 +133,6 @@
       ],
       "@webiny/api-security-cognito-authentication": [
         "../../../packages/api-security-cognito-authentication/src"
-      ],
-      "@webiny/api-security-okta-authentication/*": [
-        "../../../packages/api-security-okta-authentication/src/*"
-      ],
-      "@webiny/api-security-okta-authentication": [
-        "../../../packages/api-security-okta-authentication/src"
       ]
     },
     "baseUrl": "."
