@@ -30,6 +30,9 @@ import scaffoldsPlugins from "./plugins/scaffolds";
 import { createElasticsearchClient } from "@webiny/api-elasticsearch/client";
 
 const debug = process.env.DEBUG === "true";
+if (debug) {
+    import("source-map-support/register");
+}
 
 const documentClient = new DocumentClient({
     convertEmptyValues: true,

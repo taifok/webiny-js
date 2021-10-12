@@ -14,7 +14,7 @@ module.exports = (options, context) => {
     let webpackConfig = require("./webpack.watch.config")({
         entry: options.entry || "./src/index",
         output,
-        debug: boolean(options.debug),
+        debug: "source-maps",
         babelOptions,
         define: options.define
     });
